@@ -9,9 +9,9 @@
         :root {
             --primary: #9dfc3b;
             --primary-glow: rgba(157, 252, 59, 0.45);
-            --bg-gradient: radial-gradient(circle at 50% 30%, #0e2011 0%, #060b08 60%, #020403 100%);
-            --surface: rgba(16, 24, 18, 0.88);
-            --surface-border: rgba(157, 252, 59, 0.25);
+            --bg-gradient: radial-gradient(circle at 50% 25%, #0d1e10 0%, #060b08 65%, #020403 100%);
+            --surface: rgba(16, 24, 18, 0.90);
+            --surface-border: rgba(157, 252, 59, 0.22);
             --text-muted: #8ca393;
         }
         * {
@@ -25,16 +25,13 @@
             display: flex; flex-direction: column; justify-content: space-between;
             overflow: hidden; position: relative;
         }
-        .bg-video-box {
+        #smokeCanvas {
             position: fixed; inset: 0; width: 100vw; height: 100vh;
-            z-index: 0; pointer-events: none; overflow: hidden;
+            z-index: 1; pointer-events: none; opacity: 0.45;
         }
-        .bg-video-box video {
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.32;
-        }
-        .bg-overlay {
-            position: absolute; inset: 0;
-            background: radial-gradient(circle at 50% 40%, rgba(5, 12, 6, 0.3) 0%, rgba(3, 6, 4, 0.92) 100%);
+        #confettiCanvas {
+            position: fixed; inset: 0; width: 100vw; height: 100vh;
+            z-index: 100; pointer-events: none; display: none;
         }
         .header { padding: 12px 20px 4px; text-align: center; z-index: 5; position: relative; }
         .brand-badge {
@@ -53,7 +50,6 @@
         }
         .tab-content.active { display: flex; }
 
-        /* MINE TAB */
         .coin-3d {
             width: 215px; height: 215px; border-radius: 50%;
             background: radial-gradient(circle at 35% 30%, #c4ff5e 0%, #8ae01c 40%, #437a06 85%, #193302 100%);
@@ -71,19 +67,36 @@
         .energy-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; }
         .energy-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #6ee7b7, var(--primary)); border-radius: 12px; }
 
-        /* GAME HUD & CANVAS */
         .game-hud {
             width: 100%; max-width: 360px; display: flex; justify-content: space-between;
-            align-items: center; background: rgba(16, 24, 18, 0.9); border: 1px solid var(--surface-border);
+            align-items: center; background: var(--surface); border: 1px solid var(--surface-border);
             padding: 8px 12px; border-radius: 12px; margin-bottom: 8px;
         }
-        .code-display { font-size: 15px; font-weight: 900; letter-spacing: 4px; color: var(--primary); }
+        .code-display { font-size: 16px; font-weight: 900; letter-spacing: 4px; color: var(--primary); }
         #gameCanvas {
             width: 100%; max-width: 360px; height: 260px; border-radius: 14px;
             background: #030604; border: 1px solid var(--surface-border); touch-action: none;
         }
 
-        /* CARDS & OFFICIAL LOGOS */
+        .airdrop-hero {
+            width: 100%; max-width: 360px; border-radius: 16px;
+            background: linear-gradient(135deg, rgba(157,252,59,0.15) 0%, rgba(16,24,18,0.85) 100%);
+            border: 1px solid var(--surface-border); padding: 16px; text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+        .airdrop-status-pill {
+            display: inline-block; padding: 4px 12px; border-radius: 12px;
+            background: rgba(157, 252, 59, 0.2); color: var(--primary); font-size: 11px; font-weight: 800;
+        }
+        .airdrop-metrics {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            width: 100%; max-width: 360px; margin-top: 10px;
+        }
+        .metric-card {
+            background: var(--surface); border: 1px solid var(--surface-border);
+            padding: 12px; border-radius: 12px; text-align: center;
+        }
+
         .card {
             background: var(--surface); border: 1px solid var(--surface-border);
             border-radius: 14px; padding: 12px 14px; width: 100%; max-width: 360px;
@@ -103,7 +116,31 @@
             background: var(--primary); color: #0b0e14; border: none; padding: 8px 14px;
             border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none;
         }
-        .action-btn.claimed { background: rgba(255,255,255,0.08); color: var(--text-muted); cursor: default; }
+        .action-btn.claimed { background: rgba(255,255,255,0.08) !important; color: var(--text-muted) !important; pointer-events: none; }
+
+        .coming-soon-badge {
+            background: rgba(255, 187, 0, 0.15); border: 1px solid rgba(255, 187, 0, 0.4);
+            color: #ffbb00; padding: 6px 14px; border-radius: 20px; font-size: 11px;
+            font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: inline-block;
+        }
+
+        .reward-overlay {
+            position: fixed; inset: 0; z-index: 120;
+            display: none; align-items: center; justify-content: center;
+            background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(12px);
+            opacity: 0; transition: opacity 0.25s ease;
+        }
+        .reward-box-3d {
+            width: 85%; max-width: 320px; padding: 24px 20px; text-align: center;
+            border-radius: 22px; background: rgba(16, 28, 20, 0.7);
+            border: 1px solid rgba(157, 252, 59, 0.4);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 35px var(--primary-glow),
+                        inset 0 1px 0 rgba(255,255,255,0.3);
+            transform: scale(0.85) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .reward-overlay.open { display: flex; opacity: 1; }
+        .reward-overlay.open .reward-box-3d { transform: scale(1) translateY(0); }
 
         .nav-dock {
             padding: 8px 10px 16px; background: rgba(6, 10, 7, 0.95);
@@ -126,11 +163,18 @@
 </head>
 <body>
 
-    <div class="bg-video-box">
-        <video autoplay loop muted playsinline>
-            <source src="bg.mp4" type="video/mp4">
-        </video>
-        <div class="bg-overlay"></div>
+    <canvas id="smokeCanvas"></canvas>
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="reward-overlay" id="rewardModal">
+        <div class="reward-box-3d">
+            <div style="font-size: 48px; margin-bottom: 6px;">🎉</div>
+            <div style="font-size: 14px; letter-spacing: 2px; color: var(--text-muted); font-weight: 800;">REWARD UNLOCKED</div>
+            <div id="rewardText" style="font-size: 24px; font-weight: 900; color: var(--primary); margin: 8px 0 16px; text-shadow: 0 0 15px var(--primary-glow);">
+                YOU GOT +20,000 $DKX
+            </div>
+            <button class="action-btn" style="width: 100%; padding: 12px; font-size: 12px;" onclick="closeRewardModal()">CLAIM & CONTINUE</button>
+        </div>
     </div>
 
     <div class="header">
@@ -139,6 +183,7 @@
         <div class="score-val" id="score">0</div>
     </div>
 
+    <!-- 1. MINE TAB -->
     <div class="tab-content active" id="tab-mine">
         <div class="coin-wrapper">
             <div class="coin-3d" id="tapBtn">
@@ -160,10 +205,11 @@
         </div>
     </div>
 
+    <!-- 2. CIPHER CODE MINI-GAME -->
     <div class="tab-content" id="tab-game">
         <div class="game-hud">
             <div>
-                <div style="font-size:10px; color:var(--text-muted)">TARGET CIPHER</div>
+                <div style="font-size:10px; color:var(--text-muted)">DAILY CIPHER</div>
                 <div class="code-display" id="targetCodeDisplay">6 7 3 8</div>
             </div>
             <div style="text-align:right">
@@ -173,26 +219,41 @@
         </div>
         <canvas id="gameCanvas" width="360" height="260"></canvas>
         <button class="action-btn" id="startBtn" style="margin-top:10px; width:100%; max-width:360px;" onclick="initOrRestartGame()">Start Game</button>
-        <div id="gameLockStatus" style="font-size:11px; color:#ffcc00; margin-top:6px; font-weight:700;"></div>
+        <div id="gameLockStatus" style="font-size:12px; color:#ffcc00; margin-top:8px; font-weight:800; letter-spacing:0.5px;"></div>
     </div>
 
-    <div class="tab-content" id="tab-inventory">
-        <div style="width:100%; max-width:360px; height:180px; border-radius:14px; background:rgba(16,24,18,0.7); border:1px solid var(--surface-border); display:flex; flex-direction:column; align-items:center; justify-content:center;">
-            <div style="font-size:60px; filter:drop-shadow(0 0 15px var(--primary-glow));">👑🥋👟</div>
-            <div style="font-size:12px; color:var(--primary); font-weight:bold; margin-top:8px;">Genesis Sovereign Edition</div>
+    <!-- 3. AIRDROP LIVE DASHBOARD -->
+    <div class="tab-content" id="tab-airdrop">
+        <div class="airdrop-hero">
+            <div class="airdrop-status-pill">● AIRDROP PROTOCOL LIVE</div>
+            <div style="font-size:20px; font-weight:900; margin-top:10px;">Phase 1: Genesis Pool</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">
+                Token distribution will be snapshot-based on active participation.
+            </div>
         </div>
-        <div class="card">
+        <div class="airdrop-metrics">
+            <div class="metric-card">
+                <div style="font-size:10px; color:var(--text-muted)">TOTAL AIRDROP POOL</div>
+                <div style="font-size:16px; font-weight:900; color:var(--primary); margin-top:4px;">50,000,000 $DKX</div>
+            </div>
+            <div class="metric-card">
+                <div style="font-size:10px; color:var(--text-muted)">AIRDROP STATUS</div>
+                <div style="font-size:14px; font-weight:800; color:#38ef7d; margin-top:4px;">Active & Mining</div>
+            </div>
+        </div>
+        <div class="card" style="margin-top:12px;">
             <div class="card-left">
-                <div style="font-size:22px;">🎽</div>
+                <div style="font-size:24px;">📊</div>
                 <div>
-                    <div style="font-size:13px; font-weight:700">Cyber Neon Hoodie</div>
-                    <div style="font-size:11px; color:var(--primary)">Tier II • 2,000 $DKX</div>
+                    <div style="font-size:13px; font-weight:700">Listing & Distribution</div>
+                    <div style="font-size:11px; color:var(--primary)">Q4 • BNB Smart Chain Launch</div>
                 </div>
             </div>
-            <button class="action-btn" onclick="alert('Equipped!')">Equip</button>
+            <span style="font-size:11px; font-weight:800; color:var(--text-muted);">Verified</span>
         </div>
     </div>
 
+    <!-- 4. OFFICIAL TASKS TAB -->
     <div class="tab-content" id="tab-tasks">
         <h3 style="margin-bottom:8px; font-size:15px;">Official Directives</h3>
         <div class="card">
@@ -233,34 +294,150 @@
         </div>
     </div>
 
+    <!-- 5. WALLET TAB -->
     <div class="tab-content" id="tab-wallet">
-        <h3 style="margin-bottom:12px; font-size:15px;">BNB Smart Chain Gateway</h3>
-        <div class="card" style="flex-direction:column; gap:12px; text-align:center; padding:18px;">
-            <div style="font-size:14px; font-weight:800; color:var(--primary)">BEP-20 Web3 Connect</div>
-            <div style="font-size:11px; color:var(--text-muted); line-height:1.4;">
-                Connect directly via Trust Wallet, MetaMask or Binance Web3 App to receive your token distribution.
+        <div class="card" style="flex-direction:column; gap:14px; text-align:center; padding:24px 16px;">
+            <div style="font-size:32px;">💎</div>
+            <div style="font-size:16px; font-weight:900;">Connect Your Crypto Wallet</div>
+            <div class="coming-soon-badge">Currently Not Available • Coming Soon</div>
+            <div style="font-size:12px; color:var(--text-muted); line-height:1.5;">
+                Web3 Wallet linking feature will be activated ahead of the official token listing on BNB Chain. Keep mining your $DKX!
             </div>
-            <button class="action-btn" id="connectWalletBtn" style="width:100%; padding:12px; font-size:13px;" onclick="connectWeb3Wallet()">
-                🔗 Connect Crypto Wallet
-            </button>
-            <div id="walletStatusText" style="font-size:12px; color:var(--primary); font-weight:bold;"></div>
         </div>
     </div>
 
+    <!-- DOCK NAVIGATION -->
     <div class="nav-dock">
         <div class="nav-grid">
             <button class="nav-item active" onclick="switchNav('mine', this)"><span>⛏️</span>Mine</button>
             <button class="nav-item" onclick="switchNav('game', this)"><span>🕹️</span>Cipher</button>
-            <button class="nav-item" onclick="switchNav('inventory', this)"><span>👕</span>Wear</button>
+            <button class="nav-item" onclick="switchNav('airdrop', this)"><span>🪂</span>Airdrop</button>
             <button class="nav-item" onclick="switchNav('tasks', this)"><span>📜</span>Tasks</button>
             <button class="nav-item" onclick="switchNav('wallet', this)"><span>💎</span>Wallet</button>
         </div>
     </div>
-        <script>
+
+    <script>
+        // ==========================================
+        // CONFIGURATION: CHANGE DAILY CIPHER HERE
+        // ==========================================
+        const DAILY_CIPHER_CODE = "6738";
+
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
-        // AUDIO SYNTH
+        // BACKGROUND GREEN SMOKE
+        const sCanvas = document.getElementById('smokeCanvas');
+        const sCtx = sCanvas.getContext('2d');
+        let smokeParts = [];
+        function resizeSmoke() {
+            sCanvas.width = window.innerWidth;
+            sCanvas.height = window.innerHeight;
+        }
+        resizeSmoke();
+        window.addEventListener('resize', resizeSmoke);
+
+        for (let i = 0; i < 28; i++) {
+            smokeParts.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                r: Math.random() * 80 + 50,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: -Math.random() * 0.5 - 0.2,
+                alpha: Math.random() * 0.18 + 0.05
+            });
+        }
+        function renderSmoke() {
+            sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
+            smokeParts.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.y < -100) p.y = sCanvas.height + 50;
+                if (p.x < -100) p.x = sCanvas.width + 50;
+                if (p.x > sCanvas.width + 100) p.x = -50;
+                const grad = sCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+                grad.addColorStop(0, `rgba(157, 252, 59, ${p.alpha})`);
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                sCtx.fillStyle = grad;
+                sCtx.beginPath();
+                sCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                sCtx.fill();
+            });
+            requestAnimationFrame(renderSmoke);
+        }
+        renderSmoke();
+
+        // 3D FULL-SCREEN PARTY POPPER / CONFETTI BLAST
+        const cCanvas = document.getElementById('confettiCanvas');
+        const cCtx = cCanvas.getContext('2d');
+        let confettis = [], isPopping = false;
+
+        function triggerPartyPopper() {
+            cCanvas.width = window.innerWidth;
+            cCanvas.height = window.innerHeight;
+            cCanvas.style.display = 'block';
+            confettis = [];
+            isPopping = true;
+
+            const colors = ['#9dfc3b', '#ffffff', '#ffd700', '#00ffcc', '#ff3b30'];
+            for (let i = 0; i < 150; i++) {
+                confettis.push({
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2 + 50,
+                    vx: (Math.random() - 0.5) * 16,
+                    vy: -Math.random() * 18 - 4,
+                    r: Math.random() * 6 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rot: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 15,
+                    gravity: 0.35,
+                    drag: 0.985
+                });
+            }
+
+            function blastLoop() {
+                if (!isPopping) return;
+                cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+                confettis.forEach((p, idx) => {
+                    p.vx *= p.drag;
+                    p.vy = (p.vy + p.gravity) * p.drag;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.rot += p.rotSpeed;
+
+                    cCtx.save();
+                    cCtx.translate(p.x, p.y);
+                    cCtx.rotate((p.rot * Math.PI) / 180);
+                    cCtx.fillStyle = p.color;
+                    cCtx.shadowColor = p.color;
+                    cCtx.shadowBlur = 8;
+                    cCtx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 1.5);
+                    cCtx.restore();
+
+                    if (p.y > window.innerHeight + 50) confettis.splice(idx, 1);
+                });
+
+                if (confettis.length > 0) {
+                    requestAnimationFrame(blastLoop);
+                } else {
+                    isPopping = false;
+                    cCanvas.style.display = 'none';
+                }
+            }
+            blastLoop();
+        }
+
+        // 3D TRANSPARENT POPUP HANDLER
+        function showRewardModal(amount) {
+            document.getElementById('rewardText').innerText = `YOU GOT +${amount.toLocaleString()} $DKX`;
+            const m = document.getElementById('rewardModal');
+            m.classList.add('open');
+            if (amount >= 20000) triggerPartyPopper();
+        }
+        function closeRewardModal() {
+            document.getElementById('rewardModal').classList.remove('open');
+        }
+
+        // AUDIO ENGINE
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(freq, type = 'sine', duration = 0.08) {
             try {
@@ -285,7 +462,7 @@
         document.getElementById('score').innerText = score.toLocaleString();
         document.getElementById('rankBadge').innerText = rank;
 
-        // MINING TAP
+        // MINING ENGINE
         const tapBtn = document.getElementById('tapBtn');
         tapBtn.addEventListener('pointerdown', (e) => {
             if (energy < 1) return;
@@ -325,46 +502,83 @@
             if (id === 'game') checkGameLock();
         }
 
-        // ==========================================
-        // DAILY CIPHER CODE GAME (3D COINS WITH NUMBERS)
-        // ==========================================
-        const ACTIVE_DAILY_CODE = "6738"; // <-- Channel mein announcement ke hisaab se change karna
-        document.getElementById('targetCodeDisplay').innerText = ACTIVE_DAILY_CODE.split('').join(' ');
+        // PERMANENT TASKS SYSTEM
+        function initTasks() {
+            ['tg', 'insta', 'x'].forEach(t => {
+                if (localStorage.getItem(`dkx_task_done_${t}`) === 'true') {
+                    const b = document.getElementById(`task-${t}`);
+                    b.innerText = 'Completed';
+                    b.classList.add('claimed');
+                }
+            });
+        }
+        initTasks();
+
+        function claimTask(type, url) {
+            if (localStorage.getItem(`dkx_task_done_${type}`) === 'true') return;
+            window.open(url, '_blank');
+            playTone(600, 'sine', 0.1);
+            setTimeout(() => {
+                score += 5000;
+                localStorage.setItem('dkx_score', score);
+                localStorage.setItem(`dkx_task_done_${type}`, 'true');
+                document.getElementById('score').innerText = score.toLocaleString();
+                initTasks();
+                playTone(1200, 'sine', 0.2);
+                showRewardModal(5000);
+            }, 3000);
+        }
+
+        // CIPHER GAME ENGINE WITH REAL-TIME LIVE TIMER
+        document.getElementById('targetCodeDisplay').innerText = DAILY_CIPHER_CODE.split('').join(' ');
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        let playerX = 180, coins = [], caughtCode = "", isPlaying = false;
-        let lastCoinTime = 0;
+        let playerX = 180, coins = [], caughtCode = "", isPlaying = false, lastCoinTime = 0;
+        let timerInterval = null;
 
         function checkGameLock() {
             const lastSolved = localStorage.getItem('dkx_cipher_solved_time');
             const statusEl = document.getElementById('gameLockStatus');
             const startBtn = document.getElementById('startBtn');
+            if (timerInterval) clearInterval(timerInterval);
+
             if (lastSolved) {
-                const diffHours = (Date.now() - parseInt(lastSolved)) / (1000 * 60 * 60);
-                if (diffHours < 24) {
-                    const remainingHours = Math.ceil(24 - diffHours);
-                    statusEl.innerText = `⏳ Code Solved! Next cipher unlocks in ${remainingHours}h`;
-                    startBtn.disabled = true;
-                    startBtn.classList.add('claimed');
-                    return true;
-                }
+                const lockDuration = 24 * 60 * 60 * 1000;
+                const updateCountdown = () => {
+                    const elapsed = Date.now() - parseInt(lastSolved);
+                    const remaining = lockDuration - elapsed;
+                    if (remaining > 0) {
+                        const h = Math.floor(remaining / (1000 * 60 * 60));
+                        const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                        const s = Math.floor((remaining % (1000 * 60)) / 1000);
+                        statusEl.innerText = `⏳ Solved! Next cipher in ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                        startBtn.innerText = "Locked";
+                        startBtn.classList.add('claimed');
+                    } else {
+                        clearInterval(timerInterval);
+                        statusEl.innerText = "";
+                        startBtn.innerText = "Start Game";
+                        startBtn.classList.remove('claimed');
+                    }
+                };
+                updateCountdown();
+                timerInterval = setInterval(updateCountdown, 1000);
+                return (Date.now() - parseInt(lastSolved)) < lockDuration;
             }
             statusEl.innerText = "";
-            startBtn.disabled = false;
+            startBtn.innerText = "Start Game";
             startBtn.classList.remove('claimed');
             return false;
         }
 
         canvas.addEventListener('touchstart', (e) => {
             const rect = canvas.getBoundingClientRect();
-            const touchX = e.touches[0].clientX - rect.left;
-            playerX = Math.max(30, Math.min(330, touchX));
+            playerX = Math.max(30, Math.min(330, e.touches[0].clientX - rect.left));
         });
         canvas.addEventListener('touchmove', (e) => {
             const rect = canvas.getBoundingClientRect();
-            const touchX = e.touches[0].clientX - rect.left;
-            playerX = Math.max(30, Math.min(330, touchX));
+            playerX = Math.max(30, Math.min(330, e.touches[0].clientX - rect.left));
         });
 
         function initOrRestartGame() {
@@ -373,7 +587,7 @@
             caughtCode = "";
             isPlaying = true;
             document.getElementById('currentCaughtDisplay').innerText = "_ _ _ _";
-            document.getElementById('startBtn').innerText = "Game in Progress...";
+            document.getElementById('startBtn').innerText = "Catch The Digits!";
             requestAnimationFrame(gameLoop);
         }
 
@@ -381,31 +595,27 @@
             if (!isPlaying) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Catcher Basket (Neon D-Ring)
             ctx.fillStyle = "#9dfc3b";
             ctx.shadowColor = "#9dfc3b";
-            ctx.shadowBlur = 12;
+            ctx.shadowBlur = 14;
             ctx.fillRect(playerX - 25, 230, 50, 10);
             ctx.shadowBlur = 0;
 
-            // Spawn 3D Glowing Green Number Coins (Slightly Faster & Smooth)
             if (timestamp - lastCoinTime > 650) {
                 const digit = Math.floor(Math.random() * 10).toString();
                 coins.push({
                     x: Math.random() * (canvas.width - 60) + 30,
                     y: -20,
                     num: digit,
-                    speed: 3.4 // Smooth brisk speed
+                    speed: 3.4
                 });
                 lastCoinTime = timestamp;
             }
 
-            // Draw Coins
             for (let i = coins.length - 1; i >= 0; i--) {
                 const c = coins[i];
                 c.y += c.speed;
 
-                // 3D Coin Body
                 const grad = ctx.createRadialGradient(c.x - 3, c.y - 3, 2, c.x, c.y, 16);
                 grad.addColorStop(0, '#d6ff79');
                 grad.addColorStop(0.6, '#86de16');
@@ -419,14 +629,12 @@
                 ctx.strokeStyle = '#ffffff';
                 ctx.stroke();
 
-                // Number inside coin
                 ctx.fillStyle = '#060b08';
                 ctx.font = 'bold 15px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(c.num, c.x, c.y + 1);
 
-                // Catch Detection
                 if (c.y >= 220 && c.y <= 245 && Math.abs(c.x - playerX) < 32) {
                     playTone(800, 'sine', 0.06);
                     caughtCode += c.num;
@@ -436,21 +644,19 @@
                     for (let k = caughtCode.length; k < 4; k++) formatted += " _";
                     document.getElementById('currentCaughtDisplay').innerText = formatted;
 
-                    // Validate Code
                     if (caughtCode.length === 4) {
                         isPlaying = false;
-                        if (caughtCode === ACTIVE_DAILY_CODE) {
+                        if (caughtCode === DAILY_CIPHER_CODE) {
                             playTone(1200, 'sine', 0.3);
                             score += 20000;
                             localStorage.setItem('dkx_score', score);
                             localStorage.setItem('dkx_cipher_solved_time', Date.now().toString());
                             document.getElementById('score').innerText = score.toLocaleString();
-                            alert("🎉 CONGRATULATIONS! Cipher Solved! +20,000 $DKX Credited!");
+                            showRewardModal(20000);
                         } else {
                             playTone(180, 'sawtooth', 0.3);
-                            alert(`❌ Wrong Code (${caughtCode})! Target was ${ACTIVE_DAILY_CODE}. Try again!`);
+                            alert(`❌ Wrong Code (${caughtCode})! Target was ${DAILY_CIPHER_CODE}. Try again!`);
                         }
-                        document.getElementById('startBtn').innerText = "Start Game";
                         checkGameLock();
                         return;
                     }
@@ -461,69 +667,6 @@
             }
 
             requestAnimationFrame(gameLoop);
-        }
-
-        // ==========================================
-        // WEB3 REDIRECT WALLET LINKING
-        // ==========================================
-        async function connectWeb3Wallet() {
-            // Direct window.ethereum (Trust Wallet / MetaMask In-App Browser)
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    const wallet = accounts[0];
-                    saveConnectedWallet(wallet);
-                } catch (err) {
-                    alert("Wallet Connection Cancelled!");
-                }
-            } else {
-                // Mobile Deep-Link Redirect to Trust Wallet / MetaMask
-                const appUrl = encodeURIComponent(window.location.href);
-                const choice = confirm("Crypto app direct connect open karein? (OK = Trust Wallet, Cancel = MetaMask)");
-                if (choice) {
-                    window.location.href = `https://link.trustwallet.com/open_url?coin_id=20000714&url=${appUrl}`;
-                } else {
-                    window.location.href = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
-                }
-            }
-        }
-
-        function saveConnectedWallet(address) {
-            const user = tg?.initDataUnsafe?.user;
-            const telegramId = user ? user.id : "WebUser";
-            const username = user ? (user.username || user.first_name) : "Anonymous";
-
-            localStorage.setItem('dkx_connected_wallet', address);
-            document.getElementById('walletStatusText').innerText = `Linked: ${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-            document.getElementById('connectWalletBtn').innerText = "Wallet Connected ✅";
-            playTone(1100, 'sine', 0.2);
-
-            // Airdrop Data Logging (Backend/Telegram Log)
-            console.log("AIRDROP REGISTERED:", { telegramId, username, wallet: address, timestamp: new Date().toISOString() });
-            alert(`✅ BEP-20 Wallet Linked!\nID: ${telegramId}\nAddress: ${address.substring(0, 10)}...`);
-        }
-
-        // Restore saved wallet state
-        const savedWallet = localStorage.getItem('dkx_connected_wallet');
-        if (savedWallet) {
-            document.getElementById('walletStatusText').innerText = `Linked: ${savedWallet.substring(0, 6)}...${savedWallet.substring(savedWallet.length - 4)}`;
-            document.getElementById('connectWalletBtn').innerText = "Wallet Connected ✅";
-        }
-
-        // TASKS CLAIM
-        function claimTask(type, url) {
-            window.open(url, '_blank');
-            playTone(600, 'sine', 0.1);
-            setTimeout(() => {
-                score += 5000;
-                localStorage.setItem('dkx_score', score);
-                document.getElementById('score').innerText = score.toLocaleString();
-                const b = document.getElementById(`task-${type}`);
-                b.innerText = 'Completed';
-                b.classList.add('claimed');
-                b.disabled = true;
-                playTone(1200, 'sine', 0.2);
-            }, 3000);
         }
     </script>
 </body>
