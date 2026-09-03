@@ -1,4 +1,4 @@
-            <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,65 +9,97 @@
         :root {
             --primary: #9dfc3b;
             --primary-glow: rgba(157, 252, 59, 0.45);
-            --bg-dark: #07090e;
-            --surface: #111622;
-            --surface-border: #1e2638;
-            --text-muted: #8b9bb4;
+            --bg-gradient: radial-gradient(circle at 50% 30%, #0d2010 0%, #060b08 60%, #020403 100%);
+            --surface: rgba(17, 26, 20, 0.75);
+            --surface-border: rgba(157, 252, 59, 0.2);
+            --text-muted: #829a8a;
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+
         body {
-            background-color: var(--bg-dark);
+            background: var(--bg-gradient);
             color: #ffffff;
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             overflow: hidden;
+            position: relative;
         }
+
+        /* Ambient floating particles */
+        .ambient-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(157, 252, 59, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatSlow 12s infinite linear;
+        }
+
+        @keyframes floatSlow {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            30% { opacity: 0.6; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+
         .header {
             padding: 16px 20px 8px;
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
+
         .brand-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(157, 252, 59, 0.08);
-            border: 1px solid rgba(157, 252, 59, 0.25);
-            padding: 4px 12px;
+            background: rgba(157, 252, 59, 0.12);
+            border: 1px solid var(--surface-border);
+            padding: 4px 14px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 1.5px;
             color: var(--primary);
             text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(157, 252, 59, 0.15);
         }
-        .score-container {
-            margin-top: 10px;
-        }
+
         .score-val {
-            font-size: 42px;
+            font-size: 46px;
             font-weight: 900;
             letter-spacing: -1px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            margin-top: 6px;
+            text-shadow: 0 0 25px var(--primary-glow);
         }
+
         .score-sub {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
             letter-spacing: 2px;
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 700;
         }
+
         .tab-content {
             flex-grow: 1;
             display: flex;
@@ -76,51 +108,76 @@
             justify-content: center;
             padding: 10px 20px;
             position: relative;
+            z-index: 1;
             overflow-y: auto;
         }
+
+        /* 3D Coin & Aura */
         .coin-wrapper {
             position: relative;
             perspective: 1000px;
         }
-        .coin-3d {
-            width: 230px;
-            height: 230px;
+
+        .coin-aura {
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, rgba(157, 252, 59, 0.35) 0%, transparent 70%);
             border-radius: 50%;
-            background: radial-gradient(circle at 35% 30%, #b8ff52 0%, #7acc18 45%, #3d6e08 85%, #183301 100%);
+            filter: blur(15px);
+            z-index: 0;
+            animation: pulseAura 3s infinite ease-in-out;
+        }
+
+        @keyframes pulseAura {
+            0%, 100% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.9; }
+        }
+
+        .coin-3d {
+            width: 235px;
+            height: 235px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #c4ff5e 0%, #8ae01c 40%, #437a06 85%, #193302 100%);
             box-shadow: 
-                0 0 0 6px rgba(157, 252, 59, 0.25),
-                0 18px 40px rgba(0, 0, 0, 0.9),
-                0 0 50px var(--primary-glow),
+                0 0 0 6px rgba(157, 252, 59, 0.3),
+                0 20px 45px rgba(0, 0, 0, 0.9),
+                0 0 40px var(--primary-glow),
                 inset 0 4px 10px rgba(255, 255, 255, 0.8),
                 inset 0 -8px 16px rgba(0, 0, 0, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.08s ease-out;
+            position: relative;
+            z-index: 1;
             transform-style: preserve-3d;
+            transition: transform 0.08s ease-out;
+            touch-action: manipulation;
         }
+
         .coin-rim {
-            width: 195px;
-            height: 195px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
-            border: 2.5px dashed rgba(255, 255, 255, 0.35);
+            border: 2px dashed rgba(255, 255, 255, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12) 0%, transparent 70%);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 75%);
         }
+
         .coin-logo-svg {
-            width: 120px;
-            height: 120px;
-            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 12px rgba(255,255,255,0.4));
+            width: 125px;
+            height: 125px;
+            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
         }
+
         .energy-wrapper {
             width: 100%;
             max-width: 320px;
             margin-top: 25px;
         }
+
         .energy-meta {
             display: flex;
             justify-content: space-between;
@@ -128,21 +185,25 @@
             font-weight: 700;
             margin-bottom: 6px;
         }
+
         .energy-bar-bg {
             width: 100%;
-            height: 8px;
-            background: var(--surface);
+            height: 9px;
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid var(--surface-border);
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
         }
+
         .energy-bar-fill {
             height: 100%;
             width: 100%;
-            background: linear-gradient(90deg, #4ade80, var(--primary));
-            border-radius: 10px;
+            background: linear-gradient(90deg, #6ee7b7, var(--primary));
+            border-radius: 12px;
+            box-shadow: 0 0 10px var(--primary);
             transition: width 0.2s ease;
         }
+
         .panel {
             display: none;
             width: 100%;
@@ -151,73 +212,93 @@
             gap: 12px;
             padding-bottom: 10px;
         }
+
         .card {
             background: var(--surface);
             border: 1px solid var(--surface-border);
+            backdrop-filter: blur(10px);
             border-radius: 14px;
             padding: 14px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
         .card-left {
             display: flex;
             align-items: center;
             gap: 12px;
         }
+
         .card-icon {
-            font-size: 24px;
+            font-size: 22px;
             width: 42px;
             height: 42px;
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(157, 252, 59, 0.06);
+            border: 1px solid rgba(157, 252, 59, 0.15);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
+
         .card-title {
             font-size: 14px;
             font-weight: 700;
             margin-bottom: 2px;
         }
+
         .card-subtitle {
             font-size: 12px;
             color: var(--primary);
             font-weight: 600;
         }
+
         .action-btn {
             background: var(--primary);
             color: #0b0e14;
             border: none;
-            padding: 8px 16px;
+            padding: 9px 16px;
             border-radius: 8px;
             font-weight: 800;
             font-size: 12px;
             text-decoration: none;
             cursor: pointer;
+            transition: transform 0.1s ease;
         }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
         .action-btn:disabled {
-            background: var(--surface-border);
+            background: rgba(255, 255, 255, 0.08);
             color: var(--text-muted);
             cursor: not-allowed;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .nav-dock {
-            padding: 8px 14px 16px;
-            background: rgba(11, 14, 20, 0.95);
-            backdrop-filter: blur(12px);
+            padding: 10px 16px 18px;
+            background: rgba(7, 13, 9, 0.85);
+            backdrop-filter: blur(16px);
             border-top: 1px solid var(--surface-border);
+            position: relative;
+            z-index: 2;
         }
+
         .nav-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
+            gap: 8px;
         }
+
         .nav-item {
             background: none;
             border: none;
             color: var(--text-muted);
             padding: 8px 4px;
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -226,13 +307,17 @@
             font-weight: 700;
             cursor: pointer;
         }
+
         .nav-item.active {
             color: var(--primary);
-            background: rgba(157, 252, 59, 0.07);
+            background: rgba(157, 252, 59, 0.1);
+            border: 1px solid rgba(157, 252, 59, 0.2);
         }
+
         .nav-item span {
             font-size: 18px;
         }
+
         .tap-number {
             position: absolute;
             color: #ffffff;
@@ -241,7 +326,9 @@
             pointer-events: none;
             animation: float 0.65s ease-out forwards;
             text-shadow: 0 0 10px var(--primary);
+            z-index: 10;
         }
+
         @keyframes float {
             0% { opacity: 1; transform: translateY(0) scale(1); }
             100% { opacity: 0; transform: translateY(-70px) scale(1.4); }
@@ -249,6 +336,9 @@
     </style>
 </head>
 <body>
+
+    <!-- Ambient particles in background -->
+    <div class="ambient-layer" id="ambientBg"></div>
 
     <div class="header">
         <div class="brand-badge">⚡ BNB Chain Architecture</div>
@@ -263,14 +353,12 @@
     <!-- MINE PANEL -->
     <div class="tab-content" id="panel-mine">
         <div class="coin-wrapper">
+            <div class="coin-aura"></div>
             <div class="coin-3d" id="tapBtn">
                 <div class="coin-rim">
-                    <!-- Exact DAKICKS 3D Contour Emblem -->
                     <svg class="coin-logo-svg" viewBox="0 0 500 500">
-                        <!-- Shadow base layer -->
                         <path d="M140 215 C135 155, 260 135, 345 155 C370 162, 385 190, 375 240 C360 300, 310 345, 265 345 C230 345, 215 315, 235 295 C250 280, 275 285, 290 270 C305 255, 310 230, 295 215 C275 195, 220 200, 185 220 Z" 
                               fill="#142c01" transform="translate(0, 8)" />
-                        <!-- Highlighted metallic 3D surface -->
                         <path d="M140 215 C135 155, 260 135, 345 155 C370 162, 385 190, 375 240 C360 300, 310 345, 265 345 C230 345, 215 315, 235 295 C250 280, 275 285, 290 270 C305 255, 310 230, 295 215 C275 195, 220 200, 185 220 Z" 
                               fill="none" stroke="#e8ffb3" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
                         <path d="M140 215 C135 155, 260 135, 345 155 C370 162, 385 190, 375 240 C360 300, 310 345, 265 345 C230 345, 215 315, 235 295 C250 280, 275 285, 290 270 C305 255, 310 230, 295 215 C275 195, 220 200, 185 220 Z" 
@@ -291,7 +379,7 @@
         </div>
     </div>
 
-    <!-- BOOSTS PANEL -->
+    <!-- BOOSTS PANEL (WITH COOLDOWN TIMERS) -->
     <div class="tab-content panel" id="panel-boosts">
         <h3 style="font-size: 18px; margin-bottom: 6px;">Protocol Upgrades</h3>
         <div class="card">
@@ -299,20 +387,20 @@
                 <div class="card-icon">⚡</div>
                 <div>
                     <div class="card-title">Multi-Tap Mining</div>
-                    <div class="card-subtitle">+1 per click • 500 $DKX</div>
+                    <div class="card-subtitle" id="tapCostText">+1 per click • 500 $DKX</div>
                 </div>
             </div>
-            <button class="action-btn" onclick="buyBoost('tap')">Upgrade</button>
+            <button class="action-btn" id="tapBoostBtn" onclick="buyBoost('tap')">Upgrade</button>
         </div>
         <div class="card">
             <div class="card-left">
                 <div class="card-icon">🔋</div>
                 <div>
                     <div class="card-title">Energy Reserve</div>
-                    <div class="card-subtitle">+500 Max Capacity • 1,000 $DKX</div>
+                    <div class="card-subtitle" id="energyCostText">+500 Capacity • 1,000 $DKX</div>
                 </div>
             </div>
-            <button class="action-btn" onclick="buyBoost('energy')">Upgrade</button>
+            <button class="action-btn" id="energyBoostBtn" onclick="buyBoost('energy')">Upgrade</button>
         </div>
     </div>
 
@@ -351,7 +439,7 @@
         </div>
     </div>
 
-    <!-- STATS / AIRDROP PANEL -->
+    <!-- STATS PANEL -->
     <div class="tab-content panel" id="panel-stats">
         <h3 style="font-size: 18px; margin-bottom: 6px;">Genesis Allocation</h3>
         <div class="card">
@@ -401,10 +489,50 @@
             tg.enableClosingConfirmation();
         }
 
+        // Web Audio Synthesizer (Metallic Coin Sound)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playCoinSound() {
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(987.77, audioCtx.currentTime); // B5 note
+                osc.frequency.exponentialRampToValueAtTime(1318.51, audioCtx.currentTime + 0.08); // E6 note
+
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            } catch (e) {}
+        }
+
+        // Spawn ambient particles
+        const ambientBg = document.getElementById('ambientBg');
+        for (let i = 0; i < 15; i++) {
+            const p = document.createElement('div');
+            p.className = 'bg-particle';
+            const size = Math.random() * 40 + 20;
+            p.style.width = `${size}px`;
+            p.style.height = `${size}px`;
+            p.style.left = `${Math.random() * 100}%`;
+            p.style.animationDelay = `${Math.random() * 8}s`;
+            p.style.animationDuration = `${Math.random() * 8 + 8}s`;
+            ambientBg.appendChild(p);
+        }
+
         let score = parseInt(localStorage.getItem('dkx_score') || 0);
         let tapPower = parseInt(localStorage.getItem('dkx_tap_power') || 1);
         let maxEnergy = parseInt(localStorage.getItem('dkx_max_energy') || 1000);
         let energy = maxEnergy;
+
+        let tapBoostLevel = parseInt(localStorage.getItem('dkx_tap_lvl') || 1);
+        let energyBoostLevel = parseInt(localStorage.getItem('dkx_energy_lvl') || 1);
 
         const scoreEl = document.getElementById('score');
         const energyText = document.getElementById('energyText');
@@ -415,17 +543,23 @@
             scoreEl.innerText = score.toLocaleString();
             energyText.innerText = `${energy} / ${maxEnergy}`;
             energyFill.style.width = `${(energy / maxEnergy) * 100}%`;
+            
+            document.getElementById('tapCostText').innerText = `+1 per click • ${(tapBoostLevel * 500).toLocaleString()} $DKX`;
+            document.getElementById('energyCostText').innerText = `+500 Capacity • ${(energyBoostLevel * 1000).toLocaleString()} $DKX`;
         }
         updateUI();
 
-        // 3D Tilt on Touch Interaction
+        // 3D Coin Tap Handling
         tapBtn.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
             if (energy < tapPower) return;
 
             energy -= tapPower;
             score += tapPower;
             localStorage.setItem('dkx_score', score);
             updateUI();
+
+            playCoinSound();
 
             if (tg?.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('medium');
@@ -435,78 +569,4 @@
             const x = e.clientX - rect.left - rect.width / 2;
             const y = e.clientY - rect.top - rect.height / 2;
             
-            const tiltX = -(y / 8);
-            const tiltY = (x / 8);
-
-            tapBtn.style.transform = `scale(0.94) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-
-            // Floating Numbers
-            const num = document.createElement('div');
-            num.className = 'tap-number';
-            num.innerText = `+${tapPower}`;
-            num.style.left = `${e.clientX - 14}px`;
-            num.style.top = `${e.clientY - 28}px`;
-            document.body.appendChild(num);
-
-            setTimeout(() => num.remove(), 650);
-        });
-
-        tapBtn.addEventListener('pointerup', () => {
-            tapBtn.style.transform = 'scale(1) rotateX(0deg) rotateY(0deg)';
-        });
-
-        // Energy Recovery
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy = Math.min(maxEnergy, energy + 4);
-                updateUI();
-            }
-        }, 1000);
-
-        function switchView(tab, btn) {
-            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-            const target = document.getElementById(`panel-${tab}`);
-            if (tab === 'mine') {
-                target.style.display = 'flex';
-            } else {
-                target.style.display = 'flex';
-            }
-            btn.classList.add('active');
-        }
-
-        function rewardTask(btn, reward) {
-            setTimeout(() => {
-                score += reward;
-                localStorage.setItem('dkx_score', score);
-                updateUI();
-                btn.innerText = "Claimed";
-                btn.style.background = "#1e2638";
-                btn.style.color = "#8b9bb4";
-                btn.removeAttribute("href");
-            }, 3000);
-        }
-
-        function buyBoost(type) {
-            if (type === 'tap' && score >= 500) {
-                score -= 500;
-                tapPower += 1;
-                localStorage.setItem('dkx_tap_power', tapPower);
-                alert(`Boost Unlocked! Click Power: +${tapPower}`);
-            } else if (type === 'energy' && score >= 1000) {
-                score -= 1000;
-                maxEnergy += 500;
-                energy = maxEnergy;
-                localStorage.setItem('dkx_max_energy', maxEnergy);
-                alert(`Capacity Boosted! Max Energy: ${maxEnergy}`);
-            } else {
-                alert("Insufficient $DKX Points!");
-            }
-            localStorage.setItem('dkx_score', score);
-            updateUI();
-        }
-    </script>
-</body>
-                </html>
-    
+                                                     
