@@ -559,7 +559,7 @@
     <!-- BOTTOM NAVIGATION -->
     <div class="nav-dock">
         <div class="nav-grid">
-                <button class="nav-item active" onclick="switchNav('terminal', this)">
+                    <button class="nav-item active" onclick="switchNav('terminal', this)">
                 <span class="nav-icon">📈</span>
                 <span class="nav-label">Terminal</span>
             </button>
@@ -578,6 +578,7 @@
         </div>
     </div>
 
+    <!-- HIGH PERFORMANCE TRADINGVIEW LOADER -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         function loadTradingChart() {
@@ -602,6 +603,7 @@
         loadTradingChart();
     </script>
 
+    <!-- CORE TELEGRAM LOGIC, VOICE & INTERACTION ENGINE -->
     <script>
         // Security Clickjacking Guard
         if (window.top !== window.self) {
@@ -652,7 +654,7 @@
             }
         }, 3000);
 
-                        // 100% TELEGRAM WEBAPP COMPATIBLE VOICE ENGINE
+        // Voice Engine for Telegram WebApp
         const voiceClips = {
             'terminal': 'https://dict.youdao.com/dictvoice?audio=Terminal&type=2',
             'dakicks': 'https://dict.youdao.com/dictvoice?audio=DAKICKS&type=2',
@@ -676,13 +678,13 @@
             } catch(e) { }
         }
 
-        // Haptic + Voice Assisted Navigation
+        // Haptic Feedback & Voice Navigation
         function switchNav(tabId, btnElement) {
             if (tg?.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('light');
             }
 
-            playTabVoice(tabId); // साफ़ आवाज़ में नाम बोलेगा
+            playTabVoice(tabId);
 
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -691,20 +693,6 @@
             if (target) target.classList.add('active');
             btnElement.classList.add('active');
         }
-        
-            };
-            if (voiceMap[tabId]) {
-                speakText(voiceMap[tabId]);
-            }
-
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            const target = document.getElementById(`tab-${tabId}`);
-            if (target) target.classList.add('active');
-            btnElement.classList.add('active');
-        }
-
 
         // Crisp High-End Chime
         function playChime() {
