@@ -652,11 +652,37 @@
             }
         }, 3000);
 
-        // Haptic Feedback Navigation
+                // Voice / Speech Feedback Helper
+        function speakText(text) {
+            try {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = 1.05;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 0.9;
+                    utterance.lang = 'en-US';
+                    window.speechSynthesis.speak(utterance);
+                }
+            } catch(e) { }
+        }
+
+        // Haptic + Voice Assisted Navigation
         function switchNav(tabId, btnElement) {
             if (tg?.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('light');
             }
+
+            const voiceMap = {
+                'terminal': 'Terminal',
+                'dakicks': 'DAKICKS',
+                'community': 'Community',
+                'vault': 'Vault'
+            };
+            if (voiceMap[tabId]) {
+                speakText(voiceMap[tabId]);
+            }
+
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             
@@ -664,6 +690,7 @@
             if (target) target.classList.add('active');
             btnElement.classList.add('active');
         }
+
 
         // Crisp High-End Chime
         function playChime() {
