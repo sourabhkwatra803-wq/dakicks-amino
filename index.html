@@ -3,215 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DKX PROTOCOL</title>
+    <title>DKX PROTOCOL | Institutional Terminal</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --primary: #9dfc3b;
             --primary-glow: rgba(157, 252, 59, 0.45);
-            --bg-gradient: radial-gradient(circle at 50% 25%, #0d1e10 0%, #060b08 65%, #020403 100%);
-            --surface: rgba(16, 24, 18, 0.90);
+            --surface: rgba(13, 20, 15, 0.92);
             --surface-border: rgba(157, 252, 59, 0.22);
             --text-muted: #8ca393;
+            --danger: #ff4757;
         }
         * {
             margin: 0; padding: 0; box-sizing: border-box;
             user-select: none; -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent; outline: none;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'SF Pro Display', sans-serif;
         }
         body {
-            background: var(--bg-gradient); color: #ffffff; height: 100vh;
-            display: flex; flex-direction: column; justify-content: space-between;
-            overflow: hidden; position: relative;
+            background: radial-gradient(circle at 50% 15%, #08170c 0%, #030604 70%, #010201 100%);
+            color: #ffffff; height: 100vh; display: flex; flex-direction: column;
+            justify-content: space-between; overflow: hidden; position: relative;
         }
         .bg-video-box {
             position: fixed; inset: 0; width: 100vw; height: 100vh;
             z-index: 0; pointer-events: none; overflow: hidden;
         }
         .bg-video-box video {
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.35;
-        }
-        #smokeCanvas {
-            position: fixed; inset: 0; width: 100vw; height: 100vh;
-            z-index: 1; pointer-events: none; opacity: 0.45;
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.28; filter: contrast(1.2);
         }
         #confettiCanvas {
             position: fixed; inset: 0; width: 100vw; height: 100vh;
             z-index: 100; pointer-events: none; display: none;
         }
-        .header { padding: 12px 20px 4px; text-align: center; z-index: 5; position: relative; }
+
+        /* FINTECH TERMINAL HEADER */
+        .terminal-header {
+            padding: 12px 18px 8px; z-index: 5; position: relative;
+            background: linear-gradient(180deg, rgba(6,12,8,0.85) 0%, transparent 100%);
+        }
+        .top-row { display: flex; justify-content: space-between; align-items: center; }
         .brand-badge {
             display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(157, 252, 59, 0.12); border: 1px solid var(--surface-border);
-            padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 800;
+            background: rgba(157, 252, 59, 0.08); border: 1px solid var(--surface-border);
+            padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 800;
             letter-spacing: 1.5px; color: var(--primary); text-transform: uppercase;
         }
-        .level-title { font-size: 11px; color: var(--text-muted); margin-top: 3px; font-weight: 700; }
-        .score-val { font-size: 38px; font-weight: 900; margin-top: 2px; text-shadow: 0 0 25px var(--primary-glow); }
+        .sec-indicator {
+            display: inline-flex; align-items: center; gap: 5px; font-size: 10px;
+            color: #2ed573; font-weight: 700; letter-spacing: 0.5px;
+        }
+        .sec-pulse {
+            width: 6px; height: 6px; background: #2ed573; border-radius: 50%;
+            box-shadow: 0 0 8px #2ed573; animation: pulse 1.8s infinite ease-in-out;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
+        /* PORTFOLIO CARD */
+        .portfolio-card {
+            background: var(--surface); border: 1px solid var(--surface-border);
+            border-radius: 14px; padding: 12px 14px; margin-top: 8px;
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+        .balance-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: var(--text-muted); }
+        .balance-main {
+            display: flex; justify-content: space-between; align-items: baseline; margin-top: 2px;
+        }
+        .balance-tokens { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 0 20px var(--primary-glow); }
+        .fiat-eval { font-size: 14px; font-weight: 700; color: #a4b0be; }
+        .sparkline-box { width: 100%; height: 38px; margin-top: 4px; }
+        .sparkline-box svg { width: 100%; height: 100%; }
+
+        /* TAB MANAGEMENT */
         .tab-content {
             flex-grow: 1; display: none; flex-direction: column; align-items: center;
-            justify-content: center; padding: 10px 16px; position: relative;
-            overflow-y: auto; width: 100%; z-index: 5;
+            padding: 10px 16px; position: relative; overflow-y: auto; width: 100%; z-index: 5;
         }
         .tab-content.active { display: flex; }
 
+        /* NODE VALIDATOR (MINING ENGINE) */
+        .node-validator-box {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin-top: 10px; width: 100%;
+        }
         .coin-3d {
-            width: 215px; height: 215px; border-radius: 50%;
-            background: radial-gradient(circle at 35% 30%, #c4ff5e 0%, #8ae01c 40%, #437a06 85%, #193302 100%);
-            box-shadow: 0 0 0 6px rgba(157, 252, 59, 0.35), 0 20px 45px rgba(0,0,0,0.9), 0 0 45px var(--primary-glow);
+            width: 190px; height: 190px; border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #c4ff5e 0%, #8ae01c 40%, #305804 85%, #0e1d02 100%);
+            box-shadow: 0 0 0 5px rgba(157, 252, 59, 0.28), 0 25px 45px rgba(0,0,0,0.95), 0 0 45px var(--primary-glow);
             display: flex; align-items: center; justify-content: center; cursor: pointer;
-            transition: transform 0.08s ease-out; touch-action: manipulation;
+            transition: transform 0.06s ease-out; touch-action: manipulation; position: relative;
         }
+        .coin-3d:active { transform: scale(0.96); }
         .coin-rim {
-            width: 180px; height: 180px; border-radius: 50%;
-            border: 2px dashed rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center;
+            width: 160px; height: 160px; border-radius: 50%;
+            border: 1.5px dashed rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center;
         }
-        .coin-logo-svg { width: 105px; height: 105px; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.65)); }
-        .energy-wrapper { width: 100%; max-width: 290px; margin-top: 20px; }
-        .energy-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px; }
-        .energy-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; }
-        .energy-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #6ee7b7, var(--primary)); border-radius: 12px; }
+        .coin-logo-svg { width: 92px; height: 92px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8)); }
 
+        .hash-ticker {
+            font-size: 11px; font-weight: 800; color: var(--primary); letter-spacing: 1px;
+            margin-top: 14px; background: rgba(157, 252, 59, 0.06); padding: 4px 12px;
+            border-radius: 20px; border: 1px solid var(--surface-border);
+        }
+        .energy-wrapper { width: 100%; max-width: 320px; margin-top: 12px; }
+        .energy-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; margin-bottom: 5px; }
+        .energy-bar-bg { width: 100%; height: 7px; background: rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden; }
+        .energy-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #2ed573, var(--primary)); border-radius: 12px; transition: width 0.2s; }
+
+        /* DAKICKS ECOSYSTEM / RWA */
+        .eco-grid { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 10px; }
+        .eco-card {
+            background: var(--surface); border: 1px solid var(--surface-border);
+            border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px;
+        }
+        .eco-header { display: flex; justify-content: space-between; align-items: center; }
+        .eco-tag {
+            font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 4px;
+            background: rgba(157,252,59,0.15); color: var(--primary); text-transform: uppercase;
+        }
+
+        /* CIPHER SECURITY CANVAS */
         .game-hud {
             width: 100%; max-width: 360px; display: flex; justify-content: space-between;
             align-items: center; background: var(--surface); border: 1px solid var(--surface-border);
             padding: 8px 12px; border-radius: 12px; margin-bottom: 8px;
         }
-        .code-display { font-size: 16px; font-weight: 900; letter-spacing: 4px; color: var(--primary); }
+        .code-display { font-size: 15px; font-weight: 900; letter-spacing: 3px; color: var(--primary); }
         #gameCanvas {
-            width: 100%; max-width: 360px; height: 260px; border-radius: 14px;
-            background: #030604; border: 1px solid var(--surface-border); touch-action: none;
+            width: 100%; max-width: 360px; height: 250px; border-radius: 14px;
+            background: #020503; border: 1px solid var(--surface-border); touch-action: none;
         }
 
-        .airdrop-hero {
-            width: 100%; max-width: 360px; border-radius: 16px;
-            background: linear-gradient(135deg, rgba(157,252,59,0.15) 0%, rgba(16,24,18,0.85) 100%);
-            border: 1px solid var(--surface-border); padding: 16px; text-align: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-        }
-        .airdrop-status-pill {
-            display: inline-block; padding: 4px 12px; border-radius: 12px;
-            background: rgba(157, 252, 59, 0.2); color: var(--primary); font-size: 11px; font-weight: 800;
-        }
-        .airdrop-metrics {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-            width: 100%; max-width: 360px; margin-top: 10px;
-        }
-        .metric-card {
-            background: var(--surface); border: 1px solid var(--surface-border);
-            padding: 12px; border-radius: 12px; text-align: center;
-        }
-
+        /* CARDS & BUTTONS */
         .card {
             background: var(--surface); border: 1px solid var(--surface-border);
-            border-radius: 14px; padding: 12px 14px; width: 100%; max-width: 360px;
+            border-radius: 12px; padding: 12px; width: 100%; max-width: 360px;
             margin-top: 8px; display: flex; align-items: center; justify-content: space-between;
         }
-        .card-left { display: flex; align-items: center; gap: 12px; }
-        .official-logo {
-            width: 38px; height: 38px; border-radius: 10px; display: flex;
-            align-items: center; justify-content: center; flex-shrink: 0;
-        }
-        .logo-tg { background: linear-gradient(135deg, #2AABEE, #229ED9); }
-        .logo-insta { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
-        .logo-x { background: #000000; border: 1px solid rgba(255,255,255,0.2); }
-        .official-logo svg { width: 20px; height: 20px; fill: #ffffff; }
-
         .action-btn {
-            background: var(--primary); color: #0b0e14; border: none; padding: 8px 14px;
-            border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none;
+            background: var(--primary); color: #020603; border: none; padding: 8px 14px;
+            border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer;
+            letter-spacing: 0.5px; transition: opacity 0.15s;
         }
-        .action-btn.claimed { background: rgba(255,255,255,0.08) !important; color: var(--text-muted) !important; pointer-events: none; }
+        .action-btn:active { opacity: 0.7; }
+        .action-btn.claimed { background: rgba(255,255,255,0.06) !important; color: var(--text-muted) !important; pointer-events: none; }
 
-        .coming-soon-badge {
-            background: rgba(255, 187, 0, 0.15); border: 1px solid rgba(255, 187, 0, 0.4);
-            color: #ffbb00; padding: 6px 14px; border-radius: 20px; font-size: 11px;
-            font-weight: 800; text-transform: uppercase; letter-spacing: 1px; display: inline-block;
+        /* FRAUD ALERT OVERLAY */
+        #antiCheatOverlay {
+            position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            padding: 24px; text-align: center;
         }
 
+        /* MODAL */
         .reward-overlay {
-            position: fixed; inset: 0; z-index: 120;
-            display: none; align-items: center; justify-content: center;
-            background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(12px);
-            opacity: 0; transition: opacity 0.25s ease;
+            position: fixed; inset: 0; z-index: 120; display: none;
+            align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
         }
         .reward-box-3d {
             width: 85%; max-width: 320px; padding: 24px 20px; text-align: center;
-            border-radius: 22px; background: rgba(16, 28, 20, 0.7);
-            border: 1px solid rgba(157, 252, 59, 0.4);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 35px var(--primary-glow),
-                        inset 0 1px 0 rgba(255,255,255,0.3);
-            transform: scale(0.85) translateY(20px);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 20px; background: rgba(14, 24, 16, 0.95);
+            border: 1px solid rgba(157, 252, 59, 0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.9);
         }
-        .reward-overlay.open { display: flex; opacity: 1; }
-        .reward-overlay.open .reward-box-3d { transform: scale(1) translateY(0); }
+        .reward-overlay.open { display: flex; }
 
+        /* NAVIGATION DOCK */
         .nav-dock {
-            padding: 8px 10px 16px; background: rgba(6, 10, 7, 0.95);
+            padding: 8px 10px 18px; background: rgba(4, 7, 5, 0.97);
             border-top: 1px solid var(--surface-border); z-index: 10;
         }
         .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
         .nav-item {
             background: none; border: none; color: var(--text-muted); padding: 6px 2px;
-            border-radius: 10px; display: flex; flex-direction: column; align-items: center;
+            border-radius: 8px; display: flex; flex-direction: column; align-items: center;
             gap: 3px; font-size: 10px; font-weight: 700; cursor: pointer;
         }
-        .nav-item.active { color: var(--primary); background: rgba(157, 252, 59, 0.12); }
+        .nav-item.active { color: var(--primary); background: rgba(157, 252, 59, 0.1); }
         .tap-number {
-            position: absolute; color: #ffffff; font-size: 24px; font-weight: 900;
-            pointer-events: none; animation: float 0.6s ease-out forwards; text-shadow: 0 0 10px var(--primary);
-            z-index: 20;
+            position: absolute; color: #ffffff; font-size: 20px; font-weight: 900;
+            pointer-events: none; animation: float 0.5s ease-out forwards;
+            text-shadow: 0 0 10px var(--primary); z-index: 20;
         }
-        @keyframes float { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
+        @keyframes float { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
     </style>
 </head>
 <body>
 
-    <!-- BACKGROUND VIDEO LAYER -->
+    <!-- VIDEO BACKGROUND -->
     <div class="bg-video-box">
         <video autoplay loop muted playsinline preload="auto">
             <source src="bg.mp4" type="video/mp4">
         </video>
     </div>
 
-    <!-- AMBIENT SMOKE & REWARD CONFETTI -->
-    <canvas id="smokeCanvas"></canvas>
     <canvas id="confettiCanvas"></canvas>
 
+    <!-- ANTI-CHEAT LOCK SCREEN -->
+    <div id="antiCheatOverlay">
+        <div style="font-size: 48px;">🛡️</div>
+        <div style="color: var(--danger); font-size: 18px; font-weight: 900; margin-top: 10px;">INTEGRITY VIOLATION DETECTED</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px; line-height: 1.6;">
+            Hardware rate limit exceeded or unauthorized environment inspection triggered. The protocol session has been sealed.
+        </div>
+        <button class="action-btn" style="margin-top: 20px; background: var(--danger); color: white;" onclick="location.reload()">Re-verify Session</button>
+    </div>
+
+    <!-- REWARD MODAL -->
     <div class="reward-overlay" id="rewardModal">
         <div class="reward-box-3d">
-            <div style="font-size: 48px; margin-bottom: 6px;">🎉</div>
-            <div style="font-size: 14px; letter-spacing: 2px; color: var(--text-muted); font-weight: 800;">REWARD UNLOCKED</div>
-            <div id="rewardText" style="font-size: 24px; font-weight: 900; color: var(--primary); margin: 8px 0 16px; text-shadow: 0 0 15px var(--primary-glow);">
-                YOU GOT +20,000 $DKX
-            </div>
-            <button class="action-btn" style="width: 100%; padding: 12px; font-size: 12px;" onclick="closeRewardModal()">CLAIM & CONTINUE</button>
+            <div style="font-size: 42px;">⚡</div>
+            <div style="font-size: 12px; letter-spacing: 1.5px; color: var(--text-muted); font-weight: 800;">PROTOCOL AUDIT REWARD</div>
+            <div id="rewardText" style="font-size: 22px; font-weight: 900; color: var(--primary); margin: 8px 0 14px;">+1,500 $DKX</div>
+            <button class="action-btn" style="width: 100%; padding: 10px;" onclick="closeRewardModal()">CONFIRM CREDENTIALS</button>
         </div>
     </div>
 
-    <div class="header">
-        <div class="brand-badge">⚡ BNB Chain Official</div>
-        <div class="level-title" id="rankBadge">Tier III • Protocol Sovereign</div>
-        <div class="score-val" id="score">0</div>
+    <!-- FINTECH TERMINAL HEADER -->
+    <div class="terminal-header">
+        <div class="top-row">
+            <div class="brand-badge">⚡ BNB Chain • DKX OS</div>
+            <div class="sec-indicator">
+                <div class="sec-pulse"></div>
+                <span id="blockTicker">Block #41,920,381</span>
+            </div>
+        </div>
+
+        <div class="portfolio-card">
+            <div class="balance-label">TOTAL VALIDATED BALANCE (PROOF-OF-ACTIVITY)</div>
+            <div class="balance-main">
+                <div>
+                    <span class="balance-tokens" id="scoreDisplay">0</span>
+                    <span style="font-size: 14px; font-weight: 900; color: var(--primary);"> $DKX</span>
+                </div>
+                <div class="fiat-eval" id="fiatVal">≈ $0.00 USD</div>
+            </div>
+            <!-- SPARKLINE CHART -->
+            <div class="sparkline-box">
+                <svg viewBox="0 0 320 40">
+                    <defs>
+                        <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#9dfc3b" stop-opacity="0.3"/>
+                            <stop offset="100%" stop-color="#9dfc3b" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M 0,32 Q 40,28 80,18 T 160,22 T 240,8 T 320,14" fill="none" stroke="#9dfc3b" stroke-width="2.5" />
+                    <path d="M 0,32 Q 40,28 80,18 T 160,22 T 240,8 T 320,14 L 320,40 L 0,40 Z" fill="url(#chartGrad)" />
+                </svg>
+            </div>
+        </div>
     </div>
 
-    <!-- 1. MINE TAB -->
-    <div class="tab-content active" id="tab-mine">
-        <div class="coin-wrapper">
+    <!-- TAB 1: TERMINAL (NODE MINING) -->
+    <div class="tab-content active" id="tab-terminal">
+        <div class="node-validator-box">
             <div class="coin-3d" id="tapBtn">
                 <div class="coin-rim">
                     <svg class="coin-logo-svg" viewBox="0 0 500 500">
-                        <path d="M140 215 C135 155, 260 135, 345 155 C370 162, 385 190, 375 240 C360 300, 310 345, 265 345 C230 345, 215 315, 235 295 C250 280, 275 285, 290 270 C305 255, 310 230, 295 215 C275 195, 220 200, 185 220 Z" fill="none" stroke="#e8ffb3" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M140 215 C135 155, 260 135, 345 155 C370 162, 385 190, 375 240 C360 300, 310 345, 265 345 C230 345, 215 315, 235 295 C250 280, 275 285, 290 270 C305 255, 310 230, 295 215 C275 195, 220 200, 185 220 Z" fill="none" stroke="#ffffff" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
             </div>
+            <div class="hash-ticker" id="hashRate">Hashrate: 1.84 TH/s • PoA Verified</div>
         </div>
         <div class="energy-wrapper">
             <div class="energy-meta">
-                <span style="color: var(--text-muted)">ENERGY</span>
+                <span style="color: var(--text-muted)">VALIDATION CAPACITY</span>
                 <span id="energyText" style="color: var(--primary)">1000 / 1000</span>
             </div>
             <div class="energy-bar-bg">
@@ -220,339 +278,269 @@
         </div>
     </div>
 
-    <!-- 2. CIPHER CODE MINI-GAME -->
-    <div class="tab-content" id="tab-game">
+    <!-- TAB 2: DAKICKS ECOSYSTEM (RWA & UTILITY) -->
+    <div class="tab-content" id="tab-eco">
+        <div class="eco-grid">
+            <div class="eco-card">
+                <div class="eco-header">
+                    <span style="font-size: 13px; font-weight: 800;">DAKICKS® Physical Sneaker Drops</span>
+                    <span class="eco-tag">RWA Backed</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-top: 4px;">
+                    Every pair in the genesis footwear collection contains a cryptographic chip. Verified token holders receive priority pre-orders and token-burn discounts.
+                </div>
+            </div>
+
+            <div class="eco-card">
+                <div class="eco-header">
+                    <span style="font-size: 13px; font-weight: 800;">Revenue-Share Protocol Engine</span>
+                    <span class="eco-tag">Treasury</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-top: 4px;">
+                    50% of real-world footwear sales and brand sponsorship revenue is programmatically redirected into the on-chain Buyback & Burn pool.
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 4px;">
+                <div>
+                    <div style="font-size: 12px; font-weight: 800;">DKX Genesis Supply</div>
+                    <div style="font-size: 10px; color: var(--primary)">Fixed: 100,000,000 $DKX</div>
+                </div>
+                <span style="font-size: 10px; font-weight: 800; color: #2ed573;">Deflationary</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: CIPHER DECRYPTION (CONTROLLED BONUS) -->
+    <div class="tab-content" id="tab-cipher">
         <div class="game-hud">
             <div>
-                <div style="font-size:10px; color:var(--text-muted)">DAILY CIPHER</div>
+                <div style="font-size:9px; color:var(--text-muted)">PROTOCOL CIPHER</div>
                 <div class="code-display" id="targetCodeDisplay">6 7 3 8</div>
             </div>
             <div style="text-align:right">
-                <div style="font-size:10px; color:var(--text-muted)">COLLECTED</div>
+                <div style="font-size:9px; color:var(--text-muted)">DECRYPTED BUFFER</div>
                 <div class="code-display" id="currentCaughtDisplay" style="color:#ffffff">_ _ _ _</div>
             </div>
         </div>
-        <canvas id="gameCanvas" width="360" height="260"></canvas>
-        <button class="action-btn" id="startBtn" style="margin-top:10px; width:100%; max-width:360px;" onclick="initOrRestartGame()">Start Game</button>
-        <div id="gameLockStatus" style="font-size:12px; color:#ffcc00; margin-top:8px; font-weight:800; letter-spacing:0.5px;"></div>
+        <canvas id="gameCanvas" width="360" height="250"></canvas>
+        <button class="action-btn" id="startBtn" style="margin-top:10px; width:100%; max-width:360px;" onclick="initOrRestartGame()">INITIALIZE CIPHER RUN</button>
+        <div id="gameLockStatus" style="font-size:11px; color:#ffbb00; margin-top:8px; font-weight:800;"></div>
     </div>
 
-    <!-- 3. AIRDROP LIVE DASHBOARD -->
-    <div class="tab-content" id="tab-airdrop">
-        <div class="airdrop-hero">
-            <div class="airdrop-status-pill">● AIRDROP PROTOCOL LIVE</div>
-            <div style="font-size:20px; font-weight:900; margin-top:10px;">Phase 1: Genesis Pool</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">
-                Token distribution will be snapshot-based on active participation.
-            </div>
-        </div>
-        <div class="airdrop-metrics">
-            <div class="metric-card">
-                <div style="font-size:10px; color:var(--text-muted)">TOTAL AIRDROP POOL</div>
-                <div style="font-size:16px; font-weight:900; color:var(--primary); margin-top:4px;">50,000,000 $DKX</div>
-            </div>
-            <div class="metric-card">
-                <div style="font-size:10px; color:var(--text-muted)">AIRDROP STATUS</div>
-                <div style="font-size:14px; font-weight:800; color:#38ef7d; margin-top:4px;">Active & Mining</div>
-            </div>
-        </div>
-        <div class="card" style="margin-top:12px;">
-            <div class="card-left">
-                <div style="font-size:24px;">📊</div>
-                <div>
-                    <div style="font-size:13px; font-weight:700">Listing & Distribution</div>
-                    <div style="font-size:11px; color:var(--primary)">Q4 • BNB Smart Chain Launch</div>
-                </div>
-            </div>
-            <span style="font-size:11px; font-weight:800; color:var(--text-muted);">Verified</span>
-        </div>
-    </div>
-
-    <!-- 4. OFFICIAL TASKS TAB -->
-    <div class="tab-content" id="tab-tasks">
-        <h3 style="margin-bottom:8px; font-size:15px;">Official Directives</h3>
+    <!-- TAB 4: PROTOCOL DIRECTIVES (TASKS) -->
+    <div class="tab-content" id="tab-directives">
+        <h4 style="font-size: 13px; letter-spacing: 0.5px; margin-bottom: 4px;">Ecosystem Directives</h4>
         <div class="card">
-            <div class="card-left">
-                <div class="official-logo logo-tg">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-                </div>
-                <div>
-                    <div style="font-size:13px; font-weight:700">Official Telegram</div>
-                    <div style="font-size:11px; color:var(--primary)">+5,000 $DKX</div>
-                </div>
+            <div>
+                <div style="font-size:12px; font-weight:700">Official Telegram Network</div>
+                <div style="font-size:10px; color:var(--primary)">+1,000 $DKX</div>
             </div>
-            <button class="action-btn" id="task-tg" onclick="claimTask('tg', 'https://t.me/DKXOfficial')">Join</button>
+            <button class="action-btn" id="task-tg" onclick="claimDirective('tg', 'https://t.me/DKXOfficial')">Verify</button>
         </div>
         <div class="card">
-            <div class="card-left">
-                <div class="official-logo logo-insta">
-                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.13-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                </div>
-                <div>
-                    <div style="font-size:13px; font-weight:700">Official Instagram</div>
-                    <div style="font-size:11px; color:var(--primary)">+5,000 $DKX</div>
-                </div>
+            <div>
+                <div style="font-size:12px; font-weight:700">Official Instagram Hub</div>
+                <div style="font-size:10px; color:var(--primary)">+1,000 $DKX</div>
             </div>
-            <button class="action-btn" id="task-insta" onclick="claimTask('insta', 'https://instagram.com/dakicks_dkx')">Follow</button>
+            <button class="action-btn" id="task-insta" onclick="claimDirective('insta', 'https://instagram.com/dakicks_dkx')">Verify</button>
         </div>
         <div class="card">
-            <div class="card-left">
-                <div class="official-logo logo-x">
-                    <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                </div>
-                <div>
-                    <div style="font-size:13px; font-weight:700">Official X</div>
-                    <div style="font-size:11px; color:var(--primary)">+5,000 $DKX</div>
-                </div>
+            <div>
+                <div style="font-size:12px; font-weight:700">Official X Communications</div>
+                <div style="font-size:10px; color:var(--primary)">+1,000 $DKX</div>
             </div>
-            <button class="action-btn" id="task-x" onclick="claimTask('x', 'https://twitter.com/dakicks_dkx')">Follow</button>
+            <button class="action-btn" id="task-x" onclick="claimDirective('x', 'https://twitter.com/dakicks_dkx')">Verify</button>
         </div>
     </div>
 
-    <!-- 5. WALLET TAB -->
-    <div class="tab-content" id="tab-wallet">
-        <div class="card" style="flex-direction:column; gap:14px; text-align:center; padding:24px 16px;">
-            <div style="font-size:32px;">💎</div>
-            <div style="font-size:16px; font-weight:900;">Connect Your Crypto Wallet</div>
-            <div class="coming-soon-badge">Currently Not Available • Coming Soon</div>
-            <div style="font-size:12px; color:var(--text-muted); line-height:1.5;">
-                Web3 Wallet linking feature will be activated ahead of the official token listing on BNB Chain. Keep mining your $DKX!
+    <!-- TAB 5: WEB3 VAULT (CONNECT) -->
+    <div class="tab-content" id="tab-vault">
+        <div class="card" style="flex-direction:column; gap:12px; text-align:center; padding:22px 14px;">
+            <div style="font-size:32px;">🔐</div>
+            <div style="font-size:15px; font-weight:900;">On-Chain Smart Contract Socket</div>
+            <div style="font-size:10px; font-family:monospace; background:rgba(0,0,0,0.5); padding:6px 10px; border-radius:6px; border:1px solid var(--surface-border); word-break:break-all;" id="contractSocketDisplay">
+                0x0000000000000000000000000000000000000000 (GENESIS TESTNET)
             </div>
+            <div style="font-size:11px; color:var(--text-muted); line-height:1.5;">
+                Wallet binding connects during the official liquidity seeding on BNB Smart Chain. All off-chain PoA balances will be mapped directly via signed cryptographic hash.
+            </div>
+            <button class="action-btn" style="width: 100%; margin-top: 4px;" disabled>CONNECT WEB3 WALLET (STANDBY)</button>
         </div>
     </div>
 
-    <!-- DOCK NAVIGATION -->
+    <!-- NAVIGATION DOCK -->
     <div class="nav-dock">
         <div class="nav-grid">
-            <button class="nav-item active" onclick="switchNav('mine', this)"><span>⛏️</span>Mine</button>
-            <button class="nav-item" onclick="switchNav('game', this)"><span>🕹️</span>Cipher</button>
-            <button class="nav-item" onclick="switchNav('airdrop', this)"><span>🪂</span>Airdrop</button>
-            <button class="nav-item" onclick="switchNav('tasks', this)"><span>📜</span>Tasks</button>
-            <button class="nav-item" onclick="switchNav('wallet', this)"><span>💎</span>Wallet</button>
+            <button class="nav-item active" onclick="switchNav('terminal', this)"><span>⛏️</span>Terminal</button>
+            <button class="nav-item" onclick="switchNav('eco', this)"><span>👟</span>DAKICKS</button>
+            <button class="nav-item" onclick="switchNav('cipher', this)"><span>🔐</span>Cipher</button>
+                        <button class="nav-item" onclick="switchNav('cipher', this)"><span>🔐</span>Cipher</button>
+            <button class="nav-item" onclick="switchNav('directives', this)"><span>📜</span>Directives</button>
+            <button class="nav-item" onclick="switchNav('vault', this)"><span>💎</span>Vault</button>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // CONFIGURATION: CHANGE DAILY CIPHER HERE
-        // ==========================================
+        // ==========================================================
+        // CRYPTOGRAPHIC ARCHITECTURE & LAUNCH CONFIGURATION
+        // ==========================================================
+        const DKX_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
         const DAILY_CIPHER_CODE = "6738";
+        const TARGET_ESTIMATED_VALUE_USD = 0.005;
+
+        document.getElementById('contractSocketDisplay').innerText = DKX_CONTRACT_ADDRESS;
 
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
-        // BACKGROUND GREEN SMOKE
-        const sCanvas = document.getElementById('smokeCanvas');
-        const sCtx = sCanvas.getContext('2d');
-        let smokeParts = [];
-        function resizeSmoke() {
-            sCanvas.width = window.innerWidth;
-            sCanvas.height = window.innerHeight;
-        }
-        resizeSmoke();
-        window.addEventListener('resize', resizeSmoke);
-
-        for (let i = 0; i < 28; i++) {
-            smokeParts.push({
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                r: Math.random() * 80 + 50,
-                vx: (Math.random() - 0.5) * 0.4,
-                                vy: -Math.random() * 0.5 - 0.2,
-                alpha: Math.random() * 0.18 + 0.05
-            });
-        }
-        function renderSmoke() {
-            sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
-            smokeParts.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if (p.y < -100) p.y = sCanvas.height + 50;
-                if (p.x < -100) p.x = sCanvas.width + 50;
-                if (p.x > sCanvas.width + 100) p.x = -50;
-                const grad = sCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-                grad.addColorStop(0, `rgba(157, 252, 59, ${p.alpha})`);
-                grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                sCtx.fillStyle = grad;
-                sCtx.beginPath();
-                sCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                sCtx.fill();
-            });
-            requestAnimationFrame(renderSmoke);
-        }
-        renderSmoke();
-
-        // 3D FULL-SCREEN PARTY POPPER / CONFETTI BLAST
-        const cCanvas = document.getElementById('confettiCanvas');
-        const cCtx = cCanvas.getContext('2d');
-        let confettis = [], isPopping = false;
-
-        function triggerPartyPopper() {
-            cCanvas.width = window.innerWidth;
-            cCanvas.height = window.innerHeight;
-            cCanvas.style.display = 'block';
-            confettis = [];
-            isPopping = true;
-
-            const colors = ['#9dfc3b', '#ffffff', '#ffd700', '#00ffcc', '#ff3b30'];
-            for (let i = 0; i < 150; i++) {
-                confettis.push({
-                    x: window.innerWidth / 2,
-                    y: window.innerHeight / 2 + 50,
-                    vx: (Math.random() - 0.5) * 16,
-                    vy: -Math.random() * 18 - 4,
-                    r: Math.random() * 6 + 4,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    rot: Math.random() * 360,
-                    rotSpeed: (Math.random() - 0.5) * 15,
-                    gravity: 0.35,
-                    drag: 0.985
-                });
+        // ==========================================================
+        // ANTI-CHEAT & ANTI-TAMPER SHIELD
+        // ==========================================================
+        const SECURITY_SALT = "DKX_PROT_HASH_SECURE_9921_SALT";
+        function generateIntegritySignature(val) {
+            let hash = 0;
+            const str = val.toString() + SECURITY_SALT;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
             }
+            return hash.toString();
+        }
 
-            function blastLoop() {
-                if (!isPopping) return;
-                cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
-                confettis.forEach((p, idx) => {
-                    p.vx *= p.drag;
-                    p.vy = (p.vy + p.gravity) * p.drag;
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.rot += p.rotSpeed;
+        function triggerSecurityViolation(reason) {
+            console.warn("Security Alert: " + reason);
+            document.getElementById('antiCheatOverlay').style.display = 'flex';
+            isPlaying = false;
+        }
 
-                    cCtx.save();
-                    cCtx.translate(p.x, p.y);
-                    cCtx.rotate((p.rot * Math.PI) / 180);
-                    cCtx.fillStyle = p.color;
-                    cCtx.shadowColor = p.color;
-                    cCtx.shadowBlur = 8;
-                    cCtx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 1.5);
-                    cCtx.restore();
-
-                    if (p.y > window.innerHeight + 50) confettis.splice(idx, 1);
-                });
-
-                if (confettis.length > 0) {
-                    requestAnimationFrame(blastLoop);
-                } else {
-                    isPopping = false;
-                    cCanvas.style.display = 'none';
-                }
+        window.addEventListener('keydown', (e) => {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+                e.preventDefault();
+                triggerSecurityViolation("DevTools attempt blocked");
             }
-            blastLoop();
+        });
+
+        let tapTimestamps = [];
+        function verifyHardwareInputRate() {
+            const now = Date.now();
+            tapTimestamps.push(now);
+            tapTimestamps = tapTimestamps.filter(t => now - t < 1000);
+            if (tapTimestamps.length > 14) {
+                triggerSecurityViolation("Autoclicker detected");
+                return false;
+            }
+            return true;
         }
 
-        // 3D TRANSPARENT POPUP HANDLER
-        function showRewardModal(amount) {
-            document.getElementById('rewardText').innerText = `YOU GOT +${amount.toLocaleString()} $DKX`;
-            const m = document.getElementById('rewardModal');
-            m.classList.add('open');
-            if (amount >= 20000) triggerPartyPopper();
-        }
-        function closeRewardModal() {
-            document.getElementById('rewardModal').classList.remove('open');
-        }
-
-        // AUDIO ENGINE
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playTone(freq, type = 'sine', duration = 0.08) {
-            try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
+        // ==========================================================
+        // BALANCE INTEGRITY MANAGER (0 DEFAULT SECURED STATE)
+        // ==========================================================
+        function getValidatedScore() {
+            const rawScore = parseInt(localStorage.getItem('dkx_vault_tokens') || 0);
+            const sig = localStorage.getItem('dkx_vault_sig');
+            if (rawScore > 0 && (!sig || sig !== generateIntegritySignature(rawScore))) {
+                triggerSecurityViolation("Memory tampering detected");
+                return 0;
+            }
+            return isNaN(rawScore) ? 0 : rawScore;
         }
 
-        let score = parseInt(localStorage.getItem('dkx_score') || 27354);
+        function setValidatedScore(newScore) {
+            localStorage.setItem('dkx_vault_tokens', newScore);
+            localStorage.setItem('dkx_vault_sig', generateIntegritySignature(newScore));
+            updateDisplays();
+        }
+
+        let score = getValidatedScore();
         let energy = 1000;
-        let rank = localStorage.getItem('dkx_rank') || 'Tier III • Protocol Sovereign';
 
-        document.getElementById('score').innerText = score.toLocaleString();
-        document.getElementById('rankBadge').innerText = rank;
+        function updateDisplays() {
+            document.getElementById('scoreDisplay').innerText = score.toLocaleString();
+            const fiat = (score * TARGET_ESTIMATED_VALUE_USD).toFixed(2);
+            document.getElementById('fiatVal').innerText = `≈ $${fiat} USD`;
+        }
+        updateDisplays();
+
+        let currentBlock = 41920381;
+        setInterval(() => {
+            currentBlock += 1;
+            document.getElementById('blockTicker').innerText = `Block #${currentBlock.toLocaleString()}`;
+        }, 3000);
 
         // MINING ENGINE
         const tapBtn = document.getElementById('tapBtn');
         tapBtn.addEventListener('pointerdown', (e) => {
+            if (!verifyHardwareInputRate()) return;
             if (energy < 1) return;
+
             energy -= 1;
             score += 1;
-            localStorage.setItem('dkx_score', score);
-            document.getElementById('score').innerText = score.toLocaleString();
+            setValidatedScore(score);
+
             document.getElementById('energyText').innerText = `${energy} / 1000`;
             document.getElementById('energyFill').style.width = `${(energy / 1000) * 100}%`;
 
-            playTone(950, 'sine', 0.05);
             if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
 
             const num = document.createElement('div');
             num.className = 'tap-number';
             num.innerText = '+1';
-            num.style.left = `${e.clientX - 10}px`;
+            num.style.left = `${e.clientX - 8}px`;
             num.style.top = `${e.clientY - 25}px`;
             document.body.appendChild(num);
-            setTimeout(() => num.remove(), 600);
+            setTimeout(() => num.remove(), 500);
         });
 
+        // Controlled recharge: 1 energy every 12 seconds
         setInterval(() => {
             if (energy < 1000) {
-                energy += 2;
+                energy += 1;
                 document.getElementById('energyText').innerText = `${energy} / 1000`;
                 document.getElementById('energyFill').style.width = `${(energy / 1000) * 100}%`;
             }
-        }, 1000);
+        }, 12000);
 
         function switchNav(id, btn) {
-            playTone(440, 'triangle', 0.04);
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`tab-${id}`).classList.add('active');
             btn.classList.add('active');
-            if (id === 'game') checkGameLock();
+            if (id === 'cipher') checkCipherLock();
         }
 
-        // PERMANENT TASKS SYSTEM
-        function initTasks() {
+        // DIRECTIVES SYSTEM
+        function initDirectives() {
             ['tg', 'insta', 'x'].forEach(t => {
-                if (localStorage.getItem(`dkx_task_done_${t}`) === 'true') {
+                if (localStorage.getItem(`dkx_dir_done_${t}`) === 'true') {
                     const b = document.getElementById(`task-${t}`);
-                    b.innerText = 'Completed';
+                    b.innerText = 'Verified';
                     b.classList.add('claimed');
                 }
             });
         }
-        initTasks();
+        initDirectives();
 
-        function claimTask(type, url) {
-            if (localStorage.getItem(`dkx_task_done_${type}`) === 'true') return;
+        function claimDirective(type, url) {
+            if (localStorage.getItem(`dkx_dir_done_${type}`) === 'true') return;
             window.open(url, '_blank');
-            playTone(600, 'sine', 0.1);
             setTimeout(() => {
-                score += 5000;
-                localStorage.setItem('dkx_score', score);
-                localStorage.setItem(`dkx_task_done_${type}`, 'true');
-                document.getElementById('score').innerText = score.toLocaleString();
-                initTasks();
-                playTone(1200, 'sine', 0.2);
-                showRewardModal(5000);
+                score += 1000;
+                setValidatedScore(score);
+                localStorage.setItem(`dkx_dir_done_${type}`, 'true');
+                initDirectives();
+                showRewardModal(1000);
             }, 3000);
         }
 
-        // CIPHER GAME ENGINE WITH REAL-TIME LIVE TIMER
+        // CIPHER ENGINE
         document.getElementById('targetCodeDisplay').innerText = DAILY_CIPHER_CODE.split('').join(' ');
-
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         let playerX = 180, coins = [], caughtCode = "", isPlaying = false, lastCoinTime = 0;
         let timerInterval = null;
 
-        function checkGameLock() {
+        function checkCipherLock() {
             const lastSolved = localStorage.getItem('dkx_cipher_solved_time');
             const statusEl = document.getElementById('gameLockStatus');
             const startBtn = document.getElementById('startBtn');
@@ -567,13 +555,13 @@
                         const h = Math.floor(remaining / (1000 * 60 * 60));
                         const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
                         const s = Math.floor((remaining % (1000 * 60)) / 1000);
-                        statusEl.innerText = `⏳ Solved! Next cipher in ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                        startBtn.innerText = "Locked";
+                        statusEl.innerText = `⏳ Solved! Next decryption in ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                        startBtn.innerText = "Security Sealed";
                         startBtn.classList.add('claimed');
                     } else {
                         clearInterval(timerInterval);
                         statusEl.innerText = "";
-                        startBtn.innerText = "Start Game";
+                        startBtn.innerText = "INITIALIZE CIPHER RUN";
                         startBtn.classList.remove('claimed');
                     }
                 };
@@ -581,49 +569,37 @@
                 timerInterval = setInterval(updateCountdown, 1000);
                 return (Date.now() - parseInt(lastSolved)) < lockDuration;
             }
-            statusEl.innerText = "";
-            startBtn.innerText = "Start Game";
-            startBtn.classList.remove('claimed');
             return false;
         }
 
-        canvas.addEventListener('touchstart', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            playerX = Math.max(30, Math.min(330, e.touches[0].clientX - rect.left));
-        });
         canvas.addEventListener('touchmove', (e) => {
             const rect = canvas.getBoundingClientRect();
             playerX = Math.max(30, Math.min(330, e.touches[0].clientX - rect.left));
         });
 
         function initOrRestartGame() {
-            if (checkGameLock()) return;
+            if (checkCipherLock()) return;
             coins = [];
             caughtCode = "";
             isPlaying = true;
             document.getElementById('currentCaughtDisplay').innerText = "_ _ _ _";
-            document.getElementById('startBtn').innerText = "Catch The Digits!";
-            requestAnimationFrame(gameLoop);
+            document.getElementById('startBtn').innerText = "Catch Stream Digits...";
+            requestAnimationFrame(cipherLoop);
         }
 
-        function gameLoop(timestamp) {
+        function cipherLoop(timestamp) {
             if (!isPlaying) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             ctx.fillStyle = "#9dfc3b";
             ctx.shadowColor = "#9dfc3b";
-            ctx.shadowBlur = 14;
-            ctx.fillRect(playerX - 25, 230, 50, 10);
+            ctx.shadowBlur = 10;
+            ctx.fillRect(playerX - 25, 220, 50, 8);
             ctx.shadowBlur = 0;
 
             if (timestamp - lastCoinTime > 650) {
                 const digit = Math.floor(Math.random() * 10).toString();
-                coins.push({
-                    x: Math.random() * (canvas.width - 60) + 30,
-                    y: -20,
-                    num: digit,
-                    speed: 3.4
-                });
+                coins.push({ x: Math.random() * (canvas.width - 60) + 30, y: -20, num: digit, speed: 3.5 });
                 lastCoinTime = timestamp;
             }
 
@@ -631,27 +607,21 @@
                 const c = coins[i];
                 c.y += c.speed;
 
-                const grad = ctx.createRadialGradient(c.x - 3, c.y - 3, 2, c.x, c.y, 16);
-                grad.addColorStop(0, '#d6ff79');
-                grad.addColorStop(0.6, '#86de16');
-                grad.addColorStop(1, '#254e04');
-
                 ctx.beginPath();
-                ctx.arc(c.x, c.y, 16, 0, Math.PI * 2);
-                ctx.fillStyle = grad;
+                ctx.arc(c.x, c.y, 15, 0, Math.PI * 2);
+                ctx.fillStyle = "#122516";
+                ctx.strokeStyle = "#9dfc3b";
+                ctx.lineWidth = 1.5;
                 ctx.fill();
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = '#ffffff';
                 ctx.stroke();
 
-                ctx.fillStyle = '#060b08';
-                ctx.font = 'bold 15px Arial';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 14px monospace';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(c.num, c.x, c.y + 1);
 
-                if (c.y >= 220 && c.y <= 245 && Math.abs(c.x - playerX) < 32) {
-                    playTone(800, 'sine', 0.06);
+                if (c.y >= 210 && c.y <= 235 && Math.abs(c.x - playerX) < 30) {
                     caughtCode += c.num;
                     coins.splice(i, 1);
 
@@ -662,27 +632,32 @@
                     if (caughtCode.length === 4) {
                         isPlaying = false;
                         if (caughtCode === DAILY_CIPHER_CODE) {
-                            playTone(1200, 'sine', 0.3);
-                            score += 20000;
-                            localStorage.setItem('dkx_score', score);
+                            score += 1500;
+                            setValidatedScore(score);
                             localStorage.setItem('dkx_cipher_solved_time', Date.now().toString());
-                            document.getElementById('score').innerText = score.toLocaleString();
-                            showRewardModal(20000);
+                            showRewardModal(1500);
                         } else {
-                            playTone(180, 'sawtooth', 0.3);
-                            alert(`❌ Wrong Code (${caughtCode})! Target was ${DAILY_CIPHER_CODE}. Try again!`);
+                            alert(`❌ Decryption Mismatch (${caughtCode})! Correct Hash Key was ${DAILY_CIPHER_CODE}.`);
                         }
-                        checkGameLock();
+                        checkCipherLock();
                         return;
                     }
                     continue;
                 }
-
                 if (c.y > canvas.height + 20) coins.splice(i, 1);
             }
+            requestAnimationFrame(cipherLoop);
+        }
 
-            requestAnimationFrame(gameLoop);
+        function showRewardModal(amount) {
+            document.getElementById('rewardText').innerText = `+${amount.toLocaleString()} $DKX`;
+            document.getElementById('rewardModal').classList.add('open');
+        }
+        function closeRewardModal() {
+            document.getElementById('rewardModal').classList.remove('open');
         }
     </script>
 </body>
 </html>
+
+         
