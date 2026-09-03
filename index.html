@@ -3,55 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DKX PROTOCOL | Institutional Terminal</title>
+    <title>DKX PROTOCOL | Institutional Crypto Terminal</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --primary: #9dfc3b;
-            --primary-glow: rgba(157, 252, 59, 0.45);
-            --surface: rgba(13, 20, 15, 0.92);
-            --surface-border: rgba(157, 252, 59, 0.22);
+            --primary-glow: rgba(157, 252, 59, 0.35);
+            --surface: rgba(13, 20, 15, 0.94);
+            --surface-border: rgba(157, 252, 59, 0.2);
             --text-muted: #8ca393;
-            --danger: #ff4757;
         }
         * {
             margin: 0; padding: 0; box-sizing: border-box;
             user-select: none; -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent; outline: none;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'SF Pro Display', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         body {
-            background: radial-gradient(circle at 50% 15%, #08170c 0%, #030604 70%, #010201 100%);
-            color: #ffffff; height: 100vh; display: flex; flex-direction: column;
-            justify-content: space-between; overflow: hidden; position: relative;
+            background: #030704; color: #ffffff; height: 100vh;
+            display: flex; flex-direction: column; justify-content: space-between;
+            overflow: hidden; position: relative;
         }
         .bg-video-box {
             position: fixed; inset: 0; width: 100vw; height: 100vh;
             z-index: 0; pointer-events: none; overflow: hidden;
         }
         .bg-video-box video {
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.28; filter: contrast(1.2);
-        }
-        #confettiCanvas {
-            position: fixed; inset: 0; width: 100vw; height: 100vh;
-            z-index: 100; pointer-events: none; display: none;
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.22; filter: contrast(1.15);
         }
 
-        /* FINTECH TERMINAL HEADER */
+        /* HEADER */
         .terminal-header {
-            padding: 12px 18px 8px; z-index: 5; position: relative;
-            background: linear-gradient(180deg, rgba(6,12,8,0.85) 0%, transparent 100%);
+            padding: 12px 16px 8px; z-index: 5; position: relative;
+            background: linear-gradient(180deg, rgba(3,7,4,0.95) 0%, transparent 100%);
         }
         .top-row { display: flex; justify-content: space-between; align-items: center; }
         .brand-badge {
             display: inline-flex; align-items: center; gap: 6px;
             background: rgba(157, 252, 59, 0.08); border: 1px solid var(--surface-border);
-            padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 800;
+            padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800;
             letter-spacing: 1.5px; color: var(--primary); text-transform: uppercase;
         }
         .sec-indicator {
             display: inline-flex; align-items: center; gap: 5px; font-size: 10px;
-            color: #2ed573; font-weight: 700; letter-spacing: 0.5px;
+            color: #2ed573; font-weight: 700;
         }
         .sec-pulse {
             width: 6px; height: 6px; background: #2ed573; border-radius: 50%;
@@ -59,134 +54,61 @@
         }
         @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-        /* PORTFOLIO CARD */
-        .portfolio-card {
-            background: var(--surface); border: 1px solid var(--surface-border);
-            border-radius: 14px; padding: 12px 14px; margin-top: 8px;
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
-        }
-        .balance-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: var(--text-muted); }
-        .balance-main {
-            display: flex; justify-content: space-between; align-items: baseline; margin-top: 2px;
-        }
-        .balance-tokens { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; text-shadow: 0 0 20px var(--primary-glow); }
-        .fiat-eval { font-size: 14px; font-weight: 700; color: #a4b0be; }
-        .sparkline-box { width: 100%; height: 38px; margin-top: 4px; }
-        .sparkline-box svg { width: 100%; height: 100%; }
-
-        /* TAB MANAGEMENT */
+        /* TABS VIEWPORT */
         .tab-content {
             flex-grow: 1; display: none; flex-direction: column; align-items: center;
-            padding: 10px 16px; position: relative; overflow-y: auto; width: 100%; z-index: 5;
+            padding: 8px 14px; position: relative; overflow-y: auto; width: 100%; z-index: 5;
         }
         .tab-content.active { display: flex; }
 
-        /* NODE VALIDATOR (MINING ENGINE) */
-        .node-validator-box {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            margin-top: 10px; width: 100%;
+        /* REAL-TIME TRADINGVIEW TERMINAL */
+        .chart-container {
+            width: 100%; height: calc(100vh - 155px); max-width: 500px;
+            border-radius: 12px; overflow: hidden; border: 1px solid var(--surface-border);
+            background: #0d140f; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-        .coin-3d {
-            width: 190px; height: 190px; border-radius: 50%;
-            background: radial-gradient(circle at 35% 30%, #c4ff5e 0%, #8ae01c 40%, #305804 85%, #0e1d02 100%);
-            box-shadow: 0 0 0 5px rgba(157, 252, 59, 0.28), 0 25px 45px rgba(0,0,0,0.95), 0 0 45px var(--primary-glow);
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            transition: transform 0.06s ease-out; touch-action: manipulation; position: relative;
-        }
-        .coin-3d:active { transform: scale(0.96); }
-        .coin-rim {
-            width: 160px; height: 160px; border-radius: 50%;
-            border: 1.5px dashed rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center;
-        }
-        .coin-logo-svg { width: 92px; height: 92px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.8)); }
+        .tradingview-widget-container { width: 100%; height: 100%; }
 
-        .hash-ticker {
-            font-size: 11px; font-weight: 800; color: var(--primary); letter-spacing: 1px;
-            margin-top: 14px; background: rgba(157, 252, 59, 0.06); padding: 4px 12px;
-            border-radius: 20px; border: 1px solid var(--surface-border);
-        }
-        .energy-wrapper { width: 100%; max-width: 320px; margin-top: 12px; }
-        .energy-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; margin-bottom: 5px; }
-        .energy-bar-bg { width: 100%; height: 7px; background: rgba(255,255,255,0.06); border-radius: 12px; overflow: hidden; }
-        .energy-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #2ed573, var(--primary)); border-radius: 12px; transition: width 0.2s; }
-
-        /* DAKICKS ECOSYSTEM / RWA */
-        .eco-grid { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 10px; }
+        /* DAKICKS ECOSYSTEM HUB */
+        .eco-grid { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 10px; }
         .eco-card {
             background: var(--surface); border: 1px solid var(--surface-border);
             border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 6px;
+            backdrop-filter: blur(12px);
         }
-        .eco-header { display: flex; justify-content: space-between; align-items: center; }
         .eco-tag {
             font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 4px;
             background: rgba(157,252,59,0.15); color: var(--primary); text-transform: uppercase;
         }
 
-        /* CIPHER SECURITY CANVAS */
-        .game-hud {
-            width: 100%; max-width: 360px; display: flex; justify-content: space-between;
-            align-items: center; background: var(--surface); border: 1px solid var(--surface-border);
-            padding: 8px 12px; border-radius: 12px; margin-bottom: 8px;
-        }
-        .code-display { font-size: 15px; font-weight: 900; letter-spacing: 3px; color: var(--primary); }
-        #gameCanvas {
-            width: 100%; max-width: 360px; height: 250px; border-radius: 14px;
-            background: #020503; border: 1px solid var(--surface-border); touch-action: none;
-        }
-
-        /* CARDS & BUTTONS */
-        .card {
+        /* SOCIAL CARDS */
+        .social-card {
             background: var(--surface); border: 1px solid var(--surface-border);
-            border-radius: 12px; padding: 12px; width: 100%; max-width: 360px;
+            border-radius: 12px; padding: 12px 16px; width: 100%; max-width: 380px;
             margin-top: 8px; display: flex; align-items: center; justify-content: space-between;
+            text-decoration: none; color: inherit; transition: transform 0.1s, border-color 0.2s;
         }
-        .action-btn {
-            background: var(--primary); color: #020603; border: none; padding: 8px 14px;
-            border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer;
-            letter-spacing: 0.5px; transition: opacity 0.15s;
+        .social-card:active { transform: scale(0.98); border-color: var(--primary); }
+        .social-left { display: flex; align-items: center; gap: 12px; }
+        .social-logo-svg { width: 28px; height: 28px; fill: currentColor; }
+        .social-btn {
+            background: rgba(157, 252, 59, 0.12); color: var(--primary);
+            border: 1px solid var(--surface-border); padding: 6px 14px;
+            border-radius: 6px; font-size: 11px; font-weight: 800;
         }
-        .action-btn:active { opacity: 0.7; }
-        .action-btn.claimed { background: rgba(255,255,255,0.06) !important; color: var(--text-muted) !important; pointer-events: none; }
-
-        /* FRAUD ALERT OVERLAY */
-        #antiCheatOverlay {
-            position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95);
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 24px; text-align: center;
-        }
-
-        /* MODAL */
-        .reward-overlay {
-            position: fixed; inset: 0; z-index: 120; display: none;
-            align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(12px);
-        }
-        .reward-box-3d {
-            width: 85%; max-width: 320px; padding: 24px 20px; text-align: center;
-            border-radius: 20px; background: rgba(14, 24, 16, 0.95);
-            border: 1px solid rgba(157, 252, 59, 0.4); box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-        }
-        .reward-overlay.open { display: flex; }
 
         /* NAVIGATION DOCK */
         .nav-dock {
-            padding: 8px 10px 18px; background: rgba(4, 7, 5, 0.97);
+            padding: 8px 12px 18px; background: rgba(4, 7, 5, 0.98);
             border-top: 1px solid var(--surface-border); z-index: 10;
         }
-        .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+        .nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
         .nav-item {
-            background: none; border: none; color: var(--text-muted); padding: 6px 2px;
+            background: none; border: none; color: var(--text-muted); padding: 7px 4px;
             border-radius: 8px; display: flex; flex-direction: column; align-items: center;
-            gap: 3px; font-size: 10px; font-weight: 700; cursor: pointer;
+            gap: 4px; font-size: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase;
         }
         .nav-item.active { color: var(--primary); background: rgba(157, 252, 59, 0.1); }
-        .tap-number {
-            position: absolute; color: #ffffff; font-size: 20px; font-weight: 900;
-            pointer-events: none; animation: float 0.5s ease-out forwards;
-            text-shadow: 0 0 10px var(--primary); z-index: 20;
-        }
-        @keyframes float { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
     </style>
 </head>
 <body>
@@ -198,466 +120,168 @@
         </video>
     </div>
 
-    <canvas id="confettiCanvas"></canvas>
-
-    <!-- ANTI-CHEAT LOCK SCREEN -->
-    <div id="antiCheatOverlay">
-        <div style="font-size: 48px;">🛡️</div>
-        <div style="color: var(--danger); font-size: 18px; font-weight: 900; margin-top: 10px;">INTEGRITY VIOLATION DETECTED</div>
-        <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px; line-height: 1.6;">
-            Hardware rate limit exceeded or unauthorized environment inspection triggered. The protocol session has been sealed.
-        </div>
-        <button class="action-btn" style="margin-top: 20px; background: var(--danger); color: white;" onclick="location.reload()">Re-verify Session</button>
-    </div>
-
-    <!-- REWARD MODAL -->
-    <div class="reward-overlay" id="rewardModal">
-        <div class="reward-box-3d">
-            <div style="font-size: 42px;">⚡</div>
-            <div style="font-size: 12px; letter-spacing: 1.5px; color: var(--text-muted); font-weight: 800;">PROTOCOL AUDIT REWARD</div>
-            <div id="rewardText" style="font-size: 22px; font-weight: 900; color: var(--primary); margin: 8px 0 14px;">+1,500 $DKX</div>
-            <button class="action-btn" style="width: 100%; padding: 10px;" onclick="closeRewardModal()">CONFIRM CREDENTIALS</button>
-        </div>
-    </div>
-
-    <!-- FINTECH TERMINAL HEADER -->
+    <!-- TERMINAL HEADER -->
     <div class="terminal-header">
         <div class="top-row">
-            <div class="brand-badge">⚡ BNB Chain • DKX OS</div>
+            <div class="brand-badge">⚡ DKX Institutional Terminal</div>
             <div class="sec-indicator">
                 <div class="sec-pulse"></div>
-                <span id="blockTicker">Block #41,920,381</span>
-            </div>
-        </div>
-
-        <div class="portfolio-card">
-            <div class="balance-label">TOTAL VALIDATED BALANCE (PROOF-OF-ACTIVITY)</div>
-            <div class="balance-main">
-                <div>
-                    <span class="balance-tokens" id="scoreDisplay">0</span>
-                    <span style="font-size: 14px; font-weight: 900; color: var(--primary);"> $DKX</span>
-                </div>
-                <div class="fiat-eval" id="fiatVal">≈ $0.00 USD</div>
-            </div>
-            <!-- SPARKLINE CHART -->
-            <div class="sparkline-box">
-                <svg viewBox="0 0 320 40">
-                    <defs>
-                        <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stop-color="#9dfc3b" stop-opacity="0.3"/>
-                            <stop offset="100%" stop-color="#9dfc3b" stop-opacity="0"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M 0,32 Q 40,28 80,18 T 160,22 T 240,8 T 320,14" fill="none" stroke="#9dfc3b" stroke-width="2.5" />
-                    <path d="M 0,32 Q 40,28 80,18 T 160,22 T 240,8 T 320,14 L 320,40 L 0,40 Z" fill="url(#chartGrad)" />
-                </svg>
+                <span id="blockTicker">BNB Chain #41,920,404</span>
             </div>
         </div>
     </div>
 
-    <!-- TAB 1: TERMINAL (NODE MINING) -->
+    <!-- TAB 1: LIVE CRYPTO CHARTS (TRADINGVIEW SEARCHABLE ENGINE) -->
     <div class="tab-content active" id="tab-terminal">
-        <div class="node-validator-box">
-            <div class="coin-3d" id="tapBtn">
-                <div class="coin-rim">
-                    <svg class="coin-logo-svg" viewBox="0 0 500 500">
-                        <path d="M140 215 C135 155, 260 135, 345 155 C370 162, 385 190, 375 240 C360 300, 310 345, 265 345 C230 345, 215 315, 235 295 C250 280, 275 285, 290 270 C305 255, 310 230, 295 215 C275 195, 220 200, 185 220 Z" fill="none" stroke="#ffffff" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-            </div>
-            <div class="hash-ticker" id="hashRate">Hashrate: 1.84 TH/s • PoA Verified</div>
-        </div>
-        <div class="energy-wrapper">
-            <div class="energy-meta">
-                <span style="color: var(--text-muted)">VALIDATION CAPACITY</span>
-                <span id="energyText" style="color: var(--primary)">1000 / 1000</span>
-            </div>
-            <div class="energy-bar-bg">
-                <div class="energy-bar-fill" id="energyFill"></div>
+        <div class="chart-container">
+            <div class="tradingview-widget-container">
+                <div id="tradingview_market_chart" style="height: 100%; width: 100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                <script type="text/javascript">
+                    new TradingView.widget({
+                        "autosize": true,
+                        "symbol": "BINANCE:BNBUSDT",
+                        "interval": "15",
+                        "timezone": "Etc/UTC",
+                        "theme": "dark",
+                        "style": "1",
+                        "locale": "en",
+                        "toolbar_bg": "#0d140f",
+                        "enable_publishing": false,
+                        "hide_side_toolbar": false,
+                        "allow_symbol_change": true,
+                        "save_image": false,
+                        "container_id": "tradingview_market_chart"
+                    });
+                </script>
             </div>
         </div>
     </div>
 
-    <!-- TAB 2: DAKICKS ECOSYSTEM (RWA & UTILITY) -->
+    <!-- TAB 2: DAKICKS ECOSYSTEM (RWA UTILITY) -->
     <div class="tab-content" id="tab-eco">
         <div class="eco-grid">
             <div class="eco-card">
-                <div class="eco-header">
-                    <span style="font-size: 13px; font-weight: 800;">DAKICKS® Physical Sneaker Drops</span>
-                    <span class="eco-tag">RWA Backed</span>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; font-weight: 800;">DAKICKS® Physical Drops</span>
+                    <span class="eco-tag">RWA Apparel</span>
                 </div>
                 <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-top: 4px;">
-                    Every pair in the genesis footwear collection contains a cryptographic chip. Verified token holders receive priority pre-orders and token-burn discounts.
+                    Genesis footwear products embedded with NFC cryptographic authenticity chips. Verified on BNB Smart Chain.
                 </div>
             </div>
 
             <div class="eco-card">
-                <div class="eco-header">
-                    <span style="font-size: 13px; font-weight: 800;">Revenue-Share Protocol Engine</span>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; font-weight: 800;">Revenue-Share Protocol</span>
                     <span class="eco-tag">Treasury</span>
                 </div>
                 <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-top: 4px;">
-                    50% of real-world footwear sales and brand sponsorship revenue is programmatically redirected into the on-chain Buyback & Burn pool.
+                    50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.
                 </div>
             </div>
 
-            <div class="card" style="margin-top: 4px;">
+            <div class="eco-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 13px; font-weight: 800;">DKX Supply Standard</span>
+                    <span class="eco-tag" style="background: rgba(46, 213, 115, 0.15); color: #2ed573;">Deflationary</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-top: 4px;">
+                    Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- PART 2 STARTS HERE -->
+    <!-- TAB 3: COMMUNITY DIRECTIVES (SOCIAL HUBS) -->
+    <div class="tab-content" id="tab-community">
+        <h4 style="font-size: 13px; letter-spacing: 0.5px; margin-bottom: 8px; width: 100%; max-width: 380px;">Official Communication Nodes</h4>
+
+        <!-- TELEGRAM -->
+        <a href="https://t.me/DKXOfficial" target="_blank" class="social-card">
+            <div class="social-left">
+                <svg class="social-logo-svg" style="color: #24A1DE;" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+                </svg>
                 <div>
-                    <div style="font-size: 12px; font-weight: 800;">DKX Genesis Supply</div>
-                    <div style="font-size: 10px; color: var(--primary)">Fixed: 100,000,000 $DKX</div>
+                    <div style="font-size: 13px; font-weight: 800;">Telegram Network</div>
+                    <div style="font-size: 10px; color: var(--text-muted);">Official Announcements & Chat</div>
                 </div>
-                <span style="font-size: 10px; font-weight: 800; color: #2ed573;">Deflationary</span>
             </div>
-        </div>
+            <div class="social-btn">Open Node</div>
+        </a>
+
+        <!-- INSTAGRAM -->
+        <a href="https://instagram.com/dakicks_dkx" target="_blank" class="social-card">
+            <div class="social-left">
+                <svg class="social-logo-svg" style="color: #E1306C;" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                <div>
+                    <div style="font-size: 13px; font-weight: 800;">Instagram Hub</div>
+                    <div style="font-size: 10px; color: var(--text-muted);">Visual Drops & Design Specs</div>
+                </div>
+            </div>
+            <div class="social-btn">Open Node</div>
+        </a>
+
+        <!-- X (TWITTER) -->
+        <a href="https://twitter.com/dakicks_dkx" target="_blank" class="social-card">
+            <div class="social-left">
+                <svg class="social-logo-svg" style="color: #ffffff;" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                <div>
+                    <div style="font-size: 13px; font-weight: 800;">X Protocol Comms</div>
+                    <div style="font-size: 10px; color: var(--text-muted);">Ecosystem Releases & Whitepaper</div>
+                </div>
+            </div>
+            <div class="social-btn">Open Node</div>
+        </a>
     </div>
 
-    <!-- TAB 3: CIPHER DECRYPTION (CONTROLLED BONUS) -->
-    <div class="tab-content" id="tab-cipher">
-        <div class="game-hud">
-            <div>
-                <div style="font-size:9px; color:var(--text-muted)">PROTOCOL CIPHER</div>
-                <div class="code-display" id="targetCodeDisplay">6 7 3 8</div>
-            </div>
-            <div style="text-align:right">
-                <div style="font-size:9px; color:var(--text-muted)">DECRYPTED BUFFER</div>
-                <div class="code-display" id="currentCaughtDisplay" style="color:#ffffff">_ _ _ _</div>
-            </div>
-        </div>
-        <canvas id="gameCanvas" width="360" height="250"></canvas>
-        <button class="action-btn" id="startBtn" style="margin-top:10px; width:100%; max-width:360px;" onclick="initOrRestartGame()">INITIALIZE CIPHER RUN</button>
-        <div id="gameLockStatus" style="font-size:11px; color:#ffbb00; margin-top:8px; font-weight:800;"></div>
-    </div>
-
-    <!-- TAB 4: PROTOCOL DIRECTIVES (TASKS) -->
-    <div class="tab-content" id="tab-directives">
-        <h4 style="font-size: 13px; letter-spacing: 0.5px; margin-bottom: 4px;">Ecosystem Directives</h4>
-        <div class="card">
-            <div>
-                <div style="font-size:12px; font-weight:700">Official Telegram Network</div>
-                <div style="font-size:10px; color:var(--primary)">+1,000 $DKX</div>
-            </div>
-            <button class="action-btn" id="task-tg" onclick="claimDirective('tg', 'https://t.me/DKXOfficial')">Verify</button>
-        </div>
-        <div class="card">
-            <div>
-                <div style="font-size:12px; font-weight:700">Official Instagram Hub</div>
-                <div style="font-size:10px; color:var(--primary)">+1,000 $DKX</div>
-            </div>
-            <button class="action-btn" id="task-insta" onclick="claimDirective('insta', 'https://instagram.com/dakicks_dkx')">Verify</button>
-        </div>
-        <div class="card">
-            <div>
-                <div style="font-size:12px; font-weight:700">Official X Communications</div>
-                <div style="font-size:10px; color:var(--primary)">+1,000 $DKX</div>
-            </div>
-            <button class="action-btn" id="task-x" onclick="claimDirective('x', 'https://twitter.com/dakicks_dkx')">Verify</button>
-        </div>
-    </div>
-
-    <!-- TAB 5: WEB3 VAULT (CONNECT) -->
+    <!-- TAB 4: VAULT (CONTRACT & ON-CHAIN SOCKET) -->
     <div class="tab-content" id="tab-vault">
-        <div class="card" style="flex-direction:column; gap:12px; text-align:center; padding:22px 14px;">
-            <div style="font-size:32px;">🔐</div>
-            <div style="font-size:15px; font-weight:900;">On-Chain Smart Contract Socket</div>
-            <div style="font-size:10px; font-family:monospace; background:rgba(0,0,0,0.5); padding:6px 10px; border-radius:6px; border:1px solid var(--surface-border); word-break:break-all;" id="contractSocketDisplay">
-                0x0000000000000000000000000000000000000000 (GENESIS TESTNET)
+        <div class="eco-card" style="width: 100%; max-width: 380px; text-align: center; padding: 24px 16px;">
+            <div style="font-size: 32px;">🔐</div>
+            <div style="font-size: 15px; font-weight: 900; margin-top: 6px;">DKX Institutional Vault</div>
+            <div style="font-size: 10px; font-family: monospace; background: rgba(0,0,0,0.6); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--surface-border); word-break: break-all; margin: 12px 0;">
+                CONTRACT: 0x0000000000000000000000000000000000000000 (GENESIS TESTNET)
             </div>
-            <div style="font-size:11px; color:var(--text-muted); line-height:1.5;">
-                Wallet binding connects during the official liquidity seeding on BNB Smart Chain. All off-chain PoA balances will be mapped directly via signed cryptographic hash.
+            <div style="font-size: 11px; color: var(--text-muted); line-height: 1.5;">
+                Liquidity deployment is locked to BNB Smart Chain. On-chain trading pairs will route directly through decentralized liquidity protocols without third-party custodians.
             </div>
-            <button class="action-btn" style="width: 100%; margin-top: 4px;" disabled>CONNECT WEB3 WALLET (STANDBY)</button>
         </div>
     </div>
 
     <!-- NAVIGATION DOCK -->
     <div class="nav-dock">
         <div class="nav-grid">
-            <button class="nav-item active" onclick="switchNav('terminal', this)"><span>⛏️</span>Terminal</button>
+            <button class="nav-item active" onclick="switchNav('terminal', this)"><span>📈</span>Terminal</button>
             <button class="nav-item" onclick="switchNav('eco', this)"><span>👟</span>DAKICKS</button>
-            <button class="nav-item" onclick="switchNav('cipher', this)"><span>🔐</span>Cipher</button>
-                        <button class="nav-item" onclick="switchNav('cipher', this)"><span>🔐</span>Cipher</button>
-            <button class="nav-item" onclick="switchNav('directives', this)"><span>📜</span>Directives</button>
+            <button class="nav-item" onclick="switchNav('community', this)"><span>🌐</span>Community</button>
             <button class="nav-item" onclick="switchNav('vault', this)"><span>💎</span>Vault</button>
         </div>
     </div>
 
     <script>
-        // ==========================================================
-        // CRYPTOGRAPHIC ARCHITECTURE & LAUNCH CONFIGURATION
-        // ==========================================================
-        const DKX_CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
-        const DAILY_CIPHER_CODE = "6738";
-        const TARGET_ESTIMATED_VALUE_USD = 0.005;
-
-        document.getElementById('contractSocketDisplay').innerText = DKX_CONTRACT_ADDRESS;
-
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
-        // ==========================================================
-        // ANTI-CHEAT & ANTI-TAMPER SHIELD
-        // ==========================================================
-        const SECURITY_SALT = "DKX_PROT_HASH_SECURE_9921_SALT";
-        function generateIntegritySignature(val) {
-            let hash = 0;
-            const str = val.toString() + SECURITY_SALT;
-            for (let i = 0; i < str.length; i++) {
-                hash = ((hash << 5) - hash) + str.charCodeAt(i);
-                hash |= 0;
-            }
-            return hash.toString();
-        }
-
-        function triggerSecurityViolation(reason) {
-            console.warn("Security Alert: " + reason);
-            document.getElementById('antiCheatOverlay').style.display = 'flex';
-            isPlaying = false;
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
-                e.preventDefault();
-                triggerSecurityViolation("DevTools attempt blocked");
-            }
-        });
-
-        let tapTimestamps = [];
-        function verifyHardwareInputRate() {
-            const now = Date.now();
-            tapTimestamps.push(now);
-            tapTimestamps = tapTimestamps.filter(t => now - t < 1000);
-            if (tapTimestamps.length > 14) {
-                triggerSecurityViolation("Autoclicker detected");
-                return false;
-            }
-            return true;
-        }
-
-        // ==========================================================
-        // BALANCE INTEGRITY MANAGER (0 DEFAULT SECURED STATE)
-        // ==========================================================
-        function getValidatedScore() {
-            const rawScore = parseInt(localStorage.getItem('dkx_vault_tokens') || 0);
-            const sig = localStorage.getItem('dkx_vault_sig');
-            if (rawScore > 0 && (!sig || sig !== generateIntegritySignature(rawScore))) {
-                triggerSecurityViolation("Memory tampering detected");
-                return 0;
-            }
-            return isNaN(rawScore) ? 0 : rawScore;
-        }
-
-        function setValidatedScore(newScore) {
-            localStorage.setItem('dkx_vault_tokens', newScore);
-            localStorage.setItem('dkx_vault_sig', generateIntegritySignature(newScore));
-            updateDisplays();
-        }
-
-        let score = getValidatedScore();
-        let energy = 1000;
-
-        function updateDisplays() {
-            document.getElementById('scoreDisplay').innerText = score.toLocaleString();
-            const fiat = (score * TARGET_ESTIMATED_VALUE_USD).toFixed(2);
-            document.getElementById('fiatVal').innerText = `≈ $${fiat} USD`;
-        }
-        updateDisplays();
-
-        let currentBlock = 41920381;
+        let blockNum = 41920404;
         setInterval(() => {
-            currentBlock += 1;
-            document.getElementById('blockTicker').innerText = `Block #${currentBlock.toLocaleString()}`;
+            blockNum += 1;
+            document.getElementById('blockTicker').innerText = `BNB Chain #${blockNum.toLocaleString()}`;
         }, 3000);
-
-        // MINING ENGINE
-        const tapBtn = document.getElementById('tapBtn');
-        tapBtn.addEventListener('pointerdown', (e) => {
-            if (!verifyHardwareInputRate()) return;
-            if (energy < 1) return;
-
-            energy -= 1;
-            score += 1;
-            setValidatedScore(score);
-
-            document.getElementById('energyText').innerText = `${energy} / 1000`;
-            document.getElementById('energyFill').style.width = `${(energy / 1000) * 100}%`;
-
-            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-
-            const num = document.createElement('div');
-            num.className = 'tap-number';
-            num.innerText = '+1';
-            num.style.left = `${e.clientX - 8}px`;
-            num.style.top = `${e.clientY - 25}px`;
-            document.body.appendChild(num);
-            setTimeout(() => num.remove(), 500);
-        });
-
-        // Controlled recharge: 1 energy every 12 seconds
-        setInterval(() => {
-            if (energy < 1000) {
-                energy += 1;
-                document.getElementById('energyText').innerText = `${energy} / 1000`;
-                document.getElementById('energyFill').style.width = `${(energy / 1000) * 100}%`;
-            }
-        }, 12000);
 
         function switchNav(id, btn) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`tab-${id}`).classList.add('active');
             btn.classList.add('active');
-            if (id === 'cipher') checkCipherLock();
-        }
-
-        // DIRECTIVES SYSTEM
-        function initDirectives() {
-            ['tg', 'insta', 'x'].forEach(t => {
-                if (localStorage.getItem(`dkx_dir_done_${t}`) === 'true') {
-                    const b = document.getElementById(`task-${t}`);
-                    b.innerText = 'Verified';
-                    b.classList.add('claimed');
-                }
-            });
-        }
-        initDirectives();
-
-        function claimDirective(type, url) {
-            if (localStorage.getItem(`dkx_dir_done_${type}`) === 'true') return;
-            window.open(url, '_blank');
-            setTimeout(() => {
-                score += 1000;
-                setValidatedScore(score);
-                localStorage.setItem(`dkx_dir_done_${type}`, 'true');
-                initDirectives();
-                showRewardModal(1000);
-            }, 3000);
-        }
-
-        // CIPHER ENGINE
-        document.getElementById('targetCodeDisplay').innerText = DAILY_CIPHER_CODE.split('').join(' ');
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let playerX = 180, coins = [], caughtCode = "", isPlaying = false, lastCoinTime = 0;
-        let timerInterval = null;
-
-        function checkCipherLock() {
-            const lastSolved = localStorage.getItem('dkx_cipher_solved_time');
-            const statusEl = document.getElementById('gameLockStatus');
-            const startBtn = document.getElementById('startBtn');
-            if (timerInterval) clearInterval(timerInterval);
-
-            if (lastSolved) {
-                const lockDuration = 24 * 60 * 60 * 1000;
-                const updateCountdown = () => {
-                    const elapsed = Date.now() - parseInt(lastSolved);
-                    const remaining = lockDuration - elapsed;
-                    if (remaining > 0) {
-                        const h = Math.floor(remaining / (1000 * 60 * 60));
-                        const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-                        const s = Math.floor((remaining % (1000 * 60)) / 1000);
-                        statusEl.innerText = `⏳ Solved! Next decryption in ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                        startBtn.innerText = "Security Sealed";
-                        startBtn.classList.add('claimed');
-                    } else {
-                        clearInterval(timerInterval);
-                        statusEl.innerText = "";
-                        startBtn.innerText = "INITIALIZE CIPHER RUN";
-                        startBtn.classList.remove('claimed');
-                    }
-                };
-                updateCountdown();
-                timerInterval = setInterval(updateCountdown, 1000);
-                return (Date.now() - parseInt(lastSolved)) < lockDuration;
-            }
-            return false;
-        }
-
-        canvas.addEventListener('touchmove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            playerX = Math.max(30, Math.min(330, e.touches[0].clientX - rect.left));
-        });
-
-        function initOrRestartGame() {
-            if (checkCipherLock()) return;
-            coins = [];
-            caughtCode = "";
-            isPlaying = true;
-            document.getElementById('currentCaughtDisplay').innerText = "_ _ _ _";
-            document.getElementById('startBtn').innerText = "Catch Stream Digits...";
-            requestAnimationFrame(cipherLoop);
-        }
-
-        function cipherLoop(timestamp) {
-            if (!isPlaying) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = "#9dfc3b";
-            ctx.shadowColor = "#9dfc3b";
-            ctx.shadowBlur = 10;
-            ctx.fillRect(playerX - 25, 220, 50, 8);
-            ctx.shadowBlur = 0;
-
-            if (timestamp - lastCoinTime > 650) {
-                const digit = Math.floor(Math.random() * 10).toString();
-                coins.push({ x: Math.random() * (canvas.width - 60) + 30, y: -20, num: digit, speed: 3.5 });
-                lastCoinTime = timestamp;
-            }
-
-            for (let i = coins.length - 1; i >= 0; i--) {
-                const c = coins[i];
-                c.y += c.speed;
-
-                ctx.beginPath();
-                ctx.arc(c.x, c.y, 15, 0, Math.PI * 2);
-                ctx.fillStyle = "#122516";
-                ctx.strokeStyle = "#9dfc3b";
-                ctx.lineWidth = 1.5;
-                ctx.fill();
-                ctx.stroke();
-
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 14px monospace';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(c.num, c.x, c.y + 1);
-
-                if (c.y >= 210 && c.y <= 235 && Math.abs(c.x - playerX) < 30) {
-                    caughtCode += c.num;
-                    coins.splice(i, 1);
-
-                    let formatted = caughtCode.split('').join(' ');
-                    for (let k = caughtCode.length; k < 4; k++) formatted += " _";
-                    document.getElementById('currentCaughtDisplay').innerText = formatted;
-
-                    if (caughtCode.length === 4) {
-                        isPlaying = false;
-                        if (caughtCode === DAILY_CIPHER_CODE) {
-                            score += 1500;
-                            setValidatedScore(score);
-                            localStorage.setItem('dkx_cipher_solved_time', Date.now().toString());
-                            showRewardModal(1500);
-                        } else {
-                            alert(`❌ Decryption Mismatch (${caughtCode})! Correct Hash Key was ${DAILY_CIPHER_CODE}.`);
-                        }
-                        checkCipherLock();
-                        return;
-                    }
-                    continue;
-                }
-                if (c.y > canvas.height + 20) coins.splice(i, 1);
-            }
-            requestAnimationFrame(cipherLoop);
-        }
-
-        function showRewardModal(amount) {
-            document.getElementById('rewardText').innerText = `+${amount.toLocaleString()} $DKX`;
-            document.getElementById('rewardModal').classList.add('open');
-        }
-        function closeRewardModal() {
-            document.getElementById('rewardModal').classList.remove('open');
         }
     </script>
 </body>
 </html>
 
-         
+    
