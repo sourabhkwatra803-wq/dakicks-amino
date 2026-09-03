@@ -1,17 +1,19 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DAKICKS Amino</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Three.js for true high-performance 3D gameplay and wardrobe -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
             --primary: #9dfc3b;
             --primary-glow: rgba(157, 252, 59, 0.45);
             --bg-gradient: radial-gradient(circle at 50% 30%, #0d2010 0%, #060b08 60%, #020403 100%);
-            --surface: rgba(17, 26, 20, 0.75);
-            --surface-border: rgba(157, 252, 59, 0.2);
+            --surface: rgba(17, 26, 20, 0.85);
+            --surface-border: rgba(157, 252, 59, 0.25);
             --text-muted: #829a8a;
         }
 
@@ -35,37 +37,12 @@
             flex-direction: column;
             justify-content: space-between;
             overflow: hidden;
-            position: relative;
-        }
-
-        /* Ambient floating particles */
-        .ambient-layer {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .bg-particle {
-            position: absolute;
-            background: radial-gradient(circle, rgba(157, 252, 59, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: floatSlow 12s infinite linear;
-        }
-
-        @keyframes floatSlow {
-            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            30% { opacity: 0.6; }
-            80% { opacity: 0.6; }
-            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
         }
 
         .header {
-            padding: 16px 20px 8px;
+            padding: 12px 20px 6px;
             text-align: center;
-            position: relative;
-            z-index: 1;
+            z-index: 10;
         }
 
         .brand-badge {
@@ -81,116 +58,94 @@
             letter-spacing: 1.5px;
             color: var(--primary);
             text-transform: uppercase;
-            box-shadow: 0 0 15px rgba(157, 252, 59, 0.15);
+        }
+
+        .level-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         .score-val {
-            font-size: 46px;
+            font-size: 42px;
             font-weight: 900;
             letter-spacing: -1px;
-            margin-top: 6px;
+            margin-top: 2px;
             text-shadow: 0 0 25px var(--primary-glow);
-        }
-
-        .score-sub {
-            font-size: 11px;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 700;
         }
 
         .tab-content {
             flex-grow: 1;
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px 20px;
+            padding: 10px 16px;
             position: relative;
-            z-index: 1;
             overflow-y: auto;
+            width: 100%;
         }
 
-        /* 3D Coin & Aura */
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* 3D COIN TAPPER */
         .coin-wrapper {
             position: relative;
             perspective: 1000px;
         }
 
-        .coin-aura {
-            position: absolute;
-            inset: -20px;
-            background: radial-gradient(circle, rgba(157, 252, 59, 0.35) 0%, transparent 70%);
-            border-radius: 50%;
-            filter: blur(15px);
-            z-index: 0;
-            animation: pulseAura 3s infinite ease-in-out;
-        }
-
-        @keyframes pulseAura {
-            0%, 100% { transform: scale(0.95); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 0.9; }
-        }
-
         .coin-3d {
-            width: 235px;
-            height: 235px;
+            width: 215px;
+            height: 215px;
             border-radius: 50%;
             background: radial-gradient(circle at 35% 30%, #c4ff5e 0%, #8ae01c 40%, #437a06 85%, #193302 100%);
-            box-shadow: 
-                0 0 0 6px rgba(157, 252, 59, 0.3),
-                0 20px 45px rgba(0, 0, 0, 0.9),
-                0 0 40px var(--primary-glow),
-                inset 0 4px 10px rgba(255, 255, 255, 0.8),
-                inset 0 -8px 16px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 0 6px rgba(157, 252, 59, 0.3), 0 20px 45px rgba(0, 0, 0, 0.9), 0 0 40px var(--primary-glow);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            position: relative;
-            z-index: 1;
-            transform-style: preserve-3d;
             transition: transform 0.08s ease-out;
             touch-action: manipulation;
         }
 
         .coin-rim {
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
             border: 2px dashed rgba(255, 255, 255, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 75%);
         }
 
         .coin-logo-svg {
-            width: 125px;
-            height: 125px;
-            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+            width: 110px;
+            height: 110px;
+            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.65));
         }
 
         .energy-wrapper {
             width: 100%;
-            max-width: 320px;
-            margin-top: 25px;
+            max-width: 300px;
+            margin-top: 20px;
         }
 
         .energy-meta {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             margin-bottom: 6px;
         }
 
         .energy-bar-bg {
             width: 100%;
-            height: 9px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--surface-border);
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 12px;
             overflow: hidden;
         }
@@ -200,25 +155,41 @@
             width: 100%;
             background: linear-gradient(90deg, #6ee7b7, var(--primary));
             border-radius: 12px;
-            box-shadow: 0 0 10px var(--primary);
             transition: width 0.2s ease;
         }
 
-        .panel {
-            display: none;
+        /* 3D RUNNER GAME VIEW */
+        #canvas3d-container {
             width: 100%;
-            max-width: 400px;
-            flex-direction: column;
-            gap: 12px;
-            padding-bottom: 10px;
+            height: 340px;
+            border-radius: 18px;
+            border: 1px solid var(--surface-border);
+            overflow: hidden;
+            position: relative;
+            background: #000;
         }
 
+        .game-overlay-hud {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        /* CARDS & UI */
         .card {
             background: var(--surface);
             border: 1px solid var(--surface-border);
-            backdrop-filter: blur(10px);
             border-radius: 14px;
-            padding: 14px 16px;
+            padding: 12px 16px;
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -232,146 +203,107 @@
 
         .card-icon {
             font-size: 22px;
-            width: 42px;
-            height: 42px;
-            background: rgba(157, 252, 59, 0.06);
-            border: 1px solid rgba(157, 252, 59, 0.15);
+            width: 40px;
+            height: 40px;
+            background: rgba(157, 252, 59, 0.08);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .card-title {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-
-        .card-subtitle {
-            font-size: 12px;
-            color: var(--primary);
-            font-weight: 600;
-        }
-
         .action-btn {
             background: var(--primary);
             color: #0b0e14;
             border: none;
-            padding: 9px 16px;
+            padding: 8px 14px;
             border-radius: 8px;
             font-weight: 800;
             font-size: 12px;
-            text-decoration: none;
             cursor: pointer;
-            transition: transform 0.1s ease;
+            text-decoration: none;
         }
 
-        .action-btn:active {
-            transform: scale(0.95);
-        }
-
-        .action-btn:disabled {
+        .action-btn.claimed {
             background: rgba(255, 255, 255, 0.08);
             color: var(--text-muted);
-            cursor: not-allowed;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: default;
         }
 
+        /* NAVIGATION DOCK */
         .nav-dock {
-            padding: 10px 16px 18px;
-            background: rgba(7, 13, 9, 0.85);
-            backdrop-filter: blur(16px);
+            padding: 10px 10px 18px;
+            background: rgba(7, 13, 9, 0.95);
             border-top: 1px solid var(--surface-border);
-            position: relative;
-            z-index: 2;
         }
 
         .nav-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
         }
 
         .nav-item {
             background: none;
             border: none;
             color: var(--text-muted);
-            padding: 8px 4px;
-            border-radius: 12px;
+            padding: 6px 2px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            font-size: 11px;
+            gap: 3px;
+            font-size: 10px;
             font-weight: 700;
             cursor: pointer;
         }
 
         .nav-item.active {
             color: var(--primary);
-            background: rgba(157, 252, 59, 0.1);
-            border: 1px solid rgba(157, 252, 59, 0.2);
-        }
-
-        .nav-item span {
-            font-size: 18px;
+            background: rgba(157, 252, 59, 0.12);
         }
 
         .tap-number {
             position: absolute;
             color: #ffffff;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 900;
             pointer-events: none;
-            animation: float 0.65s ease-out forwards;
+            animation: float 0.6s ease-out forwards;
             text-shadow: 0 0 10px var(--primary);
-            z-index: 10;
+            z-index: 99;
         }
 
         @keyframes float {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-70px) scale(1.4); }
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-50px); }
         }
     </style>
 </head>
 <body>
 
-    <!-- Ambient particles in background -->
-    <div class="ambient-layer" id="ambientBg"></div>
-
     <div class="header">
-        <div class="brand-badge">⚡ BNB Chain Architecture</div>
-        <div class="score-container">
-            <div class="score-val">
-                <span id="score">0</span>
-            </div>
-            <div class="score-sub">$DKX Mined</div>
-        </div>
+        <div class="brand-badge">⚡ BNB Chain Official</div>
+        <div class="level-title" id="rankBadge">Tier I • Street Novice</div>
+        <div class="score-val" id="score">0</div>
     </div>
 
-    <!-- MINE PANEL -->
-    <div class="tab-content" id="panel-mine">
+    <!-- 1. MINE TAB -->
+    <div class="tab-content active" id="tab-mine">
         <div class="coin-wrapper">
-            <div class="coin-aura"></div>
             <div class="coin-3d" id="tapBtn">
                 <div class="coin-rim">
                     <svg class="coin-logo-svg" viewBox="0 0 500 500">
                         <path d="M140 215 C135 155, 260 135, 345 155 C370 162, 385 190, 375 240 C360 300, 310 345, 265 345 C230 345, 215 315, 235 295 C250 280, 275 285, 290 270 C305 255, 310 230, 295 215 C275 195, 220 200, 185 220 Z" 
-                              fill="#142c01" transform="translate(0, 8)" />
-                        <path d="M140 215 C135 155, 260 135, 345 155 C370 162, 385 190, 375 240 C360 300, 310 345, 265 345 C230 345, 215 315, 235 295 C250 280, 275 285, 290 270 C305 255, 310 230, 295 215 C275 195, 220 200, 185 220 Z" 
                               fill="none" stroke="#e8ffb3" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M140 215 C135 155, 260 135, 345 155 C370 162, 385 190, 375 240 C360 300, 310 345, 265 345 C230 345, 215 315, 235 295 C250 280, 275 285, 290 270 C305 255, 310 230, 295 215 C275 195, 220 200, 185 220 Z" 
-                              fill="none" stroke="#254d04" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </div>
             </div>
         </div>
-
         <div class="energy-wrapper">
             <div class="energy-meta">
-                <span style="color: var(--text-muted); font-size: 11px; letter-spacing: 1px;">ENERGY</span>
-                <span id="energyText" style="color: var(--primary);">1000 / 1000</span>
+                <span style="color: var(--text-muted)">ENERGY</span>
+                <span id="energyText" style="color: var(--primary)">1000 / 1000</span>
             </div>
             <div class="energy-bar-bg">
                 <div class="energy-bar-fill" id="energyFill"></div>
@@ -379,106 +311,99 @@
         </div>
     </div>
 
-    <!-- BOOSTS PANEL (WITH COOLDOWN TIMERS) -->
-    <div class="tab-content panel" id="panel-boosts">
-        <h3 style="font-size: 18px; margin-bottom: 6px;">Protocol Upgrades</h3>
-        <div class="card">
-            <div class="card-left">
-                <div class="card-icon">⚡</div>
-                <div>
-                    <div class="card-title">Multi-Tap Mining</div>
-                    <div class="card-subtitle" id="tapCostText">+1 per click • 500 $DKX</div>
-                </div>
+    <!-- 2. 3D GAME TAB (RUNNER 3D) -->
+    <div class="tab-content" id="tab-game3d">
+        <div id="canvas3d-container">
+            <div class="game-overlay-hud">
+                <span>RUN: <span id="game3d-dist" style="color:var(--primary)">0m</span></span>
+                <span>SWIPE TO DODGE</span>
             </div>
-            <button class="action-btn" id="tapBoostBtn" onclick="buyBoost('tap')">Upgrade</button>
+        </div>
+        <button class="action-btn" style="margin-top:14px; width:100%; max-width:380px;" onclick="startRunnerGame()">Restart 3D Run</button>
+    </div>
+
+    <!-- 3. 3D WARDROBE (ALMIRAH STUDIO) -->
+    <div class="tab-content" id="tab-wardrobe">
+        <h3 style="margin-bottom:12px; font-size:16px;">DAKICKS Almirah Studio</h3>
+        <div id="wardrobe-preview" style="width:100%; max-width:380px; height:180px; background:rgba(255,255,255,0.03); border:1px solid var(--surface-border); border-radius:14px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; font-size:48px;">
+            👟👕
         </div>
         <div class="card">
             <div class="card-left">
-                <div class="card-icon">🔋</div>
+                <div class="card-icon">🎽</div>
                 <div>
-                    <div class="card-title">Energy Reserve</div>
-                    <div class="card-subtitle" id="energyCostText">+500 Capacity • 1,000 $DKX</div>
+                    <div style="font-size:14px; font-weight:700">Cyber Hoodie</div>
+                    <div style="font-size:11px; color:var(--primary)">Tier II Upgrade • 2,000 $DKX</div>
                 </div>
             </div>
-            <button class="action-btn" id="energyBoostBtn" onclick="buyBoost('energy')">Upgrade</button>
+            <button class="action-btn" id="outfitBtn-1" onclick="equipOutfit(1, 2000, 'Tier II • Cyber Walker')">Equip</button>
+        </div>
+        <div class="card">
+            <div class="card-left">
+                <div class="card-icon">🥋</div>
+                <div>
+                    <div style="font-size:14px; font-weight:700">Genesis Gold Tracksuit</div>
+                    <div style="font-size:11px; color:var(--primary)">Tier III Upgrade • 10,000 $DKX</div>
+                </div>
+            </div>
+            <button class="action-btn" id="outfitBtn-2" onclick="equipOutfit(2, 10000, 'Tier III • Protocol Sovereign')">Equip</button>
         </div>
     </div>
 
-    <!-- TASKS PANEL -->
-    <div class="tab-content panel" id="panel-tasks">
-        <h3 style="font-size: 18px; margin-bottom: 6px;">On-Chain Directives</h3>
+    <!-- 4. TASKS TAB (LIFETIME ONE-TIME ONLY) -->
+    <div class="tab-content" id="tab-tasks">
+        <h3 style="margin-bottom:12px; font-size:16px;">Ecosystem Directives</h3>
         <div class="card">
             <div class="card-left">
                 <div class="card-icon">📢</div>
                 <div>
-                    <div class="card-title">Join Telegram Channel</div>
-                    <div class="card-subtitle">+5,000 $DKX</div>
+                    <div style="font-size:14px; font-weight:700">Official Telegram</div>
+                    <div style="font-size:12px; color:var(--primary)">+5,000 $DKX (Once)</div>
                 </div>
             </div>
-            <a href="https://t.me/DKXOfficial" target="_blank" class="action-btn" onclick="rewardTask(this, 5000)">Join</a>
+            <button class="action-btn" id="task-tg" onclick="claimTask('tg', 'https://t.me/DKXOfficial')">Claim</button>
         </div>
         <div class="card">
             <div class="card-left">
                 <div class="card-icon">📸</div>
                 <div>
-                    <div class="card-title">Follow Instagram</div>
-                    <div class="card-subtitle">+5,000 $DKX</div>
+                    <div style="font-size:14px; font-weight:700">Instagram Protocol</div>
+                    <div style="font-size:12px; color:var(--primary)">+5,000 $DKX (Once)</div>
                 </div>
             </div>
-            <a href="https://instagram.com/dakicks_dkx" target="_blank" class="action-btn" onclick="rewardTask(this, 5000)">Follow</a>
+            <button class="action-btn" id="task-insta" onclick="claimTask('insta', 'https://instagram.com/dakicks_dkx')">Claim</button>
         </div>
         <div class="card">
             <div class="card-left">
                 <div class="card-icon">✖️</div>
                 <div>
-                    <div class="card-title">Follow on X Protocol</div>
-                    <div class="card-subtitle">+5,000 $DKX</div>
+                    <div style="font-size:14px; font-weight:700">X Protocol</div>
+                    <div style="font-size:12px; color:var(--primary)">+5,000 $DKX (Once)</div>
                 </div>
             </div>
-            <a href="https://twitter.com/dakicks_dkx" target="_blank" class="action-btn" onclick="rewardTask(this, 5000)">Follow</a>
+            <button class="action-btn" id="task-x" onclick="claimTask('x', 'https://twitter.com/dakicks_dkx')">Claim</button>
         </div>
     </div>
 
-    <!-- STATS PANEL -->
-    <div class="tab-content panel" id="panel-stats">
-        <h3 style="font-size: 18px; margin-bottom: 6px;">Genesis Allocation</h3>
-        <div class="card">
-            <div class="card-left">
-                <div class="card-icon">💎</div>
-                <div>
-                    <div class="card-title">Liquidity Lock Status</div>
-                    <div class="card-subtitle">100% Locked at Launch</div>
-                </div>
-            </div>
-            <span style="color: var(--primary); font-size: 12px; font-weight: bold;">VERIFIED</span>
-        </div>
-        <div class="card">
-            <div class="card-left">
-                <div class="card-icon">🌐</div>
-                <div>
-                    <div class="card-title">Web3 Streetwear Link</div>
-                    <div class="card-subtitle">Physical Drops & Token Gate</div>
-                </div>
-            </div>
-            <button class="action-btn" disabled>Phase 2</button>
+    <!-- 5. AIRDROP & BNB WALLET -->
+    <div class="tab-content" id="tab-airdrop">
+        <h3 style="margin-bottom:14px; font-size:16px;">BNB Smart Chain Gateway</h3>
+        <div class="card" style="flex-direction:column; gap:12px; text-align:center;">
+            <div style="font-size:14px; font-weight:700">Web3 Liquidity Connection</div>
+            <div style="font-size:12px; color:var(--text-muted)">Connect Trust Wallet or MetaMask for $DKX Token Genesis drop.</div>
+            <button class="action-btn" id="walletBtn" style="width:100%" onclick="connectBNBWallet()">Connect BNB Wallet</button>
+            <div id="walletAddr" style="font-size:11px; color:var(--primary); word-break:break-all;"></div>
         </div>
     </div>
 
-    <!-- DOCK NAVIGATION -->
+    <!-- NAVIGATION BAR -->
     <div class="nav-dock">
         <div class="nav-grid">
-            <button class="nav-item active" onclick="switchView('mine', this)">
-                <span>⛏️</span>Mine
-            </button>
-            <button class="nav-item" onclick="switchView('boosts', this)">
-                <span>🚀</span>Boosts
-            </button>
-            <button class="nav-item" onclick="switchView('tasks', this)">
-                <span>📜</span>Tasks
-            </button>
-            <button class="nav-item" onclick="switchView('stats', this)">
-                <span>🏆</span>Airdrop
-            </button>
+            <button class="nav-item active" onclick="switchNav('mine', this)"><span>⛏️</span>Mine</button>
+            <button class="nav-item" onclick="switchNav('game3d', this)"><span>🕹️</span>Game 3D</button>
+            <button class="nav-item" onclick="switchNav('wardrobe', this)"><span>🚪</span>Almirah</button>
+            <button class="nav-item" onclick="switchNav('tasks', this)"><span>📜</span>Tasks</button>
+            <button class="nav-item" onclick="switchNav('airdrop', this)"><span>💎</span>Wallet</button>
         </div>
     </div>
 
@@ -489,84 +414,219 @@
             tg.enableClosingConfirmation();
         }
 
-        // Web Audio Synthesizer (Metallic Coin Sound)
+        // Web Audio Synthesizer (Instant SFX without external audio lag)
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playCoinSound() {
+        function playTone(freq, type = 'sine', duration = 0.08) {
             try {
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
+                if (audioCtx.state === 'suspended') audioCtx.resume();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(987.77, audioCtx.currentTime); // B5 note
-                osc.frequency.exponentialRampToValueAtTime(1318.51, audioCtx.currentTime + 0.08); // E6 note
-
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
                 osc.start();
-                osc.stop(audioCtx.currentTime + 0.08);
-            } catch (e) {}
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
         }
 
-        // Spawn ambient particles
-        const ambientBg = document.getElementById('ambientBg');
-        for (let i = 0; i < 15; i++) {
-            const p = document.createElement('div');
-            p.className = 'bg-particle';
-            const size = Math.random() * 40 + 20;
-            p.style.width = `${size}px`;
-            p.style.height = `${size}px`;
-            p.style.left = `${Math.random() * 100}%`;
-            p.style.animationDelay = `${Math.random() * 8}s`;
-            p.style.animationDuration = `${Math.random() * 8 + 8}s`;
-            ambientBg.appendChild(p);
-        }
-
+        // Game State
         let score = parseInt(localStorage.getItem('dkx_score') || 0);
-        let tapPower = parseInt(localStorage.getItem('dkx_tap_power') || 1);
-        let maxEnergy = parseInt(localStorage.getItem('dkx_max_energy') || 1000);
-        let energy = maxEnergy;
+        let energy = 1000;
+        let rank = localStorage.getItem('dkx_rank') || 'Tier I • Street Novice';
 
-        let tapBoostLevel = parseInt(localStorage.getItem('dkx_tap_lvl') || 1);
-        let energyBoostLevel = parseInt(localStorage.getItem('dkx_energy_lvl') || 1);
+        document.getElementById('score').innerText = score.toLocaleString();
+        document.getElementById('rankBadge').innerText = rank;
 
-        const scoreEl = document.getElementById('score');
-        const energyText = document.getElementById('energyText');
-        const energyFill = document.getElementById('energyFill');
+        // Mining Tap
         const tapBtn = document.getElementById('tapBtn');
-
-        function updateUI() {
-            scoreEl.innerText = score.toLocaleString();
-            energyText.innerText = `${energy} / ${maxEnergy}`;
-            energyFill.style.width = `${(energy / maxEnergy) * 100}%`;
-            
-            document.getElementById('tapCostText').innerText = `+1 per click • ${(tapBoostLevel * 500).toLocaleString()} $DKX`;
-            document.getElementById('energyCostText').innerText = `+500 Capacity • ${(energyBoostLevel * 1000).toLocaleString()} $DKX`;
-        }
-        updateUI();
-
-        // 3D Coin Tap Handling
         tapBtn.addEventListener('pointerdown', (e) => {
-            e.preventDefault();
-            if (energy < tapPower) return;
-
-            energy -= tapPower;
-            score += tapPower;
+            if (energy < 1) return;
+            energy -= 1;
+            score += 1;
             localStorage.setItem('dkx_score', score);
-            updateUI();
+            document.getElementById('score').innerText = score.toLocaleString();
+            document.getElementById('energyText').innerText = `${energy} / 1000`;
+            document.getElementById('energyFill').style.width = `${(energy / 1000) * 100}%`;
 
-            playCoinSound();
+            playTone(950, 'sine', 0.06);
+            if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
 
-            if (tg?.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('medium');
+            // Floating +1
+            const num = document.createElement('div');
+            num.className = 'tap-number';
+            num.innerText = '+1';
+            num.style.left = `${e.clientX - 10}px`;
+            num.style.top = `${e.clientY - 25}px`;
+            document.body.appendChild(num);
+            setTimeout(() => num.remove(), 600);
+        });
+
+        // Energy Recovery
+        setInterval(() => {
+            if (energy < 1000) {
+                energy += 2;
+                document.getElementById('energyText').innerText = `${energy} / 1000`;
+                document.getElementById('energyFill').style.width = `${(energy / 1000) * 100}%`;
             }
+        }, 1000);
 
-            const rect = tapBtn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            
-                                                     
+        // Navigation Controller
+        function switchNav(id, btn) {
+            playTone(440, 'triangle', 0.05);
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${id}`).classList.add('active');
+            btn.classList.add('active');
+            if (id === 'game3d') initThreeRunner();
+        }
+
+        // ONE-TIME ONLY SOCIAL TASKS
+        function checkTaskStatus() {
+            ['tg', 'insta', 'x'].forEach(t => {
+                if (localStorage.getItem(`dkx_task_${t}`) === 'done') {
+                    const b = document.getElementById(`task-${t}`);
+                    b.innerText = 'Completed';
+                    b.classList.add('claimed');
+                    b.disabled = true;
+                }
+            });
+        }
+        checkTaskStatus();
+
+        function claimTask(type, url) {
+            if (localStorage.getItem(`dkx_task_${type}`) === 'done') return;
+            window.open(url, '_blank');
+            playTone(600, 'sine', 0.1);
+
+            setTimeout(() => {
+                score += 5000;
+                localStorage.setItem('dkx_score', score);
+                localStorage.setItem(`dkx_task_${type}`, 'done');
+                document.getElementById('score').innerText = score.toLocaleString();
+                checkTaskStatus();
+                playTone(1200, 'sine', 0.2);
+            }, 3500);
+        }
+
+        // WARDROBE LEVEL SYSTEM
+        function equipOutfit(id, cost, rankName) {
+            if (score < cost) return alert("Not enough $DKX!");
+            score -= cost;
+            rank = rankName;
+            localStorage.setItem('dkx_score', score);
+            localStorage.setItem('dkx_rank', rank);
+            document.getElementById('score').innerText = score.toLocaleString();
+            document.getElementById('rankBadge').innerText = rank;
+            document.getElementById(`outfitBtn-${id}`).innerText = "Equipped";
+            document.getElementById(`outfitBtn-${id}`).disabled = true;
+            playTone(880, 'sine', 0.2);
+        }
+
+        // BNB WALLET CONNECT
+        async function connectBNBWallet() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    document.getElementById('walletAddr').innerText = `Connected: ${accounts[0].substring(0,6)}...${accounts[0].substring(38)}`;
+                    document.getElementById('walletBtn').innerText = "Wallet Linked";
+                    playTone(800, 'sine', 0.15);
+                } catch(e) {
+                    alert("Connection rejected");
+                }
+            } else {
+                               alert("Please open inside Trust Wallet or MetaMask browser to link Web3 directly!");
+            }
+        }
+
+        // 3D RUNNER GAME (THREE.JS IMPLEMENTATION)
+        let scene, camera, renderer, playerCube, obstacles = [], gameInterval, dist = 0, isGameRunning = false;
+
+        function initThreeRunner() {
+            const container = document.getElementById('canvas3d-container');
+            if (renderer) return;
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x060b08);
+
+            camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 3, 6);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            const light = new THREE.DirectionalLight(0x9dfc3b, 1.5);
+            light.position.set(0, 5, 5);
+            scene.add(light);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+
+            // Player Sneaker Capsule
+            const geom = new THREE.BoxGeometry(0.8, 0.4, 1.4);
+            const mat = new THREE.MeshStandardMaterial({ color: 0x9dfc3b, roughness: 0.2, metalness: 0.8 });
+            playerCube = new THREE.Mesh(geom, mat);
+            scene.add(playerCube);
+
+            // Touch Swipe Handler
+            let startX = 0;
+            container.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+            container.addEventListener('touchmove', e => {
+                let diff = e.touches[0].clientX - startX;
+                if (diff > 30 && playerCube.position.x < 1.5) { playerCube.position.x += 0.1; playTone(300, 'triangle', 0.04); }
+                if (diff < -30 && playerCube.position.x > -1.5) { playerCube.position.x -= 0.1; playTone(300, 'triangle', 0.04); }
+            });
+
+            startRunnerGame();
+        }
+
+        function startRunnerGame() {
+            obstacles.forEach(o => scene.remove(o));
+            obstacles = [];
+            dist = 0;
+            isGameRunning = true;
+            playerCube.position.set(0, 0, 0);
+
+            function loop() {
+                if (!isGameRunning) return;
+                requestAnimationFrame(loop);
+                dist += 1;
+                document.getElementById('game3d-dist').innerText = `${dist}m`;
+
+                // Spawn Obstacle
+                if (Math.random() < 0.03) {
+                    const obsGeom = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+                    const obsMat = new THREE.MeshBasicMaterial({ color: 0xff3b30 });
+                    const obs = new THREE.Mesh(obsGeom, obsMat);
+                    obs.position.set((Math.random() - 0.5) * 3, 0, -25);
+                    scene.add(obs);
+                    obstacles.push(obs);
+                }
+
+                // Move Obstacles
+                for (let i = obstacles.length - 1; i >= 0; i--) {
+                    obstacles[i].position.z += 0.3;
+                    // Collision Check
+                    if (obstacles[i].position.distanceTo(playerCube.position) < 0.8) {
+                        isGameRunning = false;
+                        playTone(150, 'sawtooth', 0.3);
+                        alert(`Crash! Earned ${Math.floor(dist/2)} $DKX!`);
+                        score += Math.floor(dist / 2);
+                        localStorage.setItem('dkx_score', score);
+                        document.getElementById('score').innerText = score.toLocaleString();
+                        return;
+                    }
+                    if (obstacles[i].position.z > 8) {
+                        scene.remove(obstacles[i]);
+                        obstacles.splice(i, 1);
+                    }
+                }
+                renderer.render(scene, camera);
+            }
+            loop();
+        }
+    </script>
+</body>
+</html>
