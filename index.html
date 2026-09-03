@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <title>DAKICKS (DKX) INSTITUTIONAL TERMINAL</title>
+    <title>DKX Institutional Terminal</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
         :root {
-            --bg-base: #020503;
-            --surface: #070d08;
-            --surface-border: #112214;
+            --bg-base: #030704;
+            --surface: #0a110b;
+            --surface-border: #142417;
             --brand-green: #00ff88;
             --brand-glow: rgba(0, 255, 136, 0.25);
             --text-main: #f0fdf4;
             --text-muted: #86efac;
+            --subtext: #94a3b8;
         }
 
         * {
@@ -27,7 +28,7 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -35,29 +36,27 @@
             color: var(--text-main);
             overflow-x: hidden;
             min-height: 100vh;
-            padding-bottom: 85px;
+            padding-bottom: 75px;
         }
 
-        /* 3D COIN DROP & ZOOM SPLASH */
+        /* 3D COIN INTRO SPLASH */
         #splash-screen {
             position: fixed;
             inset: 0;
-            background: #020503;
+            background: #030704;
             z-index: 999999;
             display: flex;
             justify-content: center;
             align-items: center;
             pointer-events: none;
             transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: opacity;
         }
 
         .splash-coin-box {
             display: flex;
             flex-direction: column;
             align-items: center;
-            animation: coinSequence 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            will-change: transform, opacity;
+            animation: coinDropAnim 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .splash-coin-img {
@@ -65,42 +64,42 @@
             height: 175px;
             border-radius: 50%;
             object-fit: cover;
-            filter: drop-shadow(0 0 45px rgba(0, 255, 136, 0.7));
+            filter: drop-shadow(0 0 40px rgba(0, 255, 136, 0.65));
         }
 
-        @keyframes coinSequence {
+        @keyframes coinDropAnim {
             0% {
-                transform: translateY(-550px) scale(0.3) rotate(-15deg);
+                transform: translateY(-600px) scale(0.35);
                 opacity: 0;
             }
             35% {
-                transform: translateY(0px) scale(1.15) rotate(0deg);
+                transform: translateY(0px) scale(1.1);
                 opacity: 1;
             }
             50% {
-                transform: translateY(-14px) scale(1.0);
+                transform: translateY(-12px) scale(1.0);
             }
             72% {
-                transform: translateY(0px) scale(1.05);
+                transform: translateY(0px) scale(1.03);
                 opacity: 1;
             }
             85% {
-                transform: scale(1.25);
+                transform: scale(1.2);
                 opacity: 1;
             }
             100% {
-                transform: scale(3.2);
+                transform: scale(2.8);
                 opacity: 0;
             }
         }
 
-        /* HEADER */
+        /* TOP STATUS BAR */
         .terminal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
-            background: rgba(7, 13, 8, 0.95);
+            padding: 12px 14px;
+            background: rgba(3, 7, 4, 0.95);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--surface-border);
             position: sticky;
@@ -113,10 +112,11 @@
             font-weight: 800;
             color: var(--brand-green);
             background: rgba(0, 255, 136, 0.1);
-            padding: 5px 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 5px 9px;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 136, 0.25);
             letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .badge-live {
@@ -133,102 +133,203 @@
             height: 7px;
             background-color: var(--brand-green);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--brand-green);
+            box-shadow: 0 0 8px var(--brand-green);
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 0.35; transform: scale(0.8); }
         }
 
         /* TABS */
         .tab-content {
             display: none;
-            padding: 14px;
-            animation: tabFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeIn 0.2s ease-out;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        @keyframes tabFade {
-            from { opacity: 0; transform: translateY(6px); }
+        .tab-padded {
+            padding: 14px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* CHART DISPLAY */
-        .chart-container {
-            width: 100%;
-            height: 520px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--surface-border);
+        /* FULL PAGE CHART */
+        .chart-fullscreen {
+            width: 100vw;
+            height: calc(100vh - 125px);
             background: #000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
-        /* CARD & BUTTON STYLING */
-        .card {
+        /* CARDS */
+        .proto-card {
             background: var(--surface);
             border: 1px solid var(--surface-border);
             border-radius: 12px;
-            padding: 20px;
+            padding: 16px 18px;
             margin-bottom: 12px;
         }
 
-        .btn-action {
-            display: block;
-            width: 100%;
-            text-align: center;
-            background: var(--brand-green);
-            color: #020503;
-            font-weight: 800;
-            font-size: 13px;
-            letter-spacing: 0.6px;
-            padding: 14px;
-            border-radius: 8px;
-            text-decoration: none;
-            margin-top: 14px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
-        /* SOCIAL VERIFIED LINKS */
-        .social-link-btn {
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .tag-pill {
+            font-size: 9px;
+            font-weight: 800;
+            color: var(--brand-green);
+            background: rgba(0, 255, 136, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            color: var(--subtext);
+            line-height: 1.5;
+        }
+
+        /* NODE ITEMS */
+        .node-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 15px 18px;
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--surface);
             border: 1px solid var(--surface-border);
-            border-radius: 10px;
-            color: var(--text-main);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+
+        .node-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .node-icon-wrap {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .node-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .node-meta {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .btn-node {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--brand-green);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 7px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
             text-decoration: none;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
 
-        .social-link-btn:active {
-            background: rgba(0, 255, 136, 0.08);
-            border-color: var(--brand-green);
-            transform: scale(0.98);
+        .btn-node:active {
+            background: var(--brand-green);
+            color: #030704;
         }
 
-        /* NAVIGATION DOCK */
+        /* VAULT SPECIFIC */
+        .vault-balance-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 14px;
+        }
+
+        .vault-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: #64748b;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .vault-val-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+
+        .vault-val-big {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .vault-val-usd {
+            font-size: 13px;
+            color: var(--brand-green);
+            font-weight: 700;
+        }
+
+        .btn-primary-green {
+            display: block;
+            width: 100%;
+            background: var(--brand-green);
+            color: #030704;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 14px;
+        }
+
+        /* BOTTOM NAVIGATION */
         .nav-dock {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(2, 5, 3, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgba(3, 7, 4, 0.96);
+            backdrop-filter: blur(15px);
             border-top: 1px solid var(--surface-border);
-            padding: 8px 12px 14px;
+            padding: 6px 12px 10px;
             z-index: 200;
         }
 
@@ -248,7 +349,7 @@
             background: none;
             border: 1px solid transparent;
             color: #64748b;
-            padding: 7px 4px;
+            padding: 6px 4px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -262,12 +363,12 @@
 
         .nav-icon {
             font-size: 15px;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
         .nav-label {
             font-size: 9px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
@@ -275,75 +376,139 @@
 </head>
 <body>
 
+    <!-- 3D COIN DROP INTRO SPLASH -->
     <div id="splash-screen">
         <div class="splash-coin-box">
             <img class="splash-coin-img" src="10159.gif" onerror="this.src='coin.png'" alt="DKX">
         </div>
     </div>
 
+    <!-- TERMINAL HEADER -->
     <div class="terminal-header">
-        <span class="badge-brand">⚡ DKX INSTITUTIONAL</span>
+        <span class="badge-brand">⚡ DKX INSTITUTIONAL TERMINAL</span>
         <div class="badge-live">
             <span class="pulse-dot"></span>
             <span id="blockTicker">BNB #41,920,413 • 2.9 Gwei</span>
         </div>
     </div>
 
+    <!-- TAB 1: FULL SCREEN TRADING TERMINAL -->
     <div id="tab-terminal" class="tab-content active">
-        <div class="chart-container">
+        <div class="chart-fullscreen">
             <div id="tradingview_widget" style="width: 100%; height: 100%;"></div>
         </div>
     </div>
 
-    <div id="tab-dakicks" class="tab-content">
-        <div class="card">
-            <h3 style="color: var(--brand-green); font-size: 16px; margin-bottom: 8px;">DAKICKS® Protocol</h3>
-            <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">
-                Physical footwear manufacturing backed by decentralized inventory verification on BNB Chain.
-            </p>
-            <button class="btn-action" onclick="alert('Asset deployment phase in progress.')">VIEW GENESIS COLLECTION</button>
+    <!-- TAB 2: DAKICKS ECOSYSTEM -->
+    <div id="tab-dakicks" class="tab-content tab-padded">
+        <div class="proto-card">
+            <div class="card-top">
+                <span class="card-title">DAKICKS® Physical Drops</span>
+                <span class="tag-pill">RWA APPAREL</span>
+            </div>
+            <p class="card-desc">Genesis footwear products embedded with NFC cryptographic authenticity chips. Verified on BNB Smart Chain.</p>
+        </div>
+
+        <div class="proto-card">
+            <div class="card-top">
+                <span class="card-title">Revenue-Share Protocol</span>
+                <span class="tag-pill">TREASURY</span>
+            </div>
+            <p class="card-desc">50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.</p>
+        </div>
+
+        <div class="proto-card">
+            <div class="card-top">
+                <span class="card-title">DKX Supply Standard</span>
+                <span class="tag-pill">DEFLATIONARY</span>
+            </div>
+            <p class="card-desc">Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.</p>
         </div>
     </div>
 
-    <div id="tab-community" class="tab-content">
-        <div class="card" style="text-align: center; margin-bottom: 16px;">
-            <div style="font-size: 36px; margin-bottom: 8px;">🌐</div>
-            <h3 style="font-size: 17px; margin-bottom: 6px;">Global Protocol Network</h3>
-            <p style="font-size: 13px; color: #94a3b8;">Join official DAKICKS® ecosystem nodes.</p>
+    <!-- TAB 3: COMMUNITY NODES -->
+    <div id="tab-community" class="tab-content tab-padded">
+        <div style="font-size: 11px; font-weight: 800; color: #86efac; margin-bottom: 12px; letter-spacing: 0.5px; text-transform: uppercase;">
+            Official Communication Nodes
         </div>
 
-        <a href="https://t.me/DakicksAmino_bot" class="social-link-btn" onclick="openExternal(event, this.href)">
-            <span>✈️ Telegram Official</span>
-            <span style="color: var(--brand-green);">Open →</span>
-        </a>
+        <!-- TELEGRAM -->
+        <div class="node-row">
+            <div class="node-left">
+                <div class="node-icon-wrap" style="background: rgba(0, 136, 204, 0.15); color: #0088cc;">✈️</div>
+                <div>
+                    <div class="node-name">Telegram Network</div>
+                    <div class="node-meta">Official Announcements & Chat</div>
+                </div>
+            </div>
+            <a href="https://t.me/DKXOfficial" class="btn-node" onclick="safeOpen(event, this.href)">Open Node</a>
+        </div>
 
-        <a href="https://www.instagram.com/dakicksofficial" class="social-link-btn" onclick="openExternal(event, this.href)">
-            <span>📸 Instagram Official</span>
-            <span style="color: var(--brand-green);">Follow →</span>
-        </a>
+        <!-- INSTAGRAM -->
+        <div class="node-row">
+            <div class="node-left">
+                <div class="node-icon-wrap" style="background: rgba(225, 48, 108, 0.15); color: #e1306c;">📸</div>
+                <div>
+                    <div class="node-name">Instagram Hub</div>
+                    <div class="node-meta">Visual Drops & Design Specs</div>
+                </div>
+            </div>
+            <a href="https://www.instagram.com/dakicks_dkx" class="btn-node" onclick="safeOpen(event, this.href)">Open Node</a>
+        </div>
 
-        <a href="https://x.com/dakicksofficial" class="social-link-btn" onclick="openExternal(event, this.href)">
-            <span>✖️ X (Twitter) Official</span>
-            <span style="color: var(--brand-green);">Connect →</span>
-        </a>
+        <!-- X (TWITTER) -->
+        <div class="node-row">
+            <div class="node-left">
+                <div class="node-icon-wrap" style="background: rgba(255, 255, 255, 0.1); color: #ffffff;">✖️</div>
+                <div>
+                    <div class="node-name">X Protocol Comms</div>
+                    <div class="node-meta">Ecosystem Releases & Whitepaper</div>
+                </div>
+            </div>
+            <a href="https://x.com/dakicks_dkx" class="btn-node" onclick="safeOpen(event, this.href)">Open Node</a>
+        </div>
     </div>
 
-    <div id="tab-vault" class="tab-content">
-        <div class="card" style="text-align: center;">
+    <!-- TAB 4: VAULT -->
+    <div id="tab-vault" class="tab-content tab-padded">
+        <div class="vault-balance-card">
+            <div class="vault-label">TOTAL VALIDATED BALANCE (PROOF-OF-ACTIVITY)</div>
+            <div class="vault-val-row">
+                <span class="vault-val-big">1,046 <span style="font-size: 16px; color: var(--brand-green);">$DKX</span></span>
+                <span class="vault-val-usd">≈ $5.23 USD</span>
+            </div>
+            <!-- Live Neon Glow Curve -->
+            <svg width="100%" height="40" viewBox="0 0 300 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 35C40 35 60 20 100 22C140 24 160 30 200 15C230 5 270 5 300 5" stroke="#00ff88" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M0 35C40 35 60 20 100 22C140 24 160 30 200 15C230 5 270 5 300 5V40H0V35Z" fill="url(#greenGradient)" opacity="0.15"/>
+                <defs>
+                    <linearGradient id="greenGradient" x1="0" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#00ff88"/>
+                        <stop offset="1" stop-color="#00ff88" stop-opacity="0"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+
+        <div class="proto-card" style="text-align: center;">
             <div style="font-size: 32px; margin-bottom: 8px;">🔐</div>
-            <h3 style="font-size: 16px; margin-bottom: 6px;">Protocol Liquidity Vault</h3>
-            <p style="font-size: 11px; font-family: monospace; color: #64748b; word-break: break-all; margin-bottom: 10px;">
-                CONTRACT : 0x0000000000000000000000000000000000000000
+            <div style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px;">On-Chain Smart Contract Socket</div>
+            <div style="font-size: 10px; font-family: monospace; color: #64748b; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 6px; word-break: break-all; margin-bottom: 12px; border: 1px solid var(--surface-border);">
+                0x0000000000000000000000000000000000000000
+            </div>
+            <p style="font-size: 12px; color: var(--subtext); line-height: 1.5;">
+                Wallet binding connects during the official liquidity seeding on BNB Smart Chain. All off-chain PoA balances will be mapped directly via signed cryptographic hash.
             </p>
-            <p style="font-size: 12px; color: #94a3b8;">Liquidity pool allocation locked until Genesis TGE.</p>
+            <button class="btn-primary-green" onclick="alert('Standby: Contract socket activates at TGE.')">CONNECT WEB3 WALLET (STANDBY)</button>
         </div>
     </div>
 
+    <!-- BOTTOM DOCK -->
     <div class="nav-dock">
         <div class="nav-grid">
             <button class="nav-item active" onclick="switchNav('terminal', this)">
                 <span class="nav-icon">📈</span>
-                <span class="nav-label">TERMINAL</span>
+                <span class="nav-label">Terminal</span>
             </button>
             <button class="nav-item" onclick="switchNav('dakicks', this)">
                 <span class="nav-icon">👟</span>
@@ -351,15 +516,16 @@
             </button>
             <button class="nav-item" onclick="switchNav('community', this)">
                 <span class="nav-icon">🌐</span>
-                <span class="nav-label">COMMUNITY</span>
+                <span class="nav-label">Community</span>
             </button>
             <button class="nav-item" onclick="switchNav('vault', this)">
                 <span class="nav-icon">💎</span>
-                <span class="nav-label">VAULT</span>
+                <span class="nav-label">Vault</span>
             </button>
         </div>
     </div>
 
+    <!-- TRADINGVIEW ENGINE -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         new TradingView.widget({
@@ -370,7 +536,7 @@
             "theme": "dark",
             "style": "1",
             "locale": "en",
-            "toolbar_bg": "#020503",
+            "toolbar_bg": "#030704",
             "enable_publishing": false,
             "hide_side_toolbar": false,
             "allow_symbol_change": true,
@@ -378,62 +544,61 @@
         });
     </script>
 
+    <!-- CORE TELEGRAM ENGINE & HIGH-SECURITY ROUTINES -->
     <script>
-        // ANTI-CLICKJACKING & SECURITY GUARD
+        // Anti-Clickjack Security
         if (window.top !== window.self) {
             try {
-                if (window.top.location.hostname.indexOf("telegram") === -1 && 
-                    window.top.location.hostname.indexOf("t.me") === -1) {
+                if (!window.top.location.hostname.includes("telegram") && !window.top.location.hostname.includes("t.me")) {
                     window.top.location = window.self.location;
                 }
             } catch(e) { }
         }
 
         const tg = window.Telegram?.WebApp;
-        if (tg) { 
+        if (tg) {
             tg.ready();
             tg.expand();
-            tg.setHeaderColor('#020503');
-            tg.setBackgroundColor('#020503');
+            tg.setHeaderColor('#030704');
+            tg.setBackgroundColor('#030704');
         }
 
-        // Safe External Links
-        function openExternal(e, url) {
+        // Safe External Node Navigation
+        function safeOpen(e, targetUrl) {
             e.preventDefault();
             if (tg && tg.openLink) {
-                tg.openLink(url);
+                tg.openLink(targetUrl);
             } else {
-                window.open(url, '_blank', 'noopener,noreferrer');
+                window.open(targetUrl, '_blank', 'noopener,noreferrer');
             }
         }
 
-        // Block Ticker
-        let blockNum = 41920413;
+        // Real-Time Block Simulator
+        let blockNumber = 41920413;
         setInterval(() => {
-            blockNum += 1;
+            blockNumber += 1;
             const gas = (Math.random() * (3.2 - 2.8) + 2.8).toFixed(1);
             const ticker = document.getElementById('blockTicker');
             if (ticker) {
-                ticker.innerText = `BNB #${blockNum.toLocaleString()} • ${gas} Gwei`;
+                ticker.innerText = `BNB #${blockNumber.toLocaleString()} • ${gas} Gwei`;
             }
         }, 3000);
 
-        // Haptics & Navigation
-        function switchNav(id, btn) {
+        // Haptic Feedback Navigation
+        function switchNav(tabId, btnElement) {
             if (tg?.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('light');
             }
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            const targetTab = document.getElementById(`tab-${id}`);
-            if (targetTab) {
-                targetTab.classList.add('active');
-            }
-            btn.classList.add('active');
+            
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.add('active');
+            btnElement.classList.add('active');
         }
 
-        // Hi-Fi Metallic Chime Synthesizer
-        function playCleanChime() {
+        // Luxury Glass Chime Tone
+        function playChime() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
@@ -444,7 +609,7 @@
                 osc.frequency.exponentialRampToValueAtTime(2093.00, ctx.currentTime + 0.08);
                 osc.frequency.exponentialRampToValueAtTime(523.25, ctx.currentTime + 0.35);
 
-                gain.gain.setValueAtTime(0.28, ctx.currentTime);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
 
                 osc.connect(gain);
@@ -455,14 +620,14 @@
             } catch(e) { }
         }
 
-        // 3-Second Splash Trigger
+        // Smooth 3-Sec Splash Trigger
         window.addEventListener('DOMContentLoaded', () => {
             const splash = document.getElementById('splash-screen');
-            const hasPlayed = sessionStorage.getItem('dkx_splash_seen_v3');
+            const hasSeen = sessionStorage.getItem('dkx_splash_v4');
 
-            if (!hasPlayed && splash) {
-                sessionStorage.setItem('dkx_splash_seen_v3', 'true');
-                setTimeout(() => { playCleanChime(); }, 400);
+            if (!hasSeen && splash) {
+                sessionStorage.setItem('dkx_splash_v4', 'true');
+                setTimeout(() => { playChime(); }, 350);
                 setTimeout(() => {
                     splash.style.opacity = '0';
                     setTimeout(() => { splash.remove(); }, 500);
