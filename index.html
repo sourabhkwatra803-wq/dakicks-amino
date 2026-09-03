@@ -652,17 +652,26 @@
             }
         }, 3000);
 
-                // Voice / Speech Feedback Helper
-        function speakText(text) {
+                        // 100% TELEGRAM WEBAPP COMPATIBLE VOICE ENGINE
+        const voiceClips = {
+            'terminal': 'https://dict.youdao.com/dictvoice?audio=Terminal&type=2',
+            'dakicks': 'https://dict.youdao.com/dictvoice?audio=DAKICKS&type=2',
+            'community': 'https://dict.youdao.com/dictvoice?audio=Community&type=2',
+            'vault': 'https://dict.youdao.com/dictvoice?audio=Vault&type=2'
+        };
+
+        let currentAudio = null;
+
+        function playTabVoice(tabId) {
             try {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.rate = 1.05;
-                    utterance.pitch = 1.0;
-                    utterance.volume = 0.9;
-                    utterance.lang = 'en-US';
-                    window.speechSynthesis.speak(utterance);
+                if (voiceClips[tabId]) {
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+                    currentAudio = new Audio(voiceClips[tabId]);
+                    currentAudio.volume = 1.0;
+                    currentAudio.play().catch(() => {});
                 }
             } catch(e) { }
         }
@@ -673,11 +682,16 @@
                 tg.HapticFeedback.impactOccurred('light');
             }
 
-            const voiceMap = {
-                'terminal': 'Terminal',
-                'dakicks': 'DAKICKS',
-                'community': 'Community',
-                'vault': 'Vault'
+            playTabVoice(tabId); // साफ़ आवाज़ में नाम बोलेगा
+
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            const target = document.getElementById(`tab-${tabId}`);
+            if (target) target.classList.add('active');
+            btnElement.classList.add('active');
+        }
+        
             };
             if (voiceMap[tabId]) {
                 speakText(voiceMap[tabId]);
