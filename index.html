@@ -3,42 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DKX MINI GAME</title>
+    <title>DKX PROTOCOL</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --primary: #9dfc3b;
             --primary-glow: rgba(157, 252, 59, 0.45);
             --bg-gradient: radial-gradient(circle at 50% 30%, #0e2011 0%, #060b08 60%, #020403 100%);
-            --surface: rgba(16, 24, 18, 0.85);
+            --surface: rgba(16, 24, 18, 0.88);
             --surface-border: rgba(157, 252, 59, 0.25);
             --text-muted: #8ca393;
         }
         * {
             margin: 0; padding: 0; box-sizing: border-box;
-            user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+            user-select: none; -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent; outline: none;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         body {
             background: var(--bg-gradient); color: #ffffff; height: 100vh;
-            display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
-            position: relative;
+            display: flex; flex-direction: column; justify-content: space-between;
+            overflow: hidden; position: relative;
         }
-
-        /* BACKGROUND VIDEO */
         .bg-video-box {
             position: fixed; inset: 0; width: 100vw; height: 100vh;
             z-index: 0; pointer-events: none; overflow: hidden;
         }
         .bg-video-box video {
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.35;
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.32;
         }
         .bg-overlay {
             position: absolute; inset: 0;
-            background: radial-gradient(circle at 50% 40%, rgba(5, 12, 6, 0.3) 0%, rgba(3, 6, 4, 0.9) 100%);
+            background: radial-gradient(circle at 50% 40%, rgba(5, 12, 6, 0.3) 0%, rgba(3, 6, 4, 0.92) 100%);
         }
-
         .header { padding: 12px 20px 4px; text-align: center; z-index: 5; position: relative; }
         .brand-badge {
             display: inline-flex; align-items: center; gap: 6px;
@@ -47,17 +44,16 @@
             letter-spacing: 1.5px; color: var(--primary); text-transform: uppercase;
         }
         .level-title { font-size: 11px; color: var(--text-muted); margin-top: 3px; font-weight: 700; }
-        .score-val { font-size: 40px; font-weight: 900; margin-top: 2px; text-shadow: 0 0 25px var(--primary-glow); }
+        .score-val { font-size: 38px; font-weight: 900; margin-top: 2px; text-shadow: 0 0 25px var(--primary-glow); }
 
         .tab-content {
             flex-grow: 1; display: none; flex-direction: column; align-items: center;
-            justify-content: center; padding: 10px 16px; position: relative; overflow-y: auto; width: 100%;
-            z-index: 5;
+            justify-content: center; padding: 10px 16px; position: relative;
+            overflow-y: auto; width: 100%; z-index: 5;
         }
         .tab-content.active { display: flex; }
 
         /* MINE TAB */
-        .coin-wrapper { position: relative; }
         .coin-3d {
             width: 215px; height: 215px; border-radius: 50%;
             background: radial-gradient(circle at 35% 30%, #c4ff5e 0%, #8ae01c 40%, #437a06 85%, #193302 100%);
@@ -75,51 +71,40 @@
         .energy-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; }
         .energy-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #6ee7b7, var(--primary)); border-radius: 12px; }
 
-        /* RUNNER GAME CANVAS */
+        /* GAME HUD & CANVAS */
+        .game-hud {
+            width: 100%; max-width: 360px; display: flex; justify-content: space-between;
+            align-items: center; background: rgba(16, 24, 18, 0.9); border: 1px solid var(--surface-border);
+            padding: 8px 12px; border-radius: 12px; margin-bottom: 8px;
+        }
+        .code-display { font-size: 15px; font-weight: 900; letter-spacing: 4px; color: var(--primary); }
         #gameCanvas {
-            width: 100%; max-width: 360px; height: 240px; border-radius: 14px;
-            background: #040805; border: 1px solid var(--surface-border); touch-action: none;
+            width: 100%; max-width: 360px; height: 260px; border-radius: 14px;
+            background: #030604; border: 1px solid var(--surface-border); touch-action: none;
         }
 
-        /* INVENTORY STUDIO */
-        .char-studio-box {
-            width: 100%; max-width: 360px; height: 200px; border-radius: 14px;
-            background: rgba(16, 24, 18, 0.6); border: 1px solid var(--surface-border);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-        }
-        .mannequin-visual {
-            font-size: 64px; filter: drop-shadow(0 0 15px var(--primary-glow));
-            animation: bounceIdle 2s infinite ease-in-out;
-        }
-        @keyframes bounceIdle {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        /* CARDS */
+        /* CARDS & OFFICIAL LOGOS */
         .card {
             background: var(--surface); border: 1px solid var(--surface-border);
             border-radius: 14px; padding: 12px 14px; width: 100%; max-width: 360px;
             margin-top: 8px; display: flex; align-items: center; justify-content: space-between;
         }
-        .card-left { display: flex; align-items: center; gap: 10px; }
-        .card-icon {
-            font-size: 20px; width: 36px; height: 36px; background: rgba(157, 252, 59, 0.08);
-            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+        .card-left { display: flex; align-items: center; gap: 12px; }
+        .official-logo {
+            width: 38px; height: 38px; border-radius: 10px; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0;
         }
+        .logo-tg { background: linear-gradient(135deg, #2AABEE, #229ED9); }
+        .logo-insta { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+        .logo-x { background: #000000; border: 1px solid rgba(255,255,255,0.2); }
+        .official-logo svg { width: 20px; height: 20px; fill: #ffffff; }
+
         .action-btn {
             background: var(--primary); color: #0b0e14; border: none; padding: 8px 14px;
             border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; text-decoration: none;
         }
         .action-btn.claimed { background: rgba(255,255,255,0.08); color: var(--text-muted); cursor: default; }
 
-        .wallet-input {
-            width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--surface-border);
-            border-radius: 8px; padding: 10px; color: #fff; font-size: 12px; margin: 8px 0; text-align: center;
-        }
-
-        /* DOCK NAVIGATION */
         .nav-dock {
             padding: 8px 10px 16px; background: rgba(6, 10, 7, 0.95);
             border-top: 1px solid var(--surface-border); z-index: 10;
@@ -131,7 +116,6 @@
             gap: 3px; font-size: 10px; font-weight: 700; cursor: pointer;
         }
         .nav-item.active { color: var(--primary); background: rgba(157, 252, 59, 0.12); }
-
         .tap-number {
             position: absolute; color: #ffffff; font-size: 24px; font-weight: 900;
             pointer-events: none; animation: float 0.6s ease-out forwards; text-shadow: 0 0 10px var(--primary);
@@ -142,7 +126,6 @@
 </head>
 <body>
 
-    <!-- VIDEO BACKGROUND -->
     <div class="bg-video-box">
         <video autoplay loop muted playsinline>
             <source src="bg.mp4" type="video/mp4">
@@ -156,7 +139,6 @@
         <div class="score-val" id="score">0</div>
     </div>
 
-    <!-- 1. MINE TAB -->
     <div class="tab-content active" id="tab-mine">
         <div class="coin-wrapper">
             <div class="coin-3d" id="tapBtn">
@@ -178,49 +160,46 @@
         </div>
     </div>
 
-    <!-- 2. GAME TAB -->
     <div class="tab-content" id="tab-game">
-        <div style="font-size:12px; font-weight:800; color:var(--primary); margin-bottom:6px;">
-            DISTANCE: <span id="distText">0m</span>
+        <div class="game-hud">
+            <div>
+                <div style="font-size:10px; color:var(--text-muted)">TARGET CIPHER</div>
+                <div class="code-display" id="targetCodeDisplay">6 7 3 8</div>
+            </div>
+            <div style="text-align:right">
+                <div style="font-size:10px; color:var(--text-muted)">COLLECTED</div>
+                <div class="code-display" id="currentCaughtDisplay" style="color:#ffffff">_ _ _ _</div>
+            </div>
         </div>
-        <canvas id="gameCanvas" width="360" height="240"></canvas>
-        <button class="action-btn" style="margin-top:10px; width:100%; max-width:360px;" onclick="resetRunner()">Start / Restart Run</button>
+        <canvas id="gameCanvas" width="360" height="260"></canvas>
+        <button class="action-btn" id="startBtn" style="margin-top:10px; width:100%; max-width:360px;" onclick="initOrRestartGame()">Start Game</button>
+        <div id="gameLockStatus" style="font-size:11px; color:#ffcc00; margin-top:6px; font-weight:700;"></div>
     </div>
 
-    <!-- 3. INVENTORY TAB -->
     <div class="tab-content" id="tab-inventory">
-        <div class="char-studio-box">
-            <div class="mannequin-visual" id="avatarDisplay">👑👕👟</div>
-            <div style="font-size:12px; color:var(--primary); font-weight:bold; margin-top:8px;" id="charWearText">Genesis Sovereign</div>
+        <div style="width:100%; max-width:360px; height:180px; border-radius:14px; background:rgba(16,24,18,0.7); border:1px solid var(--surface-border); display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <div style="font-size:60px; filter:drop-shadow(0 0 15px var(--primary-glow));">👑🥋👟</div>
+            <div style="font-size:12px; color:var(--primary); font-weight:bold; margin-top:8px;">Genesis Sovereign Edition</div>
         </div>
         <div class="card">
             <div class="card-left">
-                <div class="card-icon">🎽</div>
+                <div style="font-size:22px;">🎽</div>
                 <div>
                     <div style="font-size:13px; font-weight:700">Cyber Neon Hoodie</div>
                     <div style="font-size:11px; color:var(--primary)">Tier II • 2,000 $DKX</div>
                 </div>
             </div>
-            <button class="action-btn" id="outfitBtn-1" onclick="equipItem(1, 2000, 'Tier II • Cyber Walker', '⚡🎽👟')">Equip</button>
-        </div>
-        <div class="card">
-            <div class="card-left">
-                <div class="card-icon">🥋</div>
-                <div>
-                    <div style="font-size:13px; font-weight:700">Genesis Gold Tracksuit</div>
-                    <div style="font-size:11px; color:var(--primary)">Tier III • 10,000 $DKX</div>
-                </div>
-            </div>
-            <button class="action-btn" id="outfitBtn-2" onclick="equipItem(2, 10000, 'Tier III • Protocol Sovereign', '👑🥋👟')">Equip</button>
+            <button class="action-btn" onclick="alert('Equipped!')">Equip</button>
         </div>
     </div>
 
-    <!-- 4. TASKS TAB -->
     <div class="tab-content" id="tab-tasks">
-        <h3 style="margin-bottom:8px; font-size:15px;">Ecosystem Directives</h3>
+        <h3 style="margin-bottom:8px; font-size:15px;">Official Directives</h3>
         <div class="card">
             <div class="card-left">
-                <div class="card-icon">📢</div>
+                <div class="official-logo logo-tg">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+                </div>
                 <div>
                     <div style="font-size:13px; font-weight:700">Official Telegram</div>
                     <div style="font-size:11px; color:var(--primary)">+5,000 $DKX</div>
@@ -230,9 +209,11 @@
         </div>
         <div class="card">
             <div class="card-left">
-                <div class="card-icon">📸</div>
+                <div class="official-logo logo-insta">
+                    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.13-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                </div>
                 <div>
-                    <div style="font-size:13px; font-weight:700">Instagram Protocol</div>
+                    <div style="font-size:13px; font-weight:700">Official Instagram</div>
                     <div style="font-size:11px; color:var(--primary)">+5,000 $DKX</div>
                 </div>
             </div>
@@ -240,9 +221,11 @@
         </div>
         <div class="card">
             <div class="card-left">
-                <div class="card-icon">✖️</div>
+                <div class="official-logo logo-x">
+                    <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </div>
                 <div>
-                    <div style="font-size:13px; font-weight:700">X Protocol</div>
+                    <div style="font-size:13px; font-weight:700">Official X</div>
                     <div style="font-size:11px; color:var(--primary)">+5,000 $DKX</div>
                 </div>
             </div>
@@ -250,34 +233,34 @@
         </div>
     </div>
 
-    <!-- 5. WALLET TAB -->
     <div class="tab-content" id="tab-wallet">
         <h3 style="margin-bottom:12px; font-size:15px;">BNB Smart Chain Gateway</h3>
-        <div class="card" style="flex-direction:column; gap:8px; text-align:center;">
-            <div style="font-size:13px; font-weight:700">Link BEP-20 Wallet Address</div>
-            <div style="font-size:11px; color:var(--text-muted)">Enter MetaMask, Trust Wallet, or Binance Web3 address.</div>
-            <input type="text" id="walletInput" class="wallet-input" placeholder="0x... (Your BSC Address)">
-            <button class="action-btn" id="walletSaveBtn" style="width:100%" onclick="saveBSCWallet()">Save Address</button>
-            <div id="walletStatus" style="font-size:11px; color:var(--primary); font-weight:bold;"></div>
+        <div class="card" style="flex-direction:column; gap:12px; text-align:center; padding:18px;">
+            <div style="font-size:14px; font-weight:800; color:var(--primary)">BEP-20 Web3 Connect</div>
+            <div style="font-size:11px; color:var(--text-muted); line-height:1.4;">
+                Connect directly via Trust Wallet, MetaMask or Binance Web3 App to receive your token distribution.
+            </div>
+            <button class="action-btn" id="connectWalletBtn" style="width:100%; padding:12px; font-size:13px;" onclick="connectWeb3Wallet()">
+                🔗 Connect Crypto Wallet
+            </button>
+            <div id="walletStatusText" style="font-size:12px; color:var(--primary); font-weight:bold;"></div>
         </div>
     </div>
 
-    <!-- NAVIGATION DOCK -->
     <div class="nav-dock">
         <div class="nav-grid">
             <button class="nav-item active" onclick="switchNav('mine', this)"><span>⛏️</span>Mine</button>
-            <button class="nav-item" onclick="switchNav('game', this)"><span>🕹️</span>Game</button>
-            <button class="nav-item" onclick="switchNav('inventory', this)"><span>👕</span>Inventory</button>
+            <button class="nav-item" onclick="switchNav('game', this)"><span>🕹️</span>Cipher</button>
+            <button class="nav-item" onclick="switchNav('inventory', this)"><span>👕</span>Wear</button>
             <button class="nav-item" onclick="switchNav('tasks', this)"><span>📜</span>Tasks</button>
             <button class="nav-item" onclick="switchNav('wallet', this)"><span>💎</span>Wallet</button>
         </div>
     </div>
-
-    <script>
+        <script>
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
-        // Web Audio Synthesizer (Instant response)
+        // AUDIO SYNTH
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(freq, type = 'sine', duration = 0.08) {
             try {
@@ -302,7 +285,7 @@
         document.getElementById('score').innerText = score.toLocaleString();
         document.getElementById('rankBadge').innerText = rank;
 
-        // Mining Tap
+        // MINING TAP
         const tapBtn = document.getElementById('tapBtn');
         tapBtn.addEventListener('pointerdown', (e) => {
             if (energy < 1) return;
@@ -339,140 +322,208 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`tab-${id}`).classList.add('active');
             btn.classList.add('active');
-            if (id === 'game' && !runnerRunning) resetRunner();
+            if (id === 'game') checkGameLock();
         }
 
-        // ONE-TIME SOCIAL TASKS
-        function checkTasks() {
-            ['tg', 'insta', 'x'].forEach(t => {
-                if (localStorage.getItem(`dkx_task_${t}`) === 'done') {
-                    const b = document.getElementById(`task-${t}`);
-                    b.innerText = 'Completed';
-                    b.classList.add('claimed');
-                    b.disabled = true;
+        // ==========================================
+        // DAILY CIPHER CODE GAME (3D COINS WITH NUMBERS)
+        // ==========================================
+        const ACTIVE_DAILY_CODE = "6738"; // <-- Channel mein announcement ke hisaab se change karna
+        document.getElementById('targetCodeDisplay').innerText = ACTIVE_DAILY_CODE.split('').join(' ');
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let playerX = 180, coins = [], caughtCode = "", isPlaying = false;
+        let lastCoinTime = 0;
+
+        function checkGameLock() {
+            const lastSolved = localStorage.getItem('dkx_cipher_solved_time');
+            const statusEl = document.getElementById('gameLockStatus');
+            const startBtn = document.getElementById('startBtn');
+            if (lastSolved) {
+                const diffHours = (Date.now() - parseInt(lastSolved)) / (1000 * 60 * 60);
+                if (diffHours < 24) {
+                    const remainingHours = Math.ceil(24 - diffHours);
+                    statusEl.innerText = `⏳ Code Solved! Next cipher unlocks in ${remainingHours}h`;
+                    startBtn.disabled = true;
+                    startBtn.classList.add('claimed');
+                    return true;
                 }
-            });
+            }
+            statusEl.innerText = "";
+            startBtn.disabled = false;
+            startBtn.classList.remove('claimed');
+            return false;
         }
-        checkTasks();
 
+        canvas.addEventListener('touchstart', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const touchX = e.touches[0].clientX - rect.left;
+            playerX = Math.max(30, Math.min(330, touchX));
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const touchX = e.touches[0].clientX - rect.left;
+            playerX = Math.max(30, Math.min(330, touchX));
+        });
+
+        function initOrRestartGame() {
+            if (checkGameLock()) return;
+            coins = [];
+            caughtCode = "";
+            isPlaying = true;
+            document.getElementById('currentCaughtDisplay').innerText = "_ _ _ _";
+            document.getElementById('startBtn').innerText = "Game in Progress...";
+            requestAnimationFrame(gameLoop);
+        }
+
+        function gameLoop(timestamp) {
+            if (!isPlaying) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Catcher Basket (Neon D-Ring)
+            ctx.fillStyle = "#9dfc3b";
+            ctx.shadowColor = "#9dfc3b";
+            ctx.shadowBlur = 12;
+            ctx.fillRect(playerX - 25, 230, 50, 10);
+            ctx.shadowBlur = 0;
+
+            // Spawn 3D Glowing Green Number Coins (Slightly Faster & Smooth)
+            if (timestamp - lastCoinTime > 650) {
+                const digit = Math.floor(Math.random() * 10).toString();
+                coins.push({
+                    x: Math.random() * (canvas.width - 60) + 30,
+                    y: -20,
+                    num: digit,
+                    speed: 3.4 // Smooth brisk speed
+                });
+                lastCoinTime = timestamp;
+            }
+
+            // Draw Coins
+            for (let i = coins.length - 1; i >= 0; i--) {
+                const c = coins[i];
+                c.y += c.speed;
+
+                // 3D Coin Body
+                const grad = ctx.createRadialGradient(c.x - 3, c.y - 3, 2, c.x, c.y, 16);
+                grad.addColorStop(0, '#d6ff79');
+                grad.addColorStop(0.6, '#86de16');
+                grad.addColorStop(1, '#254e04');
+
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, 16, 0, Math.PI * 2);
+                ctx.fillStyle = grad;
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+
+                // Number inside coin
+                ctx.fillStyle = '#060b08';
+                ctx.font = 'bold 15px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(c.num, c.x, c.y + 1);
+
+                // Catch Detection
+                if (c.y >= 220 && c.y <= 245 && Math.abs(c.x - playerX) < 32) {
+                    playTone(800, 'sine', 0.06);
+                    caughtCode += c.num;
+                    coins.splice(i, 1);
+
+                    let formatted = caughtCode.split('').join(' ');
+                    for (let k = caughtCode.length; k < 4; k++) formatted += " _";
+                    document.getElementById('currentCaughtDisplay').innerText = formatted;
+
+                    // Validate Code
+                    if (caughtCode.length === 4) {
+                        isPlaying = false;
+                        if (caughtCode === ACTIVE_DAILY_CODE) {
+                            playTone(1200, 'sine', 0.3);
+                            score += 20000;
+                            localStorage.setItem('dkx_score', score);
+                            localStorage.setItem('dkx_cipher_solved_time', Date.now().toString());
+                            document.getElementById('score').innerText = score.toLocaleString();
+                            alert("🎉 CONGRATULATIONS! Cipher Solved! +20,000 $DKX Credited!");
+                        } else {
+                            playTone(180, 'sawtooth', 0.3);
+                            alert(`❌ Wrong Code (${caughtCode})! Target was ${ACTIVE_DAILY_CODE}. Try again!`);
+                        }
+                        document.getElementById('startBtn').innerText = "Start Game";
+                        checkGameLock();
+                        return;
+                    }
+                    continue;
+                }
+
+                if (c.y > canvas.height + 20) coins.splice(i, 1);
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ==========================================
+        // WEB3 REDIRECT WALLET LINKING
+        // ==========================================
+        async function connectWeb3Wallet() {
+            // Direct window.ethereum (Trust Wallet / MetaMask In-App Browser)
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const wallet = accounts[0];
+                    saveConnectedWallet(wallet);
+                } catch (err) {
+                    alert("Wallet Connection Cancelled!");
+                }
+            } else {
+                // Mobile Deep-Link Redirect to Trust Wallet / MetaMask
+                const appUrl = encodeURIComponent(window.location.href);
+                const choice = confirm("Crypto app direct connect open karein? (OK = Trust Wallet, Cancel = MetaMask)");
+                if (choice) {
+                    window.location.href = `https://link.trustwallet.com/open_url?coin_id=20000714&url=${appUrl}`;
+                } else {
+                    window.location.href = `https://metamask.app.link/dapp/${window.location.host}${window.location.pathname}`;
+                }
+            }
+        }
+
+        function saveConnectedWallet(address) {
+            const user = tg?.initDataUnsafe?.user;
+            const telegramId = user ? user.id : "WebUser";
+            const username = user ? (user.username || user.first_name) : "Anonymous";
+
+            localStorage.setItem('dkx_connected_wallet', address);
+            document.getElementById('walletStatusText').innerText = `Linked: ${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+            document.getElementById('connectWalletBtn').innerText = "Wallet Connected ✅";
+            playTone(1100, 'sine', 0.2);
+
+            // Airdrop Data Logging (Backend/Telegram Log)
+            console.log("AIRDROP REGISTERED:", { telegramId, username, wallet: address, timestamp: new Date().toISOString() });
+            alert(`✅ BEP-20 Wallet Linked!\nID: ${telegramId}\nAddress: ${address.substring(0, 10)}...`);
+        }
+
+        // Restore saved wallet state
+        const savedWallet = localStorage.getItem('dkx_connected_wallet');
+        if (savedWallet) {
+            document.getElementById('walletStatusText').innerText = `Linked: ${savedWallet.substring(0, 6)}...${savedWallet.substring(savedWallet.length - 4)}`;
+            document.getElementById('connectWalletBtn').innerText = "Wallet Connected ✅";
+        }
+
+        // TASKS CLAIM
         function claimTask(type, url) {
-            if (localStorage.getItem(`dkx_task_${type}`) === 'done') return;
             window.open(url, '_blank');
             playTone(600, 'sine', 0.1);
             setTimeout(() => {
                 score += 5000;
                 localStorage.setItem('dkx_score', score);
-                localStorage.setItem(`dkx_task_${type}`, 'done');
                 document.getElementById('score').innerText = score.toLocaleString();
-                checkTasks();
+                const b = document.getElementById(`task-${type}`);
+                b.innerText = 'Completed';
+                b.classList.add('claimed');
+                b.disabled = true;
                 playTone(1200, 'sine', 0.2);
             }, 3000);
-        }
-
-        // WALLET MANAGEMENT
-        function loadWallet() {
-            const saved = localStorage.getItem('dkx_bep20_wallet');
-            if (saved) {
-                document.getElementById('walletInput').value = saved;
-                document.getElementById('walletStatus').innerText = `Linked: ${saved.substring(0,6)}...${saved.substring(saved.length - 4)}`;
-                document.getElementById('walletSaveBtn').innerText = "Update Address";
-            }
-        }
-        loadWallet();
-
-        function saveBSCWallet() {
-            const val = document.getElementById('walletInput').value.trim();
-            if (!val.startsWith('0x') || val.length !== 42) {
-                return alert("Please enter a valid 42-character BSC (BEP-20) address!");
-            }
-            localStorage.setItem('dkx_bep20_wallet', val);
-            loadWallet();
-            playTone(1000, 'sine', 0.15);
-            alert("BEP-20 Address Saved Successfully!");
-        }
-
-        // INVENTORY EQUIP
-        function equipItem(id, cost, rankName, avatarIcon) {
-            if (score < cost) return alert("Not enough $DKX!");
-            score -= cost;
-            rank = rankName;
-            localStorage.setItem('dkx_score', score);
-            localStorage.setItem('dkx_rank', rank);
-            document.getElementById('score').innerText = score.toLocaleString();
-            document.getElementById('rankBadge').innerText = rank;
-            document.getElementById('charWearText').innerText = rankName;
-            document.getElementById('avatarDisplay').innerText = avatarIcon;
-            document.getElementById(`outfitBtn-${id}`).innerText = "Equipped";
-            document.getElementById(`outfitBtn-${id}`).disabled = true;
-            playTone(880, 'sine', 0.2);
-        }
-
-        // 60FPS RUNNER ENGINE (LIGHTWEIGHT & LAG-FREE)
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let playerX = 180, obstacles = [], runnerRunning = false, dist = 0;
-
-        canvas.addEventListener('touchstart', (e) => {
-            const rect = canvas.getBoundingClientRect();
-                        const touchX = e.touches[0].clientX - rect.left;
-            playerX = touchX < canvas.width / 2 ? Math.max(50, playerX - 55) : Math.min(310, playerX + 55);
-            playTone(320, 'triangle', 0.03);
-        });
-
-        function resetRunner() {
-            obstacles = [];
-            dist = 0;
-            playerX = 180;
-            runnerRunning = true;
-            runLoop();
-        }
-
-        function runLoop() {
-            if (!runnerRunning) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            dist++;
-            document.getElementById('distText').innerText = `${dist}m`;
-
-            // Track lines
-            ctx.strokeStyle = "rgba(157,252,59,0.2)";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(180, 0); ctx.lineTo(180, canvas.height);
-            ctx.stroke();
-
-            // Player Sneaker
-            ctx.fillStyle = "#9dfc3b";
-            ctx.shadowColor = "#9dfc3b";
-            ctx.shadowBlur = 12;
-            ctx.fillRect(playerX - 22, 190, 44, 26);
-            ctx.shadowBlur = 0;
-
-            // Spawn Obstacles
-            if (Math.random() < 0.04) {
-                obstacles.push({ x: Math.random() * (canvas.width - 60) + 30, y: -20 });
-            }
-
-            // Draw Obstacles
-            ctx.fillStyle = "#ff3b30";
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                obstacles[i].y += 5.5;
-                ctx.fillRect(obstacles[i].x - 16, obstacles[i].y, 32, 22);
-
-                // Collision
-                if (obstacles[i].y > 170 && obstacles[i].y < 220 && Math.abs(obstacles[i].x - playerX) < 35) {
-                    runnerRunning = false;
-                    playTone(150, 'sawtooth', 0.25);
-                    alert(`Run Finished! Dist: ${dist}m. Earned ${Math.floor(dist/2)} $DKX!`);
-                    score += Math.floor(dist / 2);
-                    localStorage.setItem('dkx_score', score);
-                    document.getElementById('score').innerText = score.toLocaleString();
-                    return;
-                }
-
-                if (obstacles[i].y > canvas.height) obstacles.splice(i, 1);
-            }
-
-            requestAnimationFrame(runLoop);
         }
     </script>
 </body>
