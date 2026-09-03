@@ -25,6 +25,13 @@
             display: flex; flex-direction: column; justify-content: space-between;
             overflow: hidden; position: relative;
         }
+        .bg-video-box {
+            position: fixed; inset: 0; width: 100vw; height: 100vh;
+            z-index: 0; pointer-events: none; overflow: hidden;
+        }
+        .bg-video-box video {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.35;
+        }
         #smokeCanvas {
             position: fixed; inset: 0; width: 100vw; height: 100vh;
             z-index: 1; pointer-events: none; opacity: 0.45;
@@ -163,6 +170,14 @@
 </head>
 <body>
 
+    <!-- BACKGROUND VIDEO LAYER -->
+    <div class="bg-video-box">
+        <video autoplay loop muted playsinline preload="auto">
+            <source src="bg.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- AMBIENT SMOKE & REWARD CONFETTI -->
     <canvas id="smokeCanvas"></canvas>
     <canvas id="confettiCanvas"></canvas>
 
@@ -343,7 +358,7 @@
                 y: Math.random() * window.innerHeight,
                 r: Math.random() * 80 + 50,
                 vx: (Math.random() - 0.5) * 0.4,
-                vy: -Math.random() * 0.5 - 0.2,
+                                vy: -Math.random() * 0.5 - 0.2,
                 alpha: Math.random() * 0.18 + 0.05
             });
         }
