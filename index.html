@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DKX MINI GAME</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
             --primary: #9dfc3b;
-            --primary-glow: rgba(157, 252, 59, 0.5);
-            --surface: rgba(12, 17, 13, 0.82);
+            --primary-glow: rgba(157, 252, 59, 0.45);
+            --bg-gradient: radial-gradient(circle at 50% 30%, #0e2011 0%, #060b08 60%, #020403 100%);
+            --surface: rgba(16, 24, 18, 0.85);
             --surface-border: rgba(157, 252, 59, 0.25);
             --text-muted: #8ca393;
         }
@@ -21,105 +21,87 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         body {
-            background-color: #050806;
-            color: #ffffff;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
+            background: var(--bg-gradient); color: #ffffff; height: 100vh;
+            display: flex; flex-direction: column; justify-content: space-between; overflow: hidden;
             position: relative;
         }
 
-        /* BACKGROUND VIDEO LAYER */
-        .bg-video-container {
-            position: fixed;
-            inset: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            z-index: 0;
-            pointer-events: none;
+        /* BACKGROUND VIDEO */
+        .bg-video-box {
+            position: fixed; inset: 0; width: 100vw; height: 100vh;
+            z-index: 0; pointer-events: none; overflow: hidden;
         }
-        .bg-video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.38; /* Perfect contrast so UI pops */
-            filter: contrast(1.1) brightness(0.9);
+        .bg-video-box video {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.35;
         }
         .bg-overlay {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 50% 40%, rgba(5, 12, 6, 0.4) 0%, rgba(3, 6, 4, 0.92) 100%);
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 40%, rgba(5, 12, 6, 0.3) 0%, rgba(3, 6, 4, 0.9) 100%);
         }
 
-        .header {
-            padding: 12px 20px 4px;
-            text-align: center;
-            z-index: 10;
-            position: relative;
-        }
+        .header { padding: 12px 20px 4px; text-align: center; z-index: 5; position: relative; }
         .brand-badge {
             display: inline-flex; align-items: center; gap: 6px;
             background: rgba(157, 252, 59, 0.12); border: 1px solid var(--surface-border);
             padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 800;
             letter-spacing: 1.5px; color: var(--primary); text-transform: uppercase;
-            backdrop-filter: blur(8px);
         }
         .level-title { font-size: 11px; color: var(--text-muted); margin-top: 3px; font-weight: 700; }
         .score-val { font-size: 40px; font-weight: 900; margin-top: 2px; text-shadow: 0 0 25px var(--primary-glow); }
 
         .tab-content {
-            flex-grow: 1;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 6px 16px;
-            position: relative;
-            overflow-y: auto;
-            width: 100%;
+            flex-grow: 1; display: none; flex-direction: column; align-items: center;
+            justify-content: center; padding: 10px 16px; position: relative; overflow-y: auto; width: 100%;
             z-index: 5;
         }
         .tab-content.active { display: flex; }
 
-        /* MINE TAB 3D COIN */
+        /* MINE TAB */
         .coin-wrapper { position: relative; }
         .coin-3d {
-            width: 220px; height: 220px; border-radius: 50%;
+            width: 215px; height: 215px; border-radius: 50%;
             background: radial-gradient(circle at 35% 30%, #c4ff5e 0%, #8ae01c 40%, #437a06 85%, #193302 100%);
             box-shadow: 0 0 0 6px rgba(157, 252, 59, 0.35), 0 20px 45px rgba(0,0,0,0.9), 0 0 45px var(--primary-glow);
             display: flex; align-items: center; justify-content: center; cursor: pointer;
             transition: transform 0.08s ease-out; touch-action: manipulation;
         }
         .coin-rim {
-            width: 184px; height: 184px; border-radius: 50%;
+            width: 180px; height: 180px; border-radius: 50%;
             border: 2px dashed rgba(255, 255, 255, 0.4); display: flex; align-items: center; justify-content: center;
         }
-        .coin-logo-svg { width: 110px; height: 110px; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.65)); }
-        .energy-wrapper { width: 100%; max-width: 290px; margin-top: 22px; }
+        .coin-logo-svg { width: 105px; height: 105px; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.65)); }
+        .energy-wrapper { width: 100%; max-width: 290px; margin-top: 20px; }
         .energy-meta { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 5px; }
-        .energy-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; backdrop-filter: blur(6px); }
+        .energy-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; }
         .energy-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #6ee7b7, var(--primary)); border-radius: 12px; }
 
-        /* 3D BOXES */
-        #game3d-box, #char3d-box {
-            width: 100%; max-width: 380px; height: 240px; border-radius: 16px;
-            border: 1px solid var(--surface-border); overflow: hidden; position: relative;
-            background: rgba(3, 6, 4, 0.85); backdrop-filter: blur(10px);
+        /* RUNNER GAME CANVAS */
+        #gameCanvas {
+            width: 100%; max-width: 360px; height: 240px; border-radius: 14px;
+            background: #040805; border: 1px solid var(--surface-border); touch-action: none;
         }
-        .hud-overlay {
-            position: absolute; top: 10px; left: 12px; right: 12px;
-            display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; pointer-events: none; z-index: 5;
+
+        /* INVENTORY STUDIO */
+        .char-studio-box {
+            width: 100%; max-width: 360px; height: 200px; border-radius: 14px;
+            background: rgba(16, 24, 18, 0.6); border: 1px solid var(--surface-border);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .mannequin-visual {
+            font-size: 64px; filter: drop-shadow(0 0 15px var(--primary-glow));
+            animation: bounceIdle 2s infinite ease-in-out;
+        }
+        @keyframes bounceIdle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         /* CARDS */
         .card {
             background: var(--surface); border: 1px solid var(--surface-border);
-            border-radius: 14px; padding: 12px 14px; width: 100%; max-width: 380px;
+            border-radius: 14px; padding: 12px 14px; width: 100%; max-width: 360px;
             margin-top: 8px; display: flex; align-items: center; justify-content: space-between;
-            backdrop-filter: blur(12px);
         }
         .card-left { display: flex; align-items: center; gap: 10px; }
         .card-icon {
@@ -139,11 +121,8 @@
 
         /* DOCK NAVIGATION */
         .nav-dock {
-            padding: 8px 10px 16px;
-            background: rgba(6, 10, 7, 0.9);
-            border-top: 1px solid var(--surface-border);
-            backdrop-filter: blur(14px);
-            z-index: 10;
+            padding: 8px 10px 16px; background: rgba(6, 10, 7, 0.95);
+            border-top: 1px solid var(--surface-border); z-index: 10;
         }
         .nav-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
         .nav-item {
@@ -156,15 +135,16 @@
         .tap-number {
             position: absolute; color: #ffffff; font-size: 24px; font-weight: 900;
             pointer-events: none; animation: float 0.6s ease-out forwards; text-shadow: 0 0 10px var(--primary);
+            z-index: 20;
         }
         @keyframes float { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
     </style>
 </head>
 <body>
 
-    <!-- AUTO-LOOP BACKGROUND VIDEO -->
-    <div class="bg-video-container">
-        <video id="bgVideo" autoplay loop muted playsinline preload="auto">
+    <!-- VIDEO BACKGROUND -->
+    <div class="bg-video-box">
+        <video autoplay loop muted playsinline>
             <source src="bg.mp4" type="video/mp4">
         </video>
         <div class="bg-overlay"></div>
@@ -200,22 +180,18 @@
 
     <!-- 2. GAME TAB -->
     <div class="tab-content" id="tab-game">
-        <div id="game3d-box">
-            <div class="hud-overlay">
-                <span>DIST: <span id="distVal" style="color:var(--primary)">0m</span></span>
-                <span>SWIPE TO DODGE</span>
-            </div>
+        <div style="font-size:12px; font-weight:800; color:var(--primary); margin-bottom:6px;">
+            DISTANCE: <span id="distText">0m</span>
         </div>
-        <button class="action-btn" style="margin-top:10px; width:100%; max-width:380px;" onclick="reset3DGame()">Start / Restart 3D Run</button>
+        <canvas id="gameCanvas" width="360" height="240"></canvas>
+        <button class="action-btn" style="margin-top:10px; width:100%; max-width:360px;" onclick="resetRunner()">Start / Restart Run</button>
     </div>
 
     <!-- 3. INVENTORY TAB -->
     <div class="tab-content" id="tab-inventory">
-        <div id="char3d-box">
-            <div class="hud-overlay">
-                <span style="color:var(--primary)">3D WEAR STUDIO</span>
-                <span id="charWearText">Genesis Sovereign</span>
-            </div>
+        <div class="char-studio-box">
+            <div class="mannequin-visual" id="avatarDisplay">👑👕👟</div>
+            <div style="font-size:12px; color:var(--primary); font-weight:bold; margin-top:8px;" id="charWearText">Genesis Sovereign</div>
         </div>
         <div class="card">
             <div class="card-left">
@@ -225,7 +201,7 @@
                     <div style="font-size:11px; color:var(--primary)">Tier II • 2,000 $DKX</div>
                 </div>
             </div>
-            <button class="action-btn" id="outfitBtn-1" onclick="equip3D(1, 2000, 'Tier II • Cyber Walker', 0x00ffcc)">Equip</button>
+            <button class="action-btn" id="outfitBtn-1" onclick="equipItem(1, 2000, 'Tier II • Cyber Walker', '⚡🎽👟')">Equip</button>
         </div>
         <div class="card">
             <div class="card-left">
@@ -235,7 +211,7 @@
                     <div style="font-size:11px; color:var(--primary)">Tier III • 10,000 $DKX</div>
                 </div>
             </div>
-            <button class="action-btn" id="outfitBtn-2" onclick="equip3D(2, 10000, 'Tier III • Protocol Sovereign', 0xffd700)">Equip</button>
+            <button class="action-btn" id="outfitBtn-2" onclick="equipItem(2, 10000, 'Tier III • Protocol Sovereign', '👑🥋👟')">Equip</button>
         </div>
     </div>
 
@@ -281,12 +257,12 @@
             <div style="font-size:13px; font-weight:700">Link BEP-20 Wallet Address</div>
             <div style="font-size:11px; color:var(--text-muted)">Enter MetaMask, Trust Wallet, or Binance Web3 address.</div>
             <input type="text" id="walletInput" class="wallet-input" placeholder="0x... (Your BSC Address)">
-            <button class="action-btn" id="walletSaveBtn" style="width:100%" onclick="saveBSCWallet()">Save & Verify Address</button>
+            <button class="action-btn" id="walletSaveBtn" style="width:100%" onclick="saveBSCWallet()">Save Address</button>
             <div id="walletStatus" style="font-size:11px; color:var(--primary); font-weight:bold;"></div>
         </div>
     </div>
 
-    <!-- NAVIGATION -->
+    <!-- NAVIGATION DOCK -->
     <div class="nav-dock">
         <div class="nav-grid">
             <button class="nav-item active" onclick="switchNav('mine', this)"><span>⛏️</span>Mine</button>
@@ -301,7 +277,7 @@
         const tg = window.Telegram?.WebApp;
         if (tg) { tg.expand(); }
 
-        // Audio synthesizer
+        // Web Audio Synthesizer (Instant response)
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playTone(freq, type = 'sine', duration = 0.08) {
             try {
@@ -363,9 +339,7 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`tab-${id}`).classList.add('active');
             btn.classList.add('active');
-
-            if (id === 'game') initTrue3DGame();
-            if (id === 'inventory') initCharStudio();
+            if (id === 'game' && !runnerRunning) resetRunner();
         }
 
         // ONE-TIME SOCIAL TASKS
@@ -414,54 +388,11 @@
             localStorage.setItem('dkx_bep20_wallet', val);
             loadWallet();
             playTone(1000, 'sine', 0.15);
-            alert("BEP-20 Wallet Address Saved Successfully!");
+            alert("BEP-20 Address Saved Successfully!");
         }
 
-        // 3D INVENTORY
-        let charScene, charCamera, charRenderer, mannequinTorso;
-        function initCharStudio() {
-            const box = document.getElementById('char3d-box');
-            if (charRenderer) return;
-
-            charScene = new THREE.Scene();
-            charCamera = new THREE.PerspectiveCamera(45, box.clientWidth / box.clientHeight, 0.1, 100);
-            charCamera.position.set(0, 1.2, 4);
-
-            charRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            charRenderer.setSize(box.clientWidth, box.clientHeight);
-            box.appendChild(charRenderer.domElement);
-
-            charScene.add(new THREE.AmbientLight(0xffffff, 0.7));
-            const dirLight = new THREE.DirectionalLight(0x9dfc3b, 1.2);
-            dirLight.position.set(2, 4, 3);
-            charScene.add(dirLight);
-
-            const head = new THREE.Mesh(new THREE.            const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), new THREE.MeshStandardMaterial({ color: 0x8899aa, roughness: 0.3 }));
-            head.position.y = 1.1;
-            charScene.add(head);
-
-            mannequinTorso = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.28, 0.9, 16), new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.6, roughness: 0.3 }));
-            mannequinTorso.position.y = 0.45;
-            charScene.add(mannequinTorso);
-
-            const shoes = new THREE.Group();
-            const shoeMat = new THREE.MeshStandardMaterial({ color: 0x9dfc3b, metalness: 0.8 });
-            const left = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.15, 0.45), shoeMat);
-            left.position.set(-0.25, -0.4, 0);
-            const right = left.clone();
-            right.position.x = 0.25;
-            shoes.add(left); shoes.add(right);
-            charScene.add(shoes);
-
-            function anim() {
-                requestAnimationFrame(anim);
-                charScene.rotation.y += 0.01;
-                charRenderer.render(charScene, charCamera);
-            }
-            anim();
-        }
-
-        function equip3D(id, cost, rankName, colorHex) {
+        // INVENTORY EQUIP
+        function equipItem(id, cost, rankName, avatarIcon) {
             if (score < cost) return alert("Not enough $DKX!");
             score -= cost;
             rank = rankName;
@@ -469,93 +400,79 @@
             localStorage.setItem('dkx_rank', rank);
             document.getElementById('score').innerText = score.toLocaleString();
             document.getElementById('rankBadge').innerText = rank;
-
-            if (mannequinTorso) mannequinTorso.material.color.setHex(colorHex);
             document.getElementById('charWearText').innerText = rankName;
+            document.getElementById('avatarDisplay').innerText = avatarIcon;
             document.getElementById(`outfitBtn-${id}`).innerText = "Equipped";
             document.getElementById(`outfitBtn-${id}`).disabled = true;
             playTone(880, 'sine', 0.2);
         }
 
-        // 3D RUNNER GAME
-        let gameScene, gameCamera, gameRenderer, playerSneaker, gameObs = [], gameDist = 0, isGameOn = false;
-        function initTrue3DGame() {
-            const box = document.getElementById('game3d-box');
-            if (gameRenderer) return;
+        // 60FPS RUNNER ENGINE (LIGHTWEIGHT & LAG-FREE)
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let playerX = 180, obstacles = [], runnerRunning = false, dist = 0;
 
-            gameScene = new THREE.Scene();
-            gameScene.fog = new THREE.Fog(0x030604, 5, 30);
-            gameCamera = new THREE.PerspectiveCamera(60, box.clientWidth / box.clientHeight, 0.1, 100);
-            gameCamera.position.set(0, 2.5, 4.5);
-            gameCamera.lookAt(0, 0.5, -5);
+        canvas.addEventListener('touchstart', (e) => {
+            const rect = canvas.getBoundingClientRect();
+                        const touchX = e.touches[0].clientX - rect.left;
+            playerX = touchX < canvas.width / 2 ? Math.max(50, playerX - 55) : Math.min(310, playerX + 55);
+            playTone(320, 'triangle', 0.03);
+        });
 
-            gameRenderer = new THREE.WebGLRenderer({ antialias: true });
-            gameRenderer.setSize(box.clientWidth, box.clientHeight);
-            box.appendChild(gameRenderer.domElement);
-
-            gameScene.add(new THREE.AmbientLight(0xffffff, 0.6));
-            const pLight = new THREE.PointLight(0x9dfc3b, 2, 20);
-            pLight.position.set(0, 4, 2);
-            gameScene.add(pLight);
-
-            const grid = new THREE.GridHelper(30, 20, 0x9dfc3b, 0x163319);
-            grid.position.z = -10;
-            gameScene.add(grid);
-
-            playerSneaker = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.35, 1.2), new THREE.MeshStandardMaterial({ color: 0x9dfc3b, roughness: 0.2, metalness: 0.8 }));
-            playerSneaker.position.y = 0.2;
-            gameScene.add(playerSneaker);
-
-            let touchX = 0;
-            box.addEventListener('touchstart', e => touchX = e.touches[0].clientX);
-            box.addEventListener('touchmove', e => {
-                let dx = (e.touches[0].clientX - touchX) * 0.015;
-                playerSneaker.position.x = Math.max(-1.8, Math.min(1.8, playerSneaker.position.x + dx));
-                touchX = e.touches[0].clientX;
-            });
-
-            reset3DGame();
+        function resetRunner() {
+            obstacles = [];
+            dist = 0;
+            playerX = 180;
+            runnerRunning = true;
+            runLoop();
         }
 
-        function reset3DGame() {
-            gameObs.forEach(o => gameScene.remove(o));
-            gameObs = [];
-            gameDist = 0;
-            isGameOn = true;
-            playerSneaker.position.x = 0;
+        function runLoop() {
+            if (!runnerRunning) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            dist++;
+            document.getElementById('distText').innerText = `${dist}m`;
 
-            function runLoop() {
-                if (!isGameOn) return;
-                requestAnimationFrame(runLoop);
-                gameDist++;
-                document.getElementById('distVal').innerText = `${gameDist}m`;
+            // Track lines
+            ctx.strokeStyle = "rgba(157,252,59,0.2)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(180, 0); ctx.lineTo(180, canvas.height);
+            ctx.stroke();
 
-                if (Math.random() < 0.04) {
-                    const ob = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.7, 0.7), new THREE.MeshStandardMaterial({ color: 0xff3344 }));
-                    ob.position.set((Math.random() - 0.5) * 3.6, 0.35, -24);
-                    gameScene.add(ob);
-                    gameObs.push(ob);
-                }
+            // Player Sneaker
+            ctx.fillStyle = "#9dfc3b";
+            ctx.shadowColor = "#9dfc3b";
+            ctx.shadowBlur = 12;
+            ctx.fillRect(playerX - 22, 190, 44, 26);
+            ctx.shadowBlur = 0;
 
-                for (let i = gameObs.length - 1; i >= 0; i--) {
-                    gameObs[i].position.z += 0.35;
-                    if (gameObs[i].position.distanceTo(playerSneaker.position) < 0.8) {
-                        isGameOn = false;
-                        playTone(150, 'sawtooth', 0.25);
-                        alert(`Collision! Earned ${Math.floor(gameDist/2)} $DKX!`);
-                        score += Math.floor(gameDist / 2);
-                        localStorage.setItem('dkx_score', score);
-                        document.getElementById('score').innerText = score.toLocaleString();
-                        return;
-                    }
-                    if (gameObs[i].position.z > 6) {
-                        gameScene.remove(gameObs[i]);
-                        gameObs.splice(i, 1);
-                    }
-                }
-                gameRenderer.render(gameScene, gameCamera);
+            // Spawn Obstacles
+            if (Math.random() < 0.04) {
+                obstacles.push({ x: Math.random() * (canvas.width - 60) + 30, y: -20 });
             }
-            runLoop();
+
+            // Draw Obstacles
+            ctx.fillStyle = "#ff3b30";
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                obstacles[i].y += 5.5;
+                ctx.fillRect(obstacles[i].x - 16, obstacles[i].y, 32, 22);
+
+                // Collision
+                if (obstacles[i].y > 170 && obstacles[i].y < 220 && Math.abs(obstacles[i].x - playerX) < 35) {
+                    runnerRunning = false;
+                    playTone(150, 'sawtooth', 0.25);
+                    alert(`Run Finished! Dist: ${dist}m. Earned ${Math.floor(dist/2)} $DKX!`);
+                    score += Math.floor(dist / 2);
+                    localStorage.setItem('dkx_score', score);
+                    document.getElementById('score').innerText = score.toLocaleString();
+                    return;
+                }
+
+                if (obstacles[i].y > canvas.height) obstacles.splice(i, 1);
+            }
+
+            requestAnimationFrame(runLoop);
         }
     </script>
 </body>
