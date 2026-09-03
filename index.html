@@ -8,6 +8,8 @@
     <title>DKX Institutional Terminal</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://s3.tradingview.com">
+    <link rel="dns-prefetch" href="https://s3.tradingview.com">
     
     <style>
         :root {
@@ -28,7 +30,7 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
@@ -39,7 +41,7 @@
             padding-bottom: 75px;
         }
 
-        /* 3D COIN INTRO SPLASH */
+        /* 3D COIN DROP INTRO SPLASH */
         #splash-screen {
             position: fixed;
             inset: 0;
@@ -145,7 +147,7 @@
         /* TABS */
         .tab-content {
             display: none;
-            animation: fadeIn 0.2s ease-out;
+            animation: fadeIn 0.15s ease-out;
         }
 
         .tab-content.active {
@@ -168,7 +170,7 @@
             background: #000;
         }
 
-        /* CARDS */
+        /* PROTOCOL CARDS */
         .proto-card {
             background: var(--surface);
             border: 1px solid var(--surface-border);
@@ -207,7 +209,7 @@
             line-height: 1.5;
         }
 
-        /* NODE ITEMS */
+        /* NODE ITEMS & OFFICIAL SVG LOGOS */
         .node-row {
             display: flex;
             align-items: center;
@@ -222,22 +224,26 @@
         .node-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        .node-icon-wrap {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+        .node-svg-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            background: rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
+        }
+
+        .node-svg-wrap svg {
+            width: 22px;
+            height: 22px;
         }
 
         .node-name {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 2px;
@@ -252,7 +258,7 @@
             background: rgba(0, 255, 136, 0.1);
             color: var(--brand-green);
             border: 1px solid rgba(0, 255, 136, 0.3);
-            padding: 7px 14px;
+            padding: 8px 15px;
             font-size: 11px;
             font-weight: 700;
             border-radius: 6px;
@@ -266,41 +272,42 @@
             color: #030704;
         }
 
-        /* VAULT SPECIFIC */
-        .vault-balance-card {
-            background: var(--surface);
-            border: 1px solid var(--surface-border);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 14px;
-        }
-
-        .vault-label {
-            font-size: 10px;
-            font-weight: 800;
-            color: #64748b;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .vault-val-row {
+        /* CONTRACT SOCKET SPECIFIC */
+        .contract-box {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: baseline;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--surface-border);
+            padding: 10px 12px;
+            border-radius: 8px;
             margin-bottom: 12px;
         }
 
-        .vault-val-big {
-            font-size: 26px;
-            font-weight: 900;
-            color: #ffffff;
+        .contract-addr {
+            font-size: 11px;
+            font-family: monospace;
+            color: #86efac;
+            word-break: break-all;
+            text-align: left;
         }
 
-        .vault-val-usd {
-            font-size: 13px;
+        .btn-copy {
+            background: rgba(0, 255, 136, 0.15);
             color: var(--brand-green);
-            font-weight: 700;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-copy:active {
+            background: var(--brand-green);
+            color: #030704;
         }
 
         .btn-primary-green {
@@ -388,18 +395,18 @@
         <span class="badge-brand">⚡ DKX INSTITUTIONAL TERMINAL</span>
         <div class="badge-live">
             <span class="pulse-dot"></span>
-            <span id="blockTicker">BNB #41,920,413 • 2.9 Gwei</span>
+            <span id="blockTicker">BNB #41,920,419 • 2.8 Gwei</span>
         </div>
     </div>
 
-    <!-- TAB 1: FULL SCREEN TRADING TERMINAL -->
+    <!-- TAB 1: FULL-SCREEN FAST TRADING TERMINAL -->
     <div id="tab-terminal" class="tab-content active">
         <div class="chart-fullscreen">
             <div id="tradingview_widget" style="width: 100%; height: 100%;"></div>
         </div>
     </div>
 
-    <!-- TAB 2: DAKICKS ECOSYSTEM -->
+    <!-- TAB 2: DAKICKS PROTOCOL -->
     <div id="tab-dakicks" class="tab-content tab-padded">
         <div class="proto-card">
             <div class="card-top">
@@ -426,16 +433,20 @@
         </div>
     </div>
 
-    <!-- TAB 3: COMMUNITY NODES -->
+    <!-- TAB 3: COMMUNITY NODES (ORIGINAL BRAND LOGOS) -->
     <div id="tab-community" class="tab-content tab-padded">
         <div style="font-size: 11px; font-weight: 800; color: #86efac; margin-bottom: 12px; letter-spacing: 0.5px; text-transform: uppercase;">
             Official Communication Nodes
         </div>
 
-        <!-- TELEGRAM -->
+        <!-- TELEGRAM OFFICIAL LOGO -->
         <div class="node-row">
             <div class="node-left">
-                <div class="node-icon-wrap" style="background: rgba(0, 136, 204, 0.15); color: #0088cc;">✈️</div>
+                <div class="node-svg-wrap" style="background: rgba(36, 161, 222, 0.12);">
+                    <svg viewBox="0 0 24 24" fill="#24A1DE">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.88.03-.24.38-.49 1.04-.75 4.07-1.77 6.78-2.94 8.14-3.52 3.87-1.65 4.67-1.94 5.2-1.95.12 0 .38.03.55.17.14.12.18.28.2.46-.01.07.01.24 0 .32z"/>
+                    </svg>
+                </div>
                 <div>
                     <div class="node-name">Telegram Network</div>
                     <div class="node-meta">Official Announcements & Chat</div>
@@ -444,10 +455,23 @@
             <a href="https://t.me/DKXOfficial" class="btn-node" onclick="safeOpen(event, this.href)">Open Node</a>
         </div>
 
-        <!-- INSTAGRAM -->
+        <!-- INSTAGRAM OFFICIAL GRADIENT LOGO -->
         <div class="node-row">
             <div class="node-left">
-                <div class="node-icon-wrap" style="background: rgba(225, 48, 108, 0.15); color: #e1306c;">📸</div>
+                <div class="node-svg-wrap" style="background: rgba(225, 48, 108, 0.12);">
+                    <svg viewBox="0 0 24 24">
+                        <defs>
+                            <linearGradient id="igGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#fdf497"/>
+                                <stop offset="5%" stop-color="#fdf497"/>
+                                <stop offset="45%" stop-color="#fd5949"/>
+                                <stop offset="60%" stop-color="#d6249f"/>
+                                <stop offset="90%" stop-color="#285AEB"/>
+                            </linearGradient>
+                        </defs>
+                        <path fill="url(#igGrad)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </div>
                 <div>
                     <div class="node-name">Instagram Hub</div>
                     <div class="node-meta">Visual Drops & Design Specs</div>
@@ -456,10 +480,14 @@
             <a href="https://www.instagram.com/dakicks_dkx" class="btn-node" onclick="safeOpen(event, this.href)">Open Node</a>
         </div>
 
-        <!-- X (TWITTER) -->
+        <!-- X (TWITTER) OFFICIAL MINIMAL LOGO -->
         <div class="node-row">
             <div class="node-left">
-                <div class="node-icon-wrap" style="background: rgba(255, 255, 255, 0.1); color: #ffffff;">✖️</div>
+                <div class="node-svg-wrap" style="background: rgba(255, 255, 255, 0.08);">
+                    <svg viewBox="0 0 24 24" fill="#ffffff">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                </div>
                 <div>
                     <div class="node-name">X Protocol Comms</div>
                     <div class="node-meta">Ecosystem Releases & Whitepaper</div>
@@ -469,41 +497,25 @@
         </div>
     </div>
 
-    <!-- TAB 4: VAULT -->
+    <!-- TAB 4: VAULT (CONTRACT DEPLOYMENT MODULE) -->
     <div id="tab-vault" class="tab-content tab-padded">
-        <div class="vault-balance-card">
-            <div class="vault-label">TOTAL VALIDATED BALANCE (PROOF-OF-ACTIVITY)</div>
-            <div class="vault-val-row">
-                <span class="vault-val-big">1,046 <span style="font-size: 16px; color: var(--brand-green);">$DKX</span></span>
-                <span class="vault-val-usd">≈ $5.23 USD</span>
-            </div>
-            <!-- Live Neon Glow Curve -->
-            <svg width="100%" height="40" viewBox="0 0 300 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M0 35C40 35 60 20 100 22C140 24 160 30 200 15C230 5 270 5 300 5" stroke="#00ff88" stroke-width="2.5" stroke-linecap="round"/>
-                <path d="M0 35C40 35 60 20 100 22C140 24 160 30 200 15C230 5 270 5 300 5V40H0V35Z" fill="url(#greenGradient)" opacity="0.15"/>
-                <defs>
-                    <linearGradient id="greenGradient" x1="0" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#00ff88"/>
-                        <stop offset="1" stop-color="#00ff88" stop-opacity="0"/>
-                    </linearGradient>
-                </defs>
-            </svg>
-        </div>
-
         <div class="proto-card" style="text-align: center;">
-            <div style="font-size: 32px; margin-bottom: 8px;">🔐</div>
-            <div style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px;">On-Chain Smart Contract Socket</div>
-            <div style="font-size: 10px; font-family: monospace; color: #64748b; background: rgba(0,0,0,0.5); padding: 8px; border-radius: 6px; word-break: break-all; margin-bottom: 12px; border: 1px solid var(--surface-border);">
-                0x0000000000000000000000000000000000000000
+            <div style="font-size: 36px; margin-bottom: 8px;">🔐</div>
+            <div style="font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 8px;">On-Chain Smart Contract Socket</div>
+            
+            <div class="contract-box">
+                <span id="ca-text" class="contract-addr">DEPLOYING AT LAUNCH (BNB CHAIN)</span>
+                <button class="btn-copy" onclick="copyCA()">COPY CA</button>
             </div>
-            <p style="font-size: 12px; color: var(--subtext); line-height: 1.5;">
-                Wallet binding connects during the official liquidity seeding on BNB Smart Chain. All off-chain PoA balances will be mapped directly via signed cryptographic hash.
+
+            <p style="font-size: 12px; color: var(--subtext); line-height: 1.6; margin-bottom: 6px;">
+                Official $DKX contract address will be verified and mapped here directly upon liquidity provisioning on BNB Smart Chain.
             </p>
-            <button class="btn-primary-green" onclick="alert('Standby: Contract socket activates at TGE.')">CONNECT WEB3 WALLET (STANDBY)</button>
+            <button class="btn-primary-green" onclick="alert('Standby: Contract socket activates upon TGE launch.')">CONNECT WEB3 WALLET (STANDBY)</button>
         </div>
     </div>
 
-    <!-- BOTTOM DOCK -->
+    <!-- BOTTOM NAVIGATION -->
     <div class="nav-dock">
         <div class="nav-grid">
             <button class="nav-item active" onclick="switchNav('terminal', this)">
@@ -525,28 +537,33 @@
         </div>
     </div>
 
-    <!-- TRADINGVIEW ENGINE -->
+    <!-- HIGH PERFORMANCE TRADINGVIEW LOADER -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        new TradingView.widget({
-            "autosize": true,
-            "symbol": "BINANCE:BNBUSDT",
-            "interval": "15",
-            "timezone": "Etc/UTC",
-            "theme": "dark",
-            "style": "1",
-            "locale": "en",
-            "toolbar_bg": "#030704",
-            "enable_publishing": false,
-            "hide_side_toolbar": false,
-            "allow_symbol_change": true,
-            "container_id": "tradingview_widget"
-        });
+        function loadTradingChart() {
+            if (typeof TradingView !== 'undefined') {
+                new TradingView.widget({
+                    "autosize": true,
+                    "symbol": "BINANCE:BNBUSDT",
+                    "interval": "15",
+                    "timezone": "Etc/UTC",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "en",
+                    "toolbar_bg": "#030704",
+                    "enable_publishing": false,
+                    "hide_side_toolbar": false,
+                    "allow_symbol_change": true,
+                    "save_image": false,
+                                        "container_id": "tradingview_widget"
+                });
+            }
+        }
+        loadTradingChart();
     </script>
 
-    <!-- CORE TELEGRAM ENGINE & HIGH-SECURITY ROUTINES -->
     <script>
-        // Anti-Clickjack Security
+        // Security Clickjacking Guard
         if (window.top !== window.self) {
             try {
                 if (!window.top.location.hostname.includes("telegram") && !window.top.location.hostname.includes("t.me")) {
@@ -563,7 +580,7 @@
             tg.setBackgroundColor('#030704');
         }
 
-        // Safe External Node Navigation
+        // Native Link Opener
         function safeOpen(e, targetUrl) {
             e.preventDefault();
             if (tg && tg.openLink) {
@@ -573,11 +590,22 @@
             }
         }
 
+        // Copy Contract Address
+        function copyCA() {
+            const text = document.getElementById('ca-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                if (tg?.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+                alert('Contract Address Copied!');
+            }).catch(() => {});
+        }
+
         // Real-Time Block Simulator
-        let blockNumber = 41920413;
+        let blockNumber = 41920419;
         setInterval(() => {
             blockNumber += 1;
-            const gas = (Math.random() * (3.2 - 2.8) + 2.8).toFixed(1);
+            const gas = (Math.random() * (3.1 - 2.8) + 2.8).toFixed(1);
             const ticker = document.getElementById('blockTicker');
             if (ticker) {
                 ticker.innerText = `BNB #${blockNumber.toLocaleString()} • ${gas} Gwei`;
@@ -597,7 +625,7 @@
             btnElement.classList.add('active');
         }
 
-        // Luxury Glass Chime Tone
+        // Crisp High-End Chime
         function playChime() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -620,13 +648,13 @@
             } catch(e) { }
         }
 
-        // Smooth 3-Sec Splash Trigger
+        // 3-Sec Splash Trigger
         window.addEventListener('DOMContentLoaded', () => {
             const splash = document.getElementById('splash-screen');
-            const hasSeen = sessionStorage.getItem('dkx_splash_v4');
+            const hasSeen = sessionStorage.getItem('dkx_splash_v5');
 
             if (!hasSeen && splash) {
-                sessionStorage.setItem('dkx_splash_v4', 'true');
+                sessionStorage.setItem('dkx_splash_v5', 'true');
                 setTimeout(() => { playChime(); }, 350);
                 setTimeout(() => {
                     splash.style.opacity = '0';
