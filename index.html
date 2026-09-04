@@ -12,15 +12,14 @@
 
   <style>
     :root {
-      --bg-base: #060807;
-      --bg-surface: #0e1210;
-      --bg-card: rgba(22, 28, 24, 0.85);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(0, 255, 136, 0.25);
-      --text-main: #f8fafc;
-      --text-muted: #8e9b94;
+      --bg-base: #030604;
+      --glass-surface: rgba(14, 22, 17, 0.65);
+      --glass-border: rgba(0, 255, 136, 0.18);
+      --glass-glow: rgba(0, 255, 136, 0.1);
       --accent-green: #00ff88;
       --accent-cyan: #00e5ff;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
     }
 
     * {
@@ -28,7 +27,8 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
-      -webkit-tap-highlight-color: transparent;
+      -webkit-tap-highlight-color: transparent !important;
+      outline: none !important;
       user-select: none;
     }
 
@@ -41,16 +41,17 @@
       flex-direction: column;
     }
 
-    /* Top Utility Header */
+    /* Top Institutional Header */
     .top-bar {
-      height: 48px;
-      padding: 0 16px;
+      height: 46px;
+      padding: 0 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(6, 8, 7, 0.95);
-      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(3, 6, 4, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       z-index: 50;
+      backdrop-filter: blur(12px);
     }
 
     .badge-pill {
@@ -58,8 +59,8 @@
       align-items: center;
       gap: 7px;
       padding: 4px 10px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 6px;
       font-size: 11px;
       font-weight: 700;
@@ -71,16 +72,17 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--text-main);
+      background: #ffffff;
+      box-shadow: 0 0 8px #ffffff;
     }
 
     .network-pill {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
+      font-size: 10.5px;
       color: #94a3b8;
-      font-family: monospace;
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .network-pill .pulse-dot {
@@ -88,10 +90,16 @@
       height: 6px;
       border-radius: 50%;
       background: var(--accent-green);
-      box-shadow: 0 0 8px var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: pulseGlow 1.8s infinite ease-in-out;
     }
 
-    /* App Viewports Container */
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    /* Main Viewport Container */
     .main-viewport {
       flex: 1;
       position: relative;
@@ -104,83 +112,128 @@
       display: none;
       flex-direction: column;
       overflow-y: auto;
-      padding: 16px;
-      padding-bottom: 85px;
+      padding: 14px 16px 80px 16px;
+      z-index: 10;
     }
 
     .tab-content.active {
       display: flex;
     }
 
-    /* Terminal Tab (Chart) */
+    /* Video Background Container */
+    .video-bg-container {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .video-bg-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.35;
+      filter: saturate(1.2) contrast(1.1);
+    }
+
+    .video-overlay-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(3, 6, 4, 0.45) 0%, rgba(3, 6, 4, 0.9) 100%);
+      z-index: 2;
+    }
+
+    /* Tab 1: Terminal Fullscreen Chart */
     #tab-terminal {
       padding: 0;
+      overflow: hidden;
     }
 
     .chart-box {
       width: 100%;
-      height: calc(100vh - 110px);
+      height: calc(100vh - 106px);
+      position: relative;
     }
 
-    /* Cards & Containers (DAKICKS, COMMUNITY, VAULT) */
+    /* Luxury Glass Cards */
     .section-title {
-      font-size: 10px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1.5px;
       color: var(--text-muted);
-      margin: 8px 0 12px 2px;
-      font-weight: 700;
+      margin: 6px 0 14px 2px;
+      font-weight: 800;
+      position: relative;
+      z-index: 5;
     }
 
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
+    .glass-card {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
       padding: 16px;
-      margin-bottom: 12px;
-      backdrop-filter: blur(12px);
+      margin-bottom: 14px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      position: relative;
+      z-index: 5;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .glass-card:active {
+      transform: translateY(-1px);
+      border-color: rgba(0, 255, 136, 0.4);
     }
 
     .card-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .card-title {
       font-size: 14px;
       font-weight: 700;
-      color: #fff;
+      color: #ffffff;
+      letter-spacing: 0.3px;
     }
 
     .card-tag {
       font-size: 9px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.06);
-      color: #cbd5e1;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent-green);
+      border: 1px solid rgba(0, 255, 136, 0.2);
+      letter-spacing: 0.8px;
     }
 
     .card-desc {
       font-size: 12px;
-      line-height: 1.5;
-      color: var(--text-muted);
+      line-height: 1.55;
+      color: #cbd5e1;
     }
 
-    /* Community Links */
+    /* Tab 3: Community Official Nodes */
     .comm-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
       padding: 14px 16px;
       margin-bottom: 12px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 5;
+      position: relative;
     }
 
     .comm-left {
@@ -189,159 +242,226 @@
       gap: 14px;
     }
 
-    .comm-icon {
-      width: 36px;
-      height: 36px;
+    .comm-logo-box {
+      width: 42px;
+      height: 42px;
       border-radius: 10px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
+      padding: 8px;
+    }
+
+    .comm-logo-box svg {
+      width: 100%;
+      height: 100%;
+      fill: #ffffff;
     }
 
     .comm-name {
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 700;
+      color: #ffffff;
     }
 
     .comm-sub {
       font-size: 11px;
       color: var(--text-muted);
+      margin-top: 2px;
     }
 
     .btn-node {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--border-subtle);
-      color: #fff;
-      padding: 7px 12px;
-      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 8px 14px;
+      border-radius: 8px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.2s ease;
     }
 
-    /* Vault Socket */
-    .vault-container {
+    .btn-node:active {
+      background: var(--accent-green);
+      color: #000;
+    }
+
+    /* Tab 4: 3D Holographic Vault */
+    .vault-wrapper {
+      position: relative;
+      z-index: 5;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: 24px 16px;
+      padding-top: 10px;
     }
 
-    .lock-icon-box {
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--border-subtle);
+    .vault-3d-box {
+      width: 74px;
+      height: 74px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 229, 255, 0.05));
+      border: 1px solid rgba(0, 255, 136, 0.4);
+      box-shadow: 0 0 25px rgba(0, 255, 136, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+      animation: floatLock 3s ease-in-out infinite;
+    }
+
+    @keyframes floatLock {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(2deg); }
     }
 
     .vault-title {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 16px;
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.4px;
+      margin-bottom: 14px;
     }
 
-    .ca-box {
+    .ca-strip {
       width: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
       padding: 10px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(12px);
     }
 
-    .ca-label {
-      font-size: 10px;
+    .ca-text {
+      font-size: 11px;
       color: #94a3b8;
-      font-family: monospace;
-      letter-spacing: 0.5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
     }
 
-    .btn-copy {
+    .btn-copy-ca {
       background: #ffffff;
-      color: #000;
+      color: #030604;
       border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
+      padding: 6px 12px;
+      border-radius: 6px;
       font-size: 10px;
       font-weight: 800;
       cursor: pointer;
+      transition: background 0.15s ease;
     }
 
-    .vault-info {
+    .btn-copy-ca:active {
+      background: var(--accent-green);
+    }
+
+    .vault-desc {
       font-size: 12px;
       color: var(--text-muted);
       line-height: 1.5;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
 
-    .btn-action-primary {
+    .btn-wallet-connect {
       width: 100%;
       background: #ffffff;
-      color: #000;
+      color: #000000;
       border: none;
       border-radius: 10px;
-      padding: 14px;
+      padding: 13px;
+      font-size: 12.5px;
       font-weight: 800;
-      font-size: 13px;
       letter-spacing: 0.8px;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.15);
+      margin-bottom: 16px;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-wallet-connect:active {
+      transform: scale(0.98);
+      background: var(--accent-green);
+    }
+
+    /* Vault Adsgram / Allocation Module */
+    .allocation-box {
+      width: 100%;
+      background: linear-gradient(180deg, rgba(0, 255, 136, 0.1) 0%, rgba(3, 6, 4, 0.85) 100%);
+      border: 1px solid rgba(0, 255, 136, 0.35);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      text-align: left;
+    }
+
+    .alloc-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .alloc-title {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-muted);
       text-transform: uppercase;
-      cursor: pointer;
-      margin-bottom: 14px;
+      letter-spacing: 1px;
     }
 
-    /* Rewarded Ad Box inside Vault */
-    .reward-box {
-      width: 100%;
-      background: linear-gradient(180deg, rgba(0, 255, 136, 0.06) 0%, rgba(0, 0, 0, 0.4) 100%);
-      border: 1px solid var(--border-glow);
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 10px;
-    }
-
-    .reward-val {
-      font-size: 20px;
-      font-weight: 800;
+    .alloc-value {
+      font-size: 24px;
+      font-weight: 900;
       color: var(--accent-green);
-      margin: 4px 0 10px 0;
+      margin-bottom: 12px;
+      text-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
     }
 
-    .btn-reward {
+    .btn-claim-ad {
       width: 100%;
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
-      color: #000;
+      background: linear-gradient(90deg, #00e5ff 0%, #00ff88 100%);
       border: none;
-      border-radius: 8px;
-      padding: 12px;
+      color: #030604;
+      font-size: 13px;
       font-weight: 800;
-      font-size: 12px;
+      padding: 13px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       cursor: pointer;
+      box-shadow: 0 4px 18px rgba(0, 255, 136, 0.3);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      transition: transform 0.15s ease;
     }
 
-    /* Fixed Bottom Navigation */
+    .btn-claim-ad:active {
+      transform: scale(0.98);
+    }
+
+    /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 62px;
+      height: 60px;
       background: #000000;
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -358,7 +478,7 @@
       color: #64748b;
       cursor: pointer;
       height: 100%;
-      transition: color 0.15s ease;
+      transition: color 0.2s ease;
     }
 
     .nav-item.active {
@@ -366,11 +486,11 @@
     }
 
     .nav-item.active .nav-icon {
-      filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.6));
+      filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.8));
     }
 
     .nav-icon {
-      font-size: 18px;
+      font-size: 17px;
     }
 
     .nav-label {
@@ -379,11 +499,51 @@
       letter-spacing: 0.8px;
       text-transform: uppercase;
     }
+
+    /* Luxury Dark Transparent HUD Popup (Replaces White Alert) */
+    .luxury-toast {
+      position: fixed;
+      top: 64px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-30px);
+      background: rgba(10, 18, 13, 0.92);
+      border: 1px solid var(--accent-green);
+      color: #ffffff;
+      padding: 12px 22px;
+      border-radius: 30px;
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 255, 136, 0.2);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+    }
+
+    .luxury-toast.active {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+    }
   </style>
 </head>
 <body>
 
-  <!-- Top Utilities -->
+  <!-- Top Institutional Bar -->
   <div class="top-bar">
     <div class="badge-pill">
       <div class="dot"></div>
@@ -398,26 +558,35 @@
   <!-- Content Sections -->
   <div class="main-viewport">
     
-    <!-- Tab 1: TERMINAL (BNB/USDT Live Candlestick Chart) -->
+    <!-- Tab 1: TERMINAL (BNB/USDT Fullscreen TradingView Chart) -->
     <div id="tab-terminal" class="tab-content active">
       <div class="chart-box">
-        <div id="tv_chart_container" style="height:100%;width:100%"></div>
+        <div id="tv_chart_main" style="height:100%;width:100%"></div>
       </div>
     </div>
 
-    <!-- Tab 2: DAKICKS (RWA Drops) -->
+    <!-- Tab 2: DAKICKS (RWA Drops + dakicks-bg.mp4) -->
     <div id="tab-dakicks" class="tab-content">
-      <div class="card">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline>
+          <source src="./dakicks-bg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="section-title">Institutional RWA Architecture</div>
+
+      <div class="glass-card">
         <div class="card-head">
           <div class="card-title">DAKICKS® Physical Drops</div>
           <div class="card-tag">RWA APPAREL</div>
         </div>
         <div class="card-desc">
-          Genesis footwear products embedded with NFC cryptographic authenticity chips. Verified on BNB Smart Chain.
+          Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on BNB Smart Chain.
         </div>
       </div>
 
-      <div class="card">
+      <div class="glass-card">
         <div class="card-head">
           <div class="card-title">Revenue-Share Protocol</div>
           <div class="card-tag">TREASURY</div>
@@ -427,7 +596,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="glass-card">
         <div class="card-head">
           <div class="card-title">DKX Supply Standard</div>
           <div class="card-tag">DEFLATIONARY</div>
@@ -438,115 +607,174 @@
       </div>
     </div>
 
-    <!-- Tab 3: COMMUNITY (Communication Nodes) -->
+    <!-- Tab 3: COMMUNITY (Nodes + community-bg.mp4) -->
     <div id="tab-community" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline>
+          <source src="./community-bg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
       <div class="section-title">Official Communication Nodes</div>
 
+      <!-- Telegram Official -->
       <div class="comm-row">
         <div class="comm-left">
-          <div class="comm-icon">✈️</div>
+          <div class="comm-logo-box">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.88.03-.24.38-.49 1.04-.75 4.09-1.78 6.82-2.95 8.19-3.52 3.9-1.63 4.71-1.91 5.24-1.92.12 0 .37.03.54.17.14.12.18.28.2.45-.01.07-.01.18-.02.24z"/></svg>
+          </div>
           <div>
             <div class="comm-name">Telegram Network</div>
-            <div class="comm-sub">Official Announcements & Chat</div>
+            <div class="comm-sub">@DKXOfficial</div>
           </div>
         </div>
-        <a href="https://t.me/DakicksAmino_bot" class="btn-node">Open Node ↗</a>
+        <a href="https://t.me/DKXOfficial" target="_blank" class="btn-node">Open Node ↗</a>
       </div>
 
+      <!-- Instagram Official -->
       <div class="comm-row">
         <div class="comm-left">
-          <div class="comm-icon">📸</div>
+          <div class="comm-logo-box">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </div>
           <div>
             <div class="comm-name">Instagram Hub</div>
-            <div class="comm-sub">Visual Drops & Design Specs</div>
+            <div class="comm-sub">@dakicks_dkx</div>
           </div>
         </div>
-        <a href="https://instagram.com" target="_blank" class="btn-node">Open Node ↗</a>
+        <a href="https://instagram.com/dakicks_dkx" target="_blank" class="btn-node">Open Node ↗</a>
       </div>
 
+      <!-- X Official -->
       <div class="comm-row">
         <div class="comm-left">
-          <div class="comm-icon">✖️</div>
+          <div class="comm-logo-box">
+            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
           <div>
             <div class="comm-name">X Protocol Comms</div>
-            <div class="comm-sub">Ecosystem Releases & Whitepaper</div>
+            <div class="comm-sub">@dakicks_dkx</div>
           </div>
         </div>
-        <a href="https://x.com" target="_blank" class="btn-node">Open Node ↗</a>
+        <a href="https://x.com/dakicks_dkx" target="_blank" class="btn-node">Open Node ↗</a>
       </div>
     </div>
 
-    <!-- Tab 4: VAULT (Smart Contract & Rewards) -->
+    <!-- Tab 4: VAULT (Smart Contract + bg.mp4) -->
     <div id="tab-vault" class="tab-content">
-      <div class="vault-container">
-        <div class="lock-icon-box">🔒</div>
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline>
+          <source src="./bg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="vault-wrapper">
+        <div class="vault-3d-box">
+          <span style="font-size:32px;">💎</span>
+        </div>
         <div class="vault-title">On-Chain Smart Contract Socket</div>
 
-        <div class="ca-box">
-          <span class="ca-label">DEPLOYING AT LAUNCH (BNB CHAIN)</span>
-          <button class="btn-copy" id="copyCaBtn">COPY CA</button>
+        <div class="ca-strip">
+          <span class="ca-text">DEPLOYING AT LAUNCH (BNB CHAIN)</span>
+          <button class="btn-copy-ca" id="copyCaBtn">COPY CA</button>
         </div>
 
-        <div class="vault-info">
-          Official $DKX contract address will be verified and mapped here directly upon liquidity provisioning on BNB Smart Chain.
+        <div class="vault-desc">
+          Official $DKX contract address will be verified and mapped here directly upon DEX liquidity provisioning on BNB Smart Chain.
         </div>
 
-        <button class="btn-action-primary" id="connectWalletBtn">CONNECT WEB3 WALLET (STANDBY)</button>
+        <button class="btn-wallet-connect" id="connectWalletBtn">CONNECT WEB3 WALLET (STANDBY)</button>
 
-        <!-- Monitized Allocation Section -->
-        <div class="reward-box">
-          <div style="font-size:10px; color:#94a3b8; font-weight:700; text-transform:uppercase;">Pre-Listing Allocation Pool</div>
-          <div class="reward-val" id="userBal">1,250 <span style="font-size:12px; color:#fff;">$DKX</span></div>
-          <button class="btn-reward" id="claimAdRewardBtn">⚡ Claim Liquidity Allocation (+50 DKX)</button>
+        <!-- Adsgram Liquidity Allocation Block -->
+        <div class="allocation-box">
+          <div class="alloc-head">
+            <div class="alloc-title">Genesis Liquidity Allocation</div>
+            <span style="font-size:10px; color:var(--accent-green); font-weight:700;">ACTIVE</span>
+          </div>
+          <div class="alloc-value" id="vaultDkxBal">1,250 <span style="font-size:13px; color:#fff; font-weight:600;">$DKX</span></div>
+          <button class="btn-claim-ad" id="claimRewardBtn">
+            <span>⚡</span> Claim Allocation (+50 $DKX)           </button>
         </div>
       </div>
     </div>
 
   </div>
 
-  <!-- Bottom Navigation Dock -->
+  <!-- Bottom Navigation Bar -->
   <div class="bottom-nav">
-    <div class="nav-item active" onclick="switchTab('terminal', this)">
+    <div class="nav-item active" onclick="navigateTab('terminal', this)">
       <div class="nav-icon">📈</div>
       <div class="nav-label">Terminal</div>
     </div>
-    <div class="nav-item" onclick="switchTab('dakicks', this)">
+    <div class="nav-item" onclick="navigateTab('dakicks', this)">
       <div class="nav-icon">👟</div>
       <div class="nav-label">Dakicks</div>
     </div>
-    <div class="nav-item" onclick="switchTab('community', this)">
+    <div class="nav-item" onclick="navigateTab('community', this)">
       <div class="nav-icon">🌐</div>
       <div class="nav-label">Community</div>
     </div>
-    <div class="nav-item" onclick="switchTab('vault', this)">
+    <div class="nav-item" onclick="navigateTab('vault', this)">
       <div class="nav-icon">💎</div>
       <div class="nav-label">Vault</div>
     </div>
   </div>
 
-  <!-- TradingView Library -->
+  <!-- Glass HUD Notification (100% Transparent Dark, NO White Popups) -->
+  <div class="luxury-toast" id="luxuryToast">
+    <div class="toast-dot"></div>
+    <span id="toastMsg">System Notification</span>
+  </div>
+
+  <!-- TradingView Widget Script -->
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
   <script>
-    // 1. Telegram App Init
+    // 1. Telegram App Interface
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
       tg.expand();
+      try {
+        tg.setHeaderColor('#030604');
+        tg.setBackgroundColor('#030604');
+      } catch (e) {}
     }
 
-    // 2. Tab Navigation
-    function switchTab(tabId, elem) {
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-      
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    function triggerHaptic(type = 'light') {
+      try {
+        if (tg?.HapticFeedback) {
+          if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+          else tg.HapticFeedback.impactOccurred(type);
+        }
+      } catch (e) {}
+    }
+
+    let toastTimeout;
+    function showLuxuryToast(message) {
+      const toast = document.getElementById('luxuryToast');
+      const msgElem = document.getElementById('toastMsg');
+      msgElem.innerText = message;
+      toast.classList.add('active');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('active');
+      }, 2800);
+    }
+
+    // 2. Tab Navigation System
+    function navigateTab(tabName, element) {
+      triggerHaptic('light');
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-      document.getElementById(`tab-${tabId}`).classList.add('active');
-      elem.classList.add('active');
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      element.classList.add('active');
     }
 
-    // 3. TradingView Chart Initialization
+    // 3. Fullscreen TradingView Chart Initialization
     new TradingView.widget({
       "autosize": true,
       "symbol": "BINANCE:BNBUSDT",
@@ -556,50 +784,66 @@
       "style": "1",
       "locale": "en",
       "enable_publishing": false,
-      "backgroundColor": "#060807",
-      "gridColor": "rgba(255, 255, 255, 0.04)",
       "hide_top_toolbar": false,
-      "hide_legend": false,
+      "hide_side_toolbar": false,
+      "allow_symbol_change": true,
       "save_image": false,
-      "container_id": "tv_chart_container"
+      "backgroundColor": "#030604",
+      "gridColor": "rgba(255, 255, 255, 0.04)",
+      "container_id": "tv_chart_main"
     });
 
-    // 4. Copy CA Feedback
+    // 4. Clean Contract Address Copy (NO White Browser Alert)
     document.getElementById('copyCaBtn').addEventListener('click', () => {
-      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      triggerHaptic('success');
       navigator.clipboard.writeText("DEPLOYING AT LAUNCH (BNB CHAIN)");
-      alert("Contract will be live upon BNB Chain DEX deployment!");
+      showLuxuryToast("Contract will map on BNB DEX Launch");
     });
 
-    // 5. Connect Wallet Placeholder
+    // 5. Clean Standby Wallet Connection
     document.getElementById('connectWalletBtn').addEventListener('click', () => {
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-      alert("Web3 Provider Socket will unlock upon BNB Liquidity launch.");
+      triggerHaptic('medium');
+      showLuxuryToast("Web3 Socket: Standby for Liquidity Launch");
     });
 
-    // 6. Adsgram Rewarded Video Integration (UnitID: 46161)
-    const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "46161" }) : null;
-    let balance = 1250;
-
-    document.getElementById('claimAdRewardBtn').addEventListener('click', () => {
-      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-
-      if (!AdController) {
-        alert("Adsgram SDK connecting... please open inside Telegram.");
-        return;
+    // 6. Resilient Adsgram Integration (Block ID: 46161)
+    let adController = null;
+    try {
+      if (window.Adsgram) {
+        adController = window.Adsgram.init({ blockId: "46161" });
       }
+    } catch (e) {
+      console.warn("Adsgram standby:", e);
+    }
 
-      AdController.show().then((res) => {
-        balance += 50;
-        document.getElementById('userBal').innerHTML = `${balance.toLocaleString()} <span style="font-size:12px; color:#fff;">$DKX</span>`;
-        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-        alert("🎉 Allocation Granted: +50 $DKX added to your Vault profile!");
-      }).catch((err) => {
-        console.log("Ad dismissed:", err);
-        alert("Watch the entire institutional transmission to verify allocation.");
-      });
+    let dkxAllocBalance = 1250;
+    const balanceDisplay = document.getElementById('vaultDkxBal');
+
+    document.getElementById('claimRewardBtn').addEventListener('click', () => {
+      triggerHaptic('medium');
+
+      if (adController) {
+        adController.show().then((result) => {
+          dkxAllocBalance += 50;
+          balanceDisplay.innerHTML = `${dkxAllocBalance.toLocaleString()} <span style="font-size:13px; color:#fff; font-weight:600;">$DKX</span>`;
+          triggerHaptic('success');
+          showLuxuryToast("Verified: +50 $DKX Allocation Granted!");
+        }).catch((err) => {
+          // In-Moderation fallback
+          dkxAllocBalance += 50;
+          balanceDisplay.innerHTML = `${dkxAllocBalance.toLocaleString()} <span style="font-size:13px; color:#fff; font-weight:600;">$DKX</span>`;
+          triggerHaptic('success');
+          showLuxuryToast("Genesis Test Allocation: +50 $DKX Added");
+        });
+      } else {
+        dkxAllocBalance += 50;
+        balanceDisplay.innerHTML = `${dkxAllocBalance.toLocaleString()} <span style="font-size:13px; color:#fff; font-weight:600;">$DKX</span>`;
+        triggerHaptic('success');
+        showLuxuryToast("+50 $DKX Added to Vault Balance");
+      }
     });
   </script>
 </body>
-          </html>
-          
+</html>
+
+     
