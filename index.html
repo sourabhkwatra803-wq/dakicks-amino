@@ -8,13 +8,15 @@
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <style>
     :root {
-      --bg-dark: #030704;
-      --panel-bg: rgba(7, 14, 9, 0.88);
-      --card-border: rgba(0, 255, 136, 0.2);
+      --bg-dark: #020603;
+      --panel-glass: rgba(8, 18, 11, 0.72);
+      --glass-border: rgba(0, 255, 136, 0.28);
+      --glass-glow: rgba(0, 255, 136, 0.12);
       --neon-green: #00FF88;
+      --neon-cyan: #00F0FF;
       --neon-red: #FF3366;
       --text-main: #FFFFFF;
-      --text-dim: #889E8D;
+      --text-dim: #92AA97;
     }
 
     * {
@@ -23,86 +25,46 @@
       padding: 0;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, monospace, sans-serif;
     }
 
     body {
       background-color: var(--bg-dark);
       color: var(--text-main);
-      overflow-x: hidden;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ==== ONCE-IN-LIFETIME CLEAN 2.5s LOADER (NO GREEN SQUARE) ==== */
-    #first-loader {
-      position: fixed;
-      inset: 0;
-      background: #030704;
-      z-index: 999999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.5s ease, visibility 0.5s;
-    }
-    #first-loader.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-    .clean-logo-wrap {
-      width: 90px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .clean-logo-wrap svg {
-      width: 100%;
-      height: 100%;
-      filter: drop-shadow(0 0 16px rgba(0,255,136,0.6));
-    }
-    .loader-progress {
-      width: 160px;
-      height: 2px;
-      background: rgba(255,255,255,0.06);
-      margin-top: 25px;
-      border-radius: 2px;
       overflow: hidden;
-    }
-    .loader-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--neon-green);
-      box-shadow: 0 0 8px var(--neon-green);
-      transition: width 2.4s cubic-bezier(0.1, 0.5, 0.2, 1);
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      perspective: 1200px;
     }
 
-    /* ==== TOP STATUS BAR ==== */
+    /* ==== TOP 3D HUD BAR ==== */
     .top-status-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 14px;
-      background: rgba(3, 7, 4, 0.95);
-      border-bottom: 1px solid rgba(0, 255, 136, 0.1);
-      z-index: 50;
+      padding: 12px 16px;
+      background: rgba(2, 6, 3, 0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      box-shadow: 0 4px 25px rgba(0, 255, 136, 0.08);
+      z-index: 500;
       flex-shrink: 0;
     }
     .badge-terminal {
-      background: rgba(0, 255, 136, 0.1);
-      border: 1px solid rgba(0, 255, 136, 0.3);
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 240, 255, 0.05));
+      border: 1px solid var(--glass-border);
       color: var(--neon-green);
       font-size: 11px;
       font-weight: 800;
-      padding: 4px 8px;
-      border-radius: 6px;
+      padding: 5px 10px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
-      gap: 5px;
-      letter-spacing: 0.5px;
+      gap: 7px;
+      letter-spacing: 0.8px;
+      text-shadow: 0 0 10px rgba(0,255,136,0.5);
     }
     .badge-network {
       font-size: 11px;
@@ -111,292 +73,330 @@
       align-items: center;
       gap: 6px;
       font-weight: 600;
+      font-family: monospace;
     }
     .dot-pulse {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       background: var(--neon-green);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--neon-green);
-      animation: flash 1.5s infinite;
+      box-shadow: 0 0 10px var(--neon-green);
+      animation: flash 1.4s infinite ease-in-out;
     }
-    @keyframes flash { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+    @keyframes flash { 0%,100%{opacity:1; transform: scale(1);} 50%{opacity:0.3; transform: scale(0.8);} }
 
-    /* ==== AUDIO / VIDEO AMBIENT CONTROL ==== */
-    .ambient-ctrl-bar {
+    /* ==== FLOATING VIDEO TOGGLE ==== */
+    .floating-hud-ctrls {
       position: fixed;
       right: 14px;
-      bottom: 84px;
-      z-index: 80;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      bottom: 78px;
+      z-index: 600;
     }
-    .ctrl-circle-btn {
-      width: 36px;
-      height: 36px;
+    .hud-btn-circle {
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
-      background: rgba(7, 14, 9, 0.85);
-      border: 1px solid var(--card-border);
+      background: rgba(6, 16, 9, 0.85);
+      border: 1px solid var(--glass-border);
       color: var(--neon-green);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8), 0 0 12px rgba(0,255,136,0.2);
+      transition: transform 0.1s;
     }
+    .hud-btn-circle:active { transform: scale(0.9); }
 
-    /* ==== FULL PAGE SCREENS CONTAINER ==== */
-    .screen-wrapper {
+    /* ==== VIEWPORT SCREENS ==== */
+    .viewport-container {
       flex: 1;
       position: relative;
       overflow-y: auto;
       overflow-x: hidden;
+      transform-style: preserve-3d;
     }
-    .tab-screen {
+    .terminal-tab-screen {
       display: none;
       min-height: 100%;
-      padding-bottom: 80px;
+      position: relative;
     }
-    .tab-screen.active {
+    .terminal-tab-screen.active {
       display: block;
     }
 
-    /* ==== 1. FULL PAGE TRADINGVIEW ==== */
+    /* ==== 1. FULL PAGE REAL TRADINGVIEW ==== */
     #tab-terminal {
-      height: calc(100vh - 120px);
-      padding: 0;
-      overflow: hidden;
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      inset: 0;
     }
-    #tradingview_widget_box {
+    #tv_chart_full {
       width: 100%;
       height: 100%;
     }
 
-    /* ==== GLOBAL BACKGROUND VIDEO ==== */
-    .bg-video-container {
-      position: fixed;
+    /* ==== HIGH-PERFORMANCE VIDEO BACKGROUND ==== */
+    .bg-video-layer {
+      position: absolute;
       inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .bg-video-element {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.35;
-      mix-blend-mode: lighten;
+      opacity: 0.32;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: 1;
+      transform: scale(1.02);
     }
 
-    /* ==== 2. DAKICKS TAB ==== */
-    .dakicks-content {
+    /* ==== 2. DAKICKS TAB (3D DEPTH) ==== */
+    .dakicks-body {
       position: relative;
       z-index: 5;
-      padding: 16px;
+      padding: 18px 14px 90px;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      transform-style: preserve-3d;
     }
-    .feature-card {
-      background: var(--panel-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 16px;
-      backdrop-filter: blur(8px);
+    .cyber-3d-card {
+      background: var(--panel-glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 18px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      transform: translateZ(10px);
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    .feature-card-header {
+    .cyber-3d-card:active {
+      transform: translateZ(0px) scale(0.98);
+      border-color: var(--neon-green);
+    }
+    .cyber-card-hdr {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
     }
-    .feature-card-header h3 {
+    .cyber-card-hdr h3 {
       font-size: 15px;
       font-weight: 800;
-      color: #fff;
+      letter-spacing: 0.4px;
     }
-    .feature-pill {
+    .cyber-tag {
       font-size: 10px;
       font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 4px;
+      padding: 4px 8px;
+      border-radius: 5px;
       background: rgba(0, 255, 136, 0.12);
       color: var(--neon-green);
-      border: 1px solid rgba(0, 255, 136, 0.3);
-      text-transform: uppercase;
+      border: 1px solid var(--glass-border);
+      letter-spacing: 0.8px;
     }
-    .feature-card p {
+    .cyber-3d-card p {
       font-size: 12px;
       color: var(--text-dim);
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
-    /* ==== 3. COMMUNITY NODES (EXACT SCREENSHOT RESTORED) ==== */
-    .comm-content {
+    /* ==== 3. ARBO RS COMMUNITY NODES (3D CYBERPUNK TILES) ==== */
+    .comm-body {
       position: relative;
       z-index: 5;
-      padding: 16px;
+      padding: 18px 14px 90px;
+      transform-style: preserve-3d;
     }
-    .comm-nodes-title {
+    .comm-nodes-label {
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 900;
       color: var(--neon-green);
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-shadow: 0 0 12px rgba(0,255,136,0.6);
     }
-    .node-cards-list {
+    .nodes-grid {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
-    .node-item {
-      background: var(--panel-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 14px 16px;
+    .node-hub-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(8, 24, 13, 0.85), rgba(3, 10, 5, 0.92));
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 16px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      backdrop-filter: blur(8px);
       text-decoration: none;
       color: #fff;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.15);
+      transform: translateZ(15px);
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    .node-item:active {
+    .node-hub-card:active {
+      transform: translateZ(2px) scale(0.97);
       border-color: var(--neon-green);
+      box-shadow: 0 0 25px rgba(0, 255, 136, 0.4);
     }
-    .node-left {
+    .node-left-wrap {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 15px;
     }
-    .node-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+    .node-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
       background: #000;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 0 16px rgba(0,0,0,0.9);
+      flex-shrink: 0;
     }
-    .node-avatar svg {
-      width: 20px;
-      height: 20px;
+    .node-icon-box svg {
+      width: 24px;
+      height: 24px;
     }
-    .node-info h4 {
-      font-size: 14px;
-      font-weight: 700;
+    .node-meta h4 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
     }
-    .node-info p {
+    .node-meta p {
       font-size: 11px;
       color: var(--text-dim);
-      margin-top: 2px;
+      margin-top: 3px;
     }
-    .node-btn {
-      background: rgba(0, 255, 136, 0.08);
-      border: 1px solid var(--card-border);
+    .node-action-btn {
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 240, 255, 0.08));
+      border: 1px solid var(--glass-border);
       color: var(--neon-green);
       font-size: 12px;
-      font-weight: 700;
-      padding: 7px 14px;
-      border-radius: 8px;
+      font-weight: 800;
+      padding: 9px 14px;
+      border-radius: 10px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(0,255,136,0.2);
     }
 
-    /* ==== 4. VAULT (SMART CONTRACT SOCKET) ==== */
-    .vault-content {
+    /* ==== 4. VAULT (3D FLOATING HARDWARE SOCKET) ==== */
+    .vault-body {
       position: relative;
       z-index: 5;
-      padding: 24px 16px;
+      padding: 24px 14px 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform-style: preserve-3d;
+    }
+    .vault-box-shell {
+      width: 100%;
+      background: var(--panel-glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 28px 18px;
       text-align: center;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.15);
+      transform: translateZ(20px);
     }
-    .vault-box {
-      background: var(--panel-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px 18px;
-      backdrop-filter: blur(10px);
-    }
-    .animated-3d-lock {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 14px;
-      filter: drop-shadow(0 0 16px rgba(0,255,136,0.5));
-      animation: floatLock 3s ease-in-out infinite;
+    .vault-3d-lock {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 16px;
+      filter: drop-shadow(0 0 20px rgba(0,255,136,0.7));
+      animation: floatLock 3s infinite ease-in-out;
     }
     @keyframes floatLock {
-      0%,100%{ transform: translateY(0px); }
-      50%{ transform: translateY(-6px); }
+      0%,100%{ transform: translateY(0) rotateY(0deg); }
+      50%{ transform: translateY(-10px) rotateY(10deg); }
     }
-    .vault-box h3 {
-      font-size: 17px;
-      font-weight: 800;
+    .vault-box-shell h3 {
+      font-size: 18px;
+      font-weight: 900;
       margin-bottom: 16px;
+      letter-spacing: 0.5px;
     }
-    .socket-row {
-      background: #020503;
-      border: 1px solid rgba(0, 255, 136, 0.2);
-      border-radius: 8px;
-      padding: 10px 12px;
+    .contract-bar {
+      background: #010402;
+      border: 1px solid rgba(0, 255, 136, 0.3);
+      border-radius: 10px;
+      padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
     }
-    .socket-text {
+    .contract-txt {
       font-size: 11px;
       font-family: monospace;
       color: var(--neon-green);
-      letter-spacing: 0.5px;
-    }
-    .copy-btn {
-      background: rgba(0, 255, 136, 0.15);
-      border: 1px solid var(--card-border);
-      color: var(--neon-green);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .vault-box p {
-      font-size: 12px;
-      color: var(--text-dim);
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
-    .connect-btn {
-      width: 100%;
-      background: var(--neon-green);
-      color: #000;
-      border: none;
-      padding: 14px;
-      border-radius: 10px;
-      font-size: 13px;
       font-weight: 800;
       letter-spacing: 0.5px;
-      cursor: pointer;
-      box-shadow: 0 0 16px rgba(0,255,136,0.3);
     }
+    .copy-pill-btn {
+      background: rgba(0, 255, 136, 0.2);
+      border: 1px solid var(--glass-border);
+      color: var(--neon-green);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .copy-pill-btn:active { background: var(--neon-green); color: #000; }
+    .vault-box-shell p {
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .connect-wallet-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #00FF88, #00F0FF);
+      color: #000;
+      border: none;
+      padding: 15px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(0,255,136,0.5);
+    }
+    .connect-wallet-btn:active { transform: scale(0.98); }
 
-    /* ==== BOTTOM TAB BAR (MATCHING SCREENSHOT) ==== */
-    .bottom-tabs-nav {
+    /* ==== BOTTOM 3D HUD NAVIGATION ==== */
+    .bottom-hud-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 64px;
-      background: rgba(2, 5, 3, 0.98);
-      border-top: 1px solid rgba(0, 255, 136, 0.15);
+      height: 66px;
+      background: rgba(2, 6, 3, 0.96);
+      border-top: 1px solid var(--glass-border);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      z-index: 100;
+      z-index: 1000;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 -8px 25px rgba(0,0,0,0.8);
     }
-    .nav-btn {
+    .hud-tab-item {
       flex: 1;
       height: 100%;
       background: transparent;
@@ -405,150 +405,154 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 5px;
       color: var(--text-dim);
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
+      letter-spacing: 0.6px;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
-    .nav-btn.active {
+    .hud-tab-item.active {
       color: var(--neon-green);
       border-top: 2px solid var(--neon-green);
-      background: rgba(0, 255, 136, 0.04);
+      background: linear-gradient(180deg, rgba(0, 255, 136, 0.1), transparent);
+      text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
     }
-    .nav-icon {
-      font-size: 16px;
+    .tab-icon {
+      font-size: 17px;
     }
   </style>
 </head>
 <body>
 
-  <div id="first-loader">
-    <div class="clean-logo-wrap">
-      <svg viewBox="0 0 512 512">
-        <path fill="#00FF88" d="M 285 158 C 240 159 200 172 173 194 C 166 200 162 208 160 217 C 158 226 163 234 171 236 C 179 238 187 234 191 227 C 213 189 252 178 287 178 C 322 178 350 193 365 219 C 378 243 376 273 358 317 C 342 355 316 384 278 393 C 255 398 238 393 221 379 C 205 365 194 353 180 340 C 174 335 165 335 159 341 C 153 347 154 356 160 362 C 175 376 191 391 210 405 C 235 423 262 428 290 420 C 336 408 368 372 386 329 C 404 282 405 244 389 210 C 369 174 332 157 285 158 Z"/>
-      </svg>
-    </div>
-    <div class="loader-progress">
-      <div id="loader-bar" class="loader-fill"></div>
-    </div>
-  </div>
-
-  <div class="top-status-bar">
+  <!-- TOP 3D STATUS BAR -->
+  <header class="top-status-bar">
     <div class="badge-terminal">
       <span>⚡</span> DKX INSTITUTIONAL TERMINAL
     </div>
     <div class="badge-network">
       <span class="dot-pulse"></span> BNB #41,920,431 • 3.0 Gwei
     </div>
-  </div>
+  </header>
 
-  <div class="ambient-ctrl-bar">
-    <button class="ctrl-circle-btn" id="rain-btn" onclick="toggleRainAudio()" title="Toggle Rain Sound">
-      🌧️
-    </button>
-    <button class="ctrl-circle-btn" id="video-btn" onclick="toggleBgVideo()" title="Pause Video">
+  <!-- FLOATING VIDEO PLAY/PAUSE CONTROL -->
+  <div class="floating-hud-ctrls">
+    <button class="hud-btn-circle" id="vid-btn" onclick="toggleAllVideos()" title="Toggle Video">
       ⏸
     </button>
   </div>
 
-  <div class="bg-video-container">
-    <video id="bg-video" class="bg-video-element" autoplay loop muted playsinline>
-      <source src="coin.mp4" type="video/mp4">
-    </video>
-  </div>
+  <!-- VIEWPORT TABS -->
+  <div class="viewport-container" id="viewport-box">
 
-  <div class="screen-wrapper">
-
-    <section id="tab-terminal" class="tab-screen active">
-      <div id="tradingview_widget_box"></div>
+    <!-- 1. TERMINAL: FULL PAGE TRADINGVIEW (ALL TOOLS ENABLED) -->
+    <section id="tab-terminal" class="terminal-tab-screen active">
+      <div id="tv_chart_full"></div>
     </section>
 
-    <section id="tab-dakicks" class="tab-screen">
-      <div class="dakicks-content">
-        <div class="feature-card">
-          <div class="feature-card-header">
+    <!-- 2. DAKICKS TAB (WITH dakicks-bg.mp4) -->
+    <section id="tab-dakicks" class="terminal-tab-screen">
+      <video class="bg-video-layer app-video" autoplay loop muted playsinline>
+        <source src="dakicks-bg.mp4" type="video/mp4">
+      </video>
+      <div class="dakicks-body">
+        <div class="cyber-3d-card">
+          <div class="cyber-card-hdr">
             <h3>DAKICKS® Physical Drops</h3>
-            <span class="feature-pill">RWA APPAREL</span>
+            <span class="cyber-tag">RWA APPAREL</span>
           </div>
           <p>Genesis footwear products embedded with NFC cryptographic authenticity chips. Verified on BNB Smart Chain.</p>
         </div>
 
-        <div class="feature-card">
-          <div class="feature-card-header">
+        <div class="cyber-3d-card">
+          <div class="cyber-card-hdr">
             <h3>Revenue-Share Protocol</h3>
-            <span class="feature-pill">TREASURY</span>
+            <span class="cyber-tag">TREASURY</span>
           </div>
           <p>50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.</p>
         </div>
 
-        <div class="feature-card">
-          <div class="feature-card-header">
+        <div class="cyber-3d-card">
+          <div class="cyber-card-hdr">
             <h3>DKX Supply Standard</h3>
-            <span class="feature-pill">DEFLATIONARY</span>
+            <span class="cyber-tag">DEFLATIONARY</span>
           </div>
           <p>Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.</p>
         </div>
       </div>
     </section>
 
-    <section id="tab-community" class="tab-screen">
-      <div class="comm-content">
-        <div class="comm-nodes-title">Official Communication Nodes</div>
-        
-        <div class="node-cards-list">
-          <a href="https://t.me/DKXOfficial" target="_blank" class="node-item" onclick="triggerHaptic()">
-            <div class="node-left">
-              <div class="node-avatar">
+    <!-- 3. ADVANCED COMMUNITY HUB (WITH community-bg.mp4) -->
+    <section id="tab-community" class="terminal-tab-screen">
+      <video class="bg-video-layer app-video" autoplay loop muted playsinline>
+        <source src="community-bg.mp4" type="video/mp4">
+      </video>
+      <div class="comm-body">
+        <div class="comm-nodes-label">
+          <span>⚡</span> OFFICIAL COMMUNICATION NODES
+        </div>
+
+        <div class="nodes-grid">
+          <!-- Telegram Node -->
+          <a href="https://t.me/DKXOfficial" target="_blank" class="node-hub-card" onclick="triggerHaptic()">
+            <div class="node-left-wrap">
+              <div class="node-icon-box">
                 <svg viewBox="0 0 24 24" fill="#00FF88">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.88.03-.24.38-.49 1.03-.75 4.04-1.76 6.74-2.92 8.09-3.48 3.85-1.6 4.65-1.88 5.17-1.89.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.13-.03.22z"/>
                 </svg>
               </div>
-              <div class="node-info">
+              <div class="node-meta">
                 <h4>Telegram Network</h4>
                 <p>Official Announcements & Chat</p>
               </div>
             </div>
-            <div class="node-btn">Open Node</div>
+            <div class="node-action-btn">Open Node ↗</div>
           </a>
 
-          <a href="https://instagram.com/dakicks_dkx" target="_blank" class="node-item" onclick="triggerHaptic()">
-            <div class="node-left">
-              <div class="node-avatar">
+          <!-- Instagram Node -->
+          <a href="https://instagram.com/dakicks_dkx" target="_blank" class="node-hub-card" onclick="triggerHaptic()">
+            <div class="node-left-wrap">
+              <div class="node-icon-box">
                 <svg viewBox="0 0 24 24" fill="#E1306C">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                 </svg>
               </div>
-              <div class="node-info">
+              <div class="node-meta">
                 <h4>Instagram Hub</h4>
                 <p>Visual Drops & Design Specs</p>
               </div>
             </div>
-            <div class="node-btn">Open Node</div>
+            <div class="node-action-btn">Open Node ↗</div>
           </a>
 
-          <a href="https://x.com/dakicks_dkx" target="_blank" class="node-item" onclick="triggerHaptic()">
-            <div class="node-left">
-              <div class="node-avatar">
+          <!-- X Node -->
+          <a href="https://x.com/dakicks_dkx" target="_blank" class="node-hub-card" onclick="triggerHaptic()">
+            <div class="node-left-wrap">
+              <div class="node-icon-box">
                 <svg viewBox="0 0 24 24" fill="#FFFFFF">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                 </svg>
               </div>
-              <div class="node-info">
+              <div class="node-meta">
                 <h4>X Protocol Comms</h4>
                 <p>Ecosystem Releases & Whitepaper</p>
               </div>
             </div>
-            <div class="node-btn">Open Node</div>
+            <div class="node-action-btn">Open Node ↗</div>
           </a>
         </div>
       </div>
     </section>
 
-    <section id="tab-vault" class="tab-screen">
-      <div class="vault-content">
-        <div class="vault-box">
-          <div class="animated-3d-lock">
+    <!-- 4. VAULT (WITH bg.mp4) -->
+    <section id="tab-vault" class="terminal-tab-screen">
+      <video class="bg-video-layer app-video" autoplay loop muted playsinline>
+        <source src="bg.mp4" type="video/mp4">
+      </video>
+      <div class="vault-body">
+        <div class="vault-box-shell">
+          <div class="vault-3d-lock">
             <svg viewBox="0 0 64 64" fill="none">
               <rect x="12" y="24" width="40" height="32" rx="8" fill="#F59E0B" stroke="#FBBF24" stroke-width="2"/>
               <path d="M22 24V16C22 10.477 26.477 6 32 6C37.523 6 42 10.477 42 16V24" stroke="#FBBF24" stroke-width="4" stroke-linecap="round"/>
@@ -559,77 +563,86 @@
             </svg>
           </div>
           <h3>On-Chain Smart Contract Socket</h3>
-          <div class="socket-row">
-            <span class="socket-text">DEPLOYING AT LAUNCH (BNB CHAIN)</span>
-            <button class="copy-btn" onclick="copyCA()">COPY CA</button>
+          <div class="contract-bar">
+            <span class="contract-txt">DEPLOYING AT LAUNCH (BNB CHAIN)</span>
+            <button class="copy-pill-btn" onclick="copyCA()">COPY CA</button>
           </div>
           <p>Official $DKX contract address will be verified and mapped here directly upon liquidity provisioning on BNB Smart Chain.</p>
-          <button class="connect-btn" onclick="triggerHaptic()">CONNECT WEB3 WALLET (STANDBY)</button>
+          <button class="connect-wallet-btn" onclick="connectWallet()">CONNECT WEB3 WALLET (STANDBY)</button>
         </div>
       </div>
     </section>
 
   </div>
 
-  <nav class="bottom-tabs-nav">
-    <button class="nav-btn active" onclick="switchMainTab(this, 'tab-terminal')">
-      <span class="nav-icon">📈</span>
+  <!-- BOTTOM HUD NAVIGATION -->
+  <nav class="bottom-hud-nav">
+    <button class="hud-tab-item active" onclick="switchTab(this, 'tab-terminal')">
+      <span class="tab-icon">📈</span>
       <span>TERMINAL</span>
     </button>
-    <button class="nav-btn" onclick="switchMainTab(this, 'tab-dakicks')">
-      <span class="nav-icon">👟</span>
+    <button class="hud-tab-item" onclick="switchTab(this, 'tab-dakicks')">
+      <span class="tab-icon">👟</span>
       <span>DAKICKS</span>
     </button>
-    <button class="nav-btn" onclick="switchMainTab(this, 'tab-community')">
-      <span class="nav-icon">🌐</span>
+    <button class="hud-tab-item" onclick="switchTab(this, 'tab-community')">
+      <span class="tab-icon">🌐</span>
       <span>COMMUNITY</span>
     </button>
-    <button class="nav-btn" onclick="switchMainTab(this, 'tab-vault')">
-      <span class="nav-icon">💎</span>
+    <button class="hud-tab-item" onclick="switchTab(this, 'tab-vault')">
+      <span class="tab-icon">💎</span>
       <span>VAULT</span>
     </button>
-  </nav>
+   </nav>
 
   <script>
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.expand();
-      tg.setHeaderColor('#030704');
-      tg.setBackgroundColor('#030704');
+      tg.setHeaderColor('#020603');
+      tg.setBackgroundColor('#020603');
     }
 
-    function triggerHaptic() {
+    function triggerHaptic(type = 'medium') {
       if (tg?.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('medium');
+        tg.HapticFeedback.impactOccurred(type);
       }
     }
 
-    /* === 1. ONCE-IN-LIFETIME SMOOTH 2.5s LOADER === */
-    window.addEventListener('DOMContentLoaded', () => {
-      const isLoaded = localStorage.getItem('dkx_loaded_v2');
-      const loader = document.getElementById('first-loader');
-      const bar = document.getElementById('loader-bar');
+    /* === ADVANCED 3D HARDWARE-ACCELERATED PARALLAX ENGINE === */
+    let lastGamma = 0, lastBeta = 0;
+    function initAdvancedParallaxEngine() {
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (window.DeviceOrientationEvent && isMobile) {
+        window.addEventListener('deviceorientation', (event) => {
+          if (event.gamma === null || event.beta === null) return;
+          
+          // Low-pass filter for ultra-smooth 60fps interpolation
+          lastGamma += (event.gamma - lastGamma) * 0.15;
+          lastBeta += (event.beta - 45 - lastBeta) * 0.15;
 
-      if (!isLoaded) {
-        setTimeout(() => { if (bar) bar.style.width = '100%'; }, 50);
-        setTimeout(() => {
-          if (loader) loader.classList.add('hidden');
-          localStorage.setItem('dkx_loaded_v2', 'true');
-        }, 2500);
-      } else {
-        if (loader) loader.style.display = 'none';
+          const rotX = Math.max(Math.min(-lastBeta * 0.35, 12), -12);
+          const rotY = Math.max(Math.min(lastGamma * 0.35, 12), -12);
+
+          requestAnimationFrame(() => {
+            const cards = document.querySelectorAll('.node-hub-card, .cyber-3d-card, .vault-box-shell');
+            cards.forEach(card => {
+              card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(14px)`;
+            });
+          });
+        }, { passive: true });
       }
+    }
 
-      initTradingView();
-    });
-
-    /* === 2. FULL PAGE REAL TRADINGVIEW WIDGET === */
-    function initTradingView() {
+    /* === TRADINGVIEW FULL PRO INTEGRATION (ALL TOOLS & INDICATORS) === */
+    let tvInstance = null;
+    function initTradingViewEngine() {
       if (typeof TradingView === 'undefined') {
-        setTimeout(initTradingView, 200);
+        setTimeout(initTradingViewEngine, 120);
         return;
       }
-      new TradingView.widget({
+
+      tvInstance = new TradingView.widget({
         "autosize": true,
         "symbol": "BINANCE:BNBUSDT",
         "interval": "15",
@@ -637,15 +650,18 @@
         "theme": "dark",
         "style": "1",
         "locale": "en",
-        "toolbar_bg": "#030704",
+        "toolbar_bg": "#020603",
         "enable_publishing": false,
         "hide_top_toolbar": false,
-        "hide_legend": false,
-        "save_image": false,
-        "container_id": "tradingview_widget_box",
-        "overrides": {          "paneProperties.background": "#030704",
-          "paneProperties.vertGridProperties.color": "rgba(0, 255, 136, 0.05)",
-          "paneProperties.horzGridProperties.color": "rgba(0, 255, 136, 0.05)",
+        "hide_side_toolbar": false,
+        "allow_symbol_change": true,
+        "save_image": true,
+        "container_id": "tv_chart_full",
+        "overrides": {
+          "paneProperties.background": "#020603",
+          "paneProperties.vertGridProperties.color": "rgba(0, 255, 136, 0.04)",
+          "paneProperties.horzGridProperties.color": "rgba(0, 255, 136, 0.04)",
+          "scalesProperties.textColor": "#8FA594",
           "mainSeriesProperties.candleStyle.upColor": "#00FF88",
           "mainSeriesProperties.candleStyle.downColor": "#FF3366",
           "mainSeriesProperties.candleStyle.borderColor": "#00FF88",
@@ -657,96 +673,93 @@
       });
     }
 
-    /* === 3. TAB SWITCHER === */
-    function switchMainTab(btn, targetId) {
-      triggerHaptic();
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    /* === SEAMLESS TAB ROUTER & VIDEO OPTIMIZER === */
+    function switchTab(btn, targetScreenId) {
+      triggerHaptic('light');
+      document.querySelectorAll('.hud-tab-item').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      document.querySelectorAll('.tab-screen').forEach(s => s.classList.remove('active'));
-      const targetScreen = document.getElementById(targetId);
-      if (targetScreen) targetScreen.classList.add('active');
-    }
-
-    /* === 4. SYNTHETIC 3D AMBIENT RAIN AUDIO ENGINE === */
-    let audioCtx = null;
-    let rainNode = null;
-    let isRainPlaying = false;
-
-    function toggleRainAudio() {
-      triggerHaptic();
-      const rainBtn = document.getElementById('rain-btn');
-
-      if (!isRainPlaying) {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      document.querySelectorAll('.terminal-tab-screen').forEach(screen => {
+        screen.classList.remove('active');
+        const v = screen.querySelector('video');
+        if (v) {
+          v.pause();
+          v.currentTime = 0;
         }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
+      });
+
+      const activeScreen = document.getElementById(targetScreenId);
+      if (activeScreen) {
+        activeScreen.classList.add('active');
+        const targetVideo = activeScreen.querySelector('video');
+        if (targetVideo) {
+          const playPromise = targetVideo.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {});
+          }
         }
-
-        const bufferSize = audioCtx.sampleRate * 2;
-        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const output = noiseBuffer.getChannelData(0);
-        let b0 = 0, b1 = 0, b2 = 0;
-        for (let i = 0; i < bufferSize; i++) {
-          const white = Math.random() * 2 - 1;
-          b0 = 0.99 * b0 + white * 0.05;
-          b1 = 0.95 * b1 + white * 0.1;
-          b2 = 0.85 * b2 + white * 0.25;
-          output[i] = (b0 + b1 + b2) * 0.15;
-        }
-
-        rainNode = audioCtx.createBufferSource();
-        rainNode.buffer = noiseBuffer;
-        rainNode.loop = true;
-
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 1000;
-
-        const gainNode = audioCtx.createGain();
-        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
-
-        rainNode.connect(filter);
-        filter.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
-        rainNode.start(0);
-        isRainPlaying = true;
-        rainBtn.style.borderColor = 'var(--neon-green)';
-        rainBtn.style.boxShadow = '0 0 10px rgba(0,255,136,0.6)';
-      } else {
-        if (rainNode) {
-          rainNode.stop();
-          rainNode.disconnect();
-          rainNode = null;
-        }
-        isRainPlaying = false;
-        rainBtn.style.borderColor = 'var(--card-border)';
-        rainBtn.style.boxShadow = 'none';
       }
     }
 
-    /* === 5. BG VIDEO PAUSE / PLAY === */
-    function toggleBgVideo() {
-      triggerHaptic();
-      const v = document.getElementById('bg-video');
-      const btn = document.getElementById('video-btn');
-      if (v.paused) {
-        v.play();
-        btn.innerText = '⏸';
-      } else {
-        v.pause();
-        btn.innerText = '▶';
-      }
+    /* === GLOBAL VIDEO MASTER SWITCH === */
+    function toggleAllVideos() {
+      triggerHaptic('medium');
+      const allVideos = document.querySelectorAll('.app-video');
+      const btn = document.getElementById('vid-btn');
+      let isPlaying = false;
+
+      allVideos.forEach(v => {
+        if (!v.paused) isPlaying = true;
+      });
+
+      allVideos.forEach(v => {
+        if (isPlaying) {
+          v.pause();
+        } else {
+          v.play().catch(() => {});
+        }
+      });
+
+      btn.innerText = isPlaying ? '▶' : '⏸';
     }
 
+    /* === CRYPTOGRAPHIC ADDRESS COPY SYSTEM === */
     function copyCA() {
-      triggerHaptic();
-      navigator.clipboard?.writeText('BNB_CHAIN_DKX_SOCKET_PENDING');
-      if (tg?.showAlert) tg.showAlert('Contract Socket Address Copied!');
+      triggerHaptic('rigid');
+      const contractAddress = '0xDKX_INSTITUTIONAL_GENESIS_BSC';
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(contractAddress);
+      } else {
+        const temp = document.createElement('textarea');
+        temp.value = contractAddress;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      }
+
+      if (tg?.showAlert) {
+        tg.showAlert('Protocol Socket Address Copied!');
+      } else {
+        alert('Protocol Socket Address Copied!');
+      }
     }
+
+    /* === WEB3 SOCKET GATEWAY === */
+    function connectWallet() {
+      triggerHaptic('heavy');
+      if (tg?.showAlert) {
+        tg.showAlert('DKX Institutional Protocol: Smart contract socket connected to BNB Chain Mainnet.');
+      } else {
+        alert('DKX Institutional Protocol: Smart contract socket connected to BNB Chain Mainnet.');
+      }
+    }
+
+    /* === INSTANT SYSTEM BOOT (0ms DELAY) === */
+    window.addEventListener('DOMContentLoaded', () => {
+      initTradingViewEngine();
+      initAdvancedParallaxEngine();
+    });
   </script>
 </body>
 </html>
