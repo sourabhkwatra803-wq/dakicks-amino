@@ -4,358 +4,602 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>DKX Institutional Terminal</title>
-  
+
   <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Adsgram SDK -->
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
   <style>
+    :root {
+      --bg-base: #060807;
+      --bg-surface: #0e1210;
+      --bg-card: rgba(22, 28, 24, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(0, 255, 136, 0.25);
+      --text-main: #f8fafc;
+      --text-muted: #8e9b94;
+      --accent-green: #00ff88;
+      --accent-cyan: #00e5ff;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
     body {
-      background-color: #030704;
-      color: #e2e8f0;
-      min-height: 100vh;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      padding-bottom: 24px;
     }
 
-    /* Top Navigation */
-    .header {
-      padding: 14px 16px;
+    /* Top Utility Header */
+    .top-bar {
+      height: 48px;
+      padding: 0 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(0, 255, 136, 0.15);
-      background: rgba(3, 7, 4, 0.95);
-      position: sticky;
-      top: 0;
+      background: rgba(6, 8, 7, 0.95);
+      border-bottom: 1px solid var(--border-subtle);
       z-index: 50;
-      backdrop-filter: blur(8px);
     }
 
-    .brand-group {
+    .badge-pill {
       display: flex;
       align-items: center;
-      gap: 10px;
-    }
-
-    .brand-logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, #00ff88, #00b359);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      color: #030704;
-      font-size: 16px;
-      box-shadow: 0 0 12px rgba(0, 255, 136, 0.4);
-    }
-
-    .brand-info h1 {
-      font-size: 14px;
+      gap: 7px;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.5px;
-      color: #ffffff;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
     }
 
-    .brand-info span {
-      font-size: 10px;
-      color: #00ff88;
-      font-weight: 600;
-      letter-spacing: 1px;
+    .badge-pill .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-main);
     }
 
-    .user-pill {
-      font-size: 12px;
-      background: rgba(255, 255, 255, 0.06);
-      padding: 6px 12px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    .network-pill {
       display: flex;
       align-items: center;
       gap: 6px;
-    }
-
-    .user-pill .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #00ff88;
-      box-shadow: 0 0 6px #00ff88;
-    }
-
-    /* Balance & Reward Card */
-    .balance-card {
-      margin: 16px;
-      padding: 16px;
-      border-radius: 14px;
-      background: linear-gradient(180deg, rgba(16, 28, 19, 0.8) 0%, rgba(6, 14, 8, 0.9) 100%);
-      border: 1px solid rgba(0, 255, 136, 0.2);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .balance-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 14px;
-    }
-
-    .balance-title {
       font-size: 11px;
       color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
+      font-family: monospace;
     }
 
-    .balance-val {
-      font-size: 26px;
-      font-weight: 800;
-      color: #00ff88;
-      margin-top: 4px;
-      text-shadow: 0 0 10px rgba(0, 255, 136, 0.25);
+    .network-pill .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
     }
 
-    .balance-sub {
-      font-size: 11px;
-      color: #64748b;
+    /* App Viewports Container */
+    .main-viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Ad Action Button */
-    .ad-btn {
+    .tab-content {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 16px;
+      padding-bottom: 85px;
+    }
+
+    .tab-content.active {
+      display: flex;
+    }
+
+    /* Terminal Tab (Chart) */
+    #tab-terminal {
+      padding: 0;
+    }
+
+    .chart-box {
       width: 100%;
-      background: linear-gradient(90deg, #00e5ff 0%, #00ff88 100%);
-      border: none;
-      color: #030704;
+      height: calc(100vh - 110px);
+    }
+
+    /* Cards & Containers (DAKICKS, COMMUNITY, VAULT) */
+    .section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin: 8px 0 12px 2px;
+      font-weight: 700;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(12px);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .card-title {
       font-size: 14px;
       font-weight: 700;
-      padding: 12px 16px;
+      color: #fff;
+    }
+
+    .card-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    /* Community Links */
+    .comm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .comm-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .comm-icon {
+      width: 36px;
+      height: 36px;
       border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0, 229, 255, 0.25);
-      transition: transform 0.1s ease, filter 0.2s ease;
+      font-size: 16px;
     }
 
-    .ad-btn:active {
-      transform: scale(0.98);
-      filter: brightness(0.9);
+    .comm-name {
+      font-size: 13px;
+      font-weight: 700;
     }
 
-    /* Chart Section */
-    .chart-container {
-      margin: 0 16px 16px 16px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: #080d09;
-      height: 320px;
-    }
-
-    /* Stats Grid */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin: 0 16px 16px 16px;
-    }
-
-    .stat-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      padding: 12px;
-      border-radius: 10px;
-    }
-
-    .stat-label {
+    .comm-sub {
       font-size: 11px;
-      color: #94a3b8;
-      margin-bottom: 4px;
+      color: var(--text-muted);
     }
 
-    .stat-value {
+    .btn-node {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: #fff;
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* Vault Socket */
+    .vault-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .lock-icon-box {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-bottom: 18px;
+    }
+
+    .vault-title {
       font-size: 16px;
       font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .ca-box {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .ca-label {
+      font-size: 10px;
+      color: #94a3b8;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-copy {
+      background: #ffffff;
+      color: #000;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 10px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .vault-info {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .btn-action-primary {
+      width: 100%;
+      background: #ffffff;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-bottom: 14px;
+    }
+
+    /* Rewarded Ad Box inside Vault */
+    .reward-box {
+      width: 100%;
+      background: linear-gradient(180deg, rgba(0, 255, 136, 0.06) 0%, rgba(0, 0, 0, 0.4) 100%);
+      border: 1px solid var(--border-glow);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 10px;
+    }
+
+    .reward-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent-green);
+      margin: 4px 0 10px 0;
+    }
+
+    .btn-reward {
+      width: 100%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Fixed Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      background: #000000;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 99;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #64748b;
+      cursor: pointer;
+      height: 100%;
+      transition: color 0.15s ease;
+    }
+
+    .nav-item.active {
       color: #ffffff;
     }
 
-    .stat-tag {
-      font-size: 10px;
-      color: #00ff88;
-      font-weight: 600;
+    .nav-item.active .nav-icon {
+      filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.6));
     }
 
-    /* Toast Notification */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #0f2416;
-      border: 1px solid #00ff88;
-      color: #00ff88;
-      padding: 10px 18px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s ease;
-      z-index: 100;
-      white-space: nowrap;
+    .nav-icon {
+      font-size: 18px;
     }
 
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
+    .nav-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="brand-group">
-      <div class="brand-logo">D</div>
-      <div class="brand-info">
-        <h1>DKX Terminal</h1>
-        <span>INSTITUTIONAL RWA</span>
-      </div>
-    </div>
-    <div class="user-pill" id="userPill">
+  <!-- Top Utilities -->
+  <div class="top-bar">
+    <div class="badge-pill">
       <div class="dot"></div>
-      <span id="userName">Terminal User</span>
+      <span>DKX Institutional</span>
+    </div>
+    <div class="network-pill">
+      <div class="pulse-dot"></div>
+      <span>BNB MAINNET #41,920,431</span>
     </div>
   </div>
 
-  <!-- Balance & Adsgram Section -->
-  <div class="balance-card">
-    <div class="balance-row">
-      <div>
-        <div class="balance-title">DKX Trading Balance</div>
-        <div class="balance-val" id="dkxBalance">1,250 <span style="font-size: 14px; font-weight: 600;">DKX</span></div>
+  <!-- Content Sections -->
+  <div class="main-viewport">
+    
+    <!-- Tab 1: TERMINAL (BNB/USDT Live Candlestick Chart) -->
+    <div id="tab-terminal" class="tab-content active">
+      <div class="chart-box">
+        <div id="tv_chart_container" style="height:100%;width:100%"></div>
       </div>
-      <div class="balance-sub" id="usdValue">≈ $3,125.00 USD</div>
     </div>
 
-    <!-- Watch Ad Button -->
-    <button class="ad-btn" id="watchAdBtn">
-      <span>▶</span> Watch Ad & Earn 50 DKX
-    </button>
+    <!-- Tab 2: DAKICKS (RWA Drops) -->
+    <div id="tab-dakicks" class="tab-content">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">DAKICKS® Physical Drops</div>
+          <div class="card-tag">RWA APPAREL</div>
+        </div>
+        <div class="card-desc">
+          Genesis footwear products embedded with NFC cryptographic authenticity chips. Verified on BNB Smart Chain.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Revenue-Share Protocol</div>
+          <div class="card-tag">TREASURY</div>
+        </div>
+        <div class="card-desc">
+          50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">DKX Supply Standard</div>
+          <div class="card-tag">DEFLATIONARY</div>
+        </div>
+        <div class="card-desc">
+          Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: COMMUNITY (Communication Nodes) -->
+    <div id="tab-community" class="tab-content">
+      <div class="section-title">Official Communication Nodes</div>
+
+      <div class="comm-row">
+        <div class="comm-left">
+          <div class="comm-icon">✈️</div>
+          <div>
+            <div class="comm-name">Telegram Network</div>
+            <div class="comm-sub">Official Announcements & Chat</div>
+          </div>
+        </div>
+        <a href="https://t.me/DakicksAmino_bot" class="btn-node">Open Node ↗</a>
+      </div>
+
+      <div class="comm-row">
+        <div class="comm-left">
+          <div class="comm-icon">📸</div>
+          <div>
+            <div class="comm-name">Instagram Hub</div>
+            <div class="comm-sub">Visual Drops & Design Specs</div>
+          </div>
+        </div>
+        <a href="https://instagram.com" target="_blank" class="btn-node">Open Node ↗</a>
+      </div>
+
+      <div class="comm-row">
+        <div class="comm-left">
+          <div class="comm-icon">✖️</div>
+          <div>
+            <div class="comm-name">X Protocol Comms</div>
+            <div class="comm-sub">Ecosystem Releases & Whitepaper</div>
+          </div>
+        </div>
+        <a href="https://x.com" target="_blank" class="btn-node">Open Node ↗</a>
+      </div>
+    </div>
+
+    <!-- Tab 4: VAULT (Smart Contract & Rewards) -->
+    <div id="tab-vault" class="tab-content">
+      <div class="vault-container">
+        <div class="lock-icon-box">🔒</div>
+        <div class="vault-title">On-Chain Smart Contract Socket</div>
+
+        <div class="ca-box">
+          <span class="ca-label">DEPLOYING AT LAUNCH (BNB CHAIN)</span>
+          <button class="btn-copy" id="copyCaBtn">COPY CA</button>
+        </div>
+
+        <div class="vault-info">
+          Official $DKX contract address will be verified and mapped here directly upon liquidity provisioning on BNB Smart Chain.
+        </div>
+
+        <button class="btn-action-primary" id="connectWalletBtn">CONNECT WEB3 WALLET (STANDBY)</button>
+
+        <!-- Monitized Allocation Section -->
+        <div class="reward-box">
+          <div style="font-size:10px; color:#94a3b8; font-weight:700; text-transform:uppercase;">Pre-Listing Allocation Pool</div>
+          <div class="reward-val" id="userBal">1,250 <span style="font-size:12px; color:#fff;">$DKX</span></div>
+          <button class="btn-reward" id="claimAdRewardBtn">⚡ Claim Liquidity Allocation (+50 DKX)</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Live TradingView Chart -->
-  <div class="chart-container">
-    <!-- TradingView Widget BEGIN -->
-    <div class="tradingview-widget-container" style="height:100%;width:100%">
-      <div id="tradingview_chart" style="height:calc(100% - 32px);width:100%"></div>
-      <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-      <script type="text/javascript">
-      new TradingView.widget({
-        "autosize": true,
-        "symbol": "BINANCE:BTCUSDT",
-        "interval": "15",
-        "timezone": "Etc/UTC",
-        "theme": "dark",
-        "style": "1",
-        "locale": "en",
-        "enable_publishing": false,
-        "backgroundColor": "#080d09",
-        "gridColor": "rgba(255, 255, 255, 0.05)",
-        "hide_top_toolbar": true,
-        "save_image": false,
-        "container_id": "tradingview_chart"
-      });
-      </script>
+  <!-- Bottom Navigation Dock -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('terminal', this)">
+      <div class="nav-icon">📈</div>
+      <div class="nav-label">Terminal</div>
     </div>
-    <!-- TradingView Widget END -->
-  </div>
-
-  <!-- Terminal Quick Stats -->
-  <div class="stats-grid">
-    <div class="stat-box">
-      <div class="stat-label">DKX/USDT Index</div>
-      <div class="stat-value">$2.50</div>
-      <div class="stat-tag">+4.82% 24h</div>
+    <div class="nav-item" onclick="switchTab('dakicks', this)">
+      <div class="nav-icon">👟</div>
+      <div class="nav-label">Dakicks</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-label">RWA Vault Collateral</div>
-      <div class="stat-value">$18.4M</div>
-      <div class="stat-tag">99.8% Backed</div>
+    <div class="nav-item" onclick="switchTab('community', this)">
+      <div class="nav-icon">🌐</div>
+      <div class="nav-label">Community</div>
+    </div>
+    <div class="nav-item" onclick="switchTab('vault', this)">
+      <div class="nav-icon">💎</div>
+      <div class="nav-label">Vault</div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
-  <div id="toast" class="toast">Reward Claimed! +50 DKX</div>
+  <!-- TradingView Library -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
   <script>
-    // 1. Initialize Telegram Mini App
+    // 1. Telegram App Init
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
       tg.expand();
-      if (tg.initDataUnsafe?.user?.first_name) {
-        document.getElementById('userName').innerText = tg.initDataUnsafe.user.first_name;
-      }
     }
 
-    // 2. Initialize Adsgram with your UnitID / Block ID
+    // 2. Tab Navigation
+    function switchTab(tabId, elem) {
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+      
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+      elem.classList.add('active');
+    }
+
+    // 3. TradingView Chart Initialization
+    new TradingView.widget({
+      "autosize": true,
+      "symbol": "BINANCE:BNBUSDT",
+      "interval": "15",
+      "timezone": "Etc/UTC",
+      "theme": "dark",
+      "style": "1",
+      "locale": "en",
+      "enable_publishing": false,
+      "backgroundColor": "#060807",
+      "gridColor": "rgba(255, 255, 255, 0.04)",
+      "hide_top_toolbar": false,
+      "hide_legend": false,
+      "save_image": false,
+      "container_id": "tv_chart_container"
+    });
+
+    // 4. Copy CA Feedback
+    document.getElementById('copyCaBtn').addEventListener('click', () => {
+      if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+      navigator.clipboard.writeText("DEPLOYING AT LAUNCH (BNB CHAIN)");
+      alert("Contract will be live upon BNB Chain DEX deployment!");
+    });
+
+    // 5. Connect Wallet Placeholder
+    document.getElementById('connectWalletBtn').addEventListener('click', () => {
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+      alert("Web3 Provider Socket will unlock upon BNB Liquidity launch.");
+    });
+
+    // 6. Adsgram Rewarded Video Integration (UnitID: 46161)
     const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "46161" }) : null;
-
     let balance = 1250;
-    const balanceElem = document.getElementById('dkxBalance');
-    const usdElem = document.getElementById('usdValue');
-    const toastElem = document.getElementById('toast');
 
-    function showToast(msg) {
-      toastElem.innerText = msg;
-      toastElem.classList.add('show');
-      setTimeout(() => {
-        toastElem.classList.remove('show');
-      }, 3000);
-    }
-
-    // 3. Handle Ad Watch & Reward
-    document.getElementById('watchAdBtn').addEventListener('click', () => {
-      if (tg?.HapticFeedback) {
-        tg.HapticFeedback.impactOccurred('medium');
-      }
+    document.getElementById('claimAdRewardBtn').addEventListener('click', () => {
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 
       if (!AdController) {
-        alert("Adsgram SDK is loading or not available in this environment.");
+        alert("Adsgram SDK connecting... please open inside Telegram.");
         return;
       }
 
-      // Show Rewarded Video Ad
-      AdController.show().then((result) => {
-        // User watched ad successfully
+      AdController.show().then((res) => {
         balance += 50;
-        balanceElem.innerHTML = `${balance.toLocaleString()} <span style="font-size: 14px; font-weight: 600;">DKX</span>`;
-        usdElem.innerText = `≈ $${(balance * 2.5).toFixed(2)} USD`;
-        
-        if (tg?.HapticFeedback) {
-          tg.HapticFeedback.notificationOccurred('success');
-        }
-        showToast("🎉 Reward Claimed! +50 DKX Added.");
-      }).catch((result) => {
-        // User skipped or ad failed
-        console.log("Ad skipped or failed:", result);
-        showToast("⚠️ Watch the full ad to claim reward!");
+        document.getElementById('userBal').innerHTML = `${balance.toLocaleString()} <span style="font-size:12px; color:#fff;">$DKX</span>`;
+        if (tg?.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+        alert("🎉 Allocation Granted: +50 $DKX added to your Vault profile!");
+      }).catch((err) => {
+        console.log("Ad dismissed:", err);
+        alert("Watch the entire institutional transmission to verify allocation.");
       });
     });
   </script>
 </body>
-</html>
+          </html>
+          
