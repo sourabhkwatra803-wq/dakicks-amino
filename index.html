@@ -8,15 +8,14 @@
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <style>
     :root {
-      --bg-dark: #020603;
-      --panel-glass: rgba(8, 18, 11, 0.72);
-      --glass-border: rgba(0, 255, 136, 0.28);
-      --glass-glow: rgba(0, 255, 136, 0.12);
-      --neon-green: #00FF88;
-      --neon-cyan: #00F0FF;
-      --neon-red: #FF3366;
-      --text-main: #FFFFFF;
-      --text-dim: #92AA97;
+      --bg-dark: #050505;
+      --card-bg: rgba(18, 18, 18, 0.78);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-hover: rgba(255, 255, 255, 0.25);
+      --text-pure: #FFFFFF;
+      --text-muted: #8E8E93;
+      --accent-white: #F5F5F7;
+      --status-green: #34C759;
     }
 
     * {
@@ -25,12 +24,12 @@
       padding: 0;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, monospace, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
       background-color: var(--bg-dark);
-      color: var(--text-main);
+      color: var(--text-pure);
       overflow: hidden;
       height: 100vh;
       width: 100vw;
@@ -39,76 +38,72 @@
       perspective: 1200px;
     }
 
-    /* ==== TOP 3D HUD BAR ==== */
+    /* ==== TOP INSTITUTIONAL STATUS BAR ==== */
     .top-status-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
-      background: rgba(2, 6, 3, 0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--glass-border);
-      box-shadow: 0 4px 25px rgba(0, 255, 136, 0.08);
+      padding: 12px 18px;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(25px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       z-index: 500;
       flex-shrink: 0;
     }
     .badge-terminal {
-      background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 240, 255, 0.05));
-      border: 1px solid var(--glass-border);
-      color: var(--neon-green);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-pure);
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 700;
       padding: 5px 10px;
-      border-radius: 8px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       gap: 7px;
       letter-spacing: 0.8px;
-      text-shadow: 0 0 10px rgba(0,255,136,0.5);
     }
     .badge-network {
       font-size: 11px;
-      color: var(--neon-green);
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       gap: 6px;
       font-weight: 600;
-      font-family: monospace;
+      font-family: -apple-system, monospace;
     }
     .dot-pulse {
-      width: 7px;
-      height: 7px;
-      background: var(--neon-green);
+      width: 6px;
+      height: 6px;
+      background: var(--status-green);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--neon-green);
-      animation: flash 1.4s infinite ease-in-out;
+      box-shadow: 0 0 8px rgba(52, 199, 89, 0.6);
     }
-    @keyframes flash { 0%,100%{opacity:1; transform: scale(1);} 50%{opacity:0.3; transform: scale(0.8);} }
 
     /* ==== FLOATING VIDEO TOGGLE ==== */
     .floating-hud-ctrls {
       position: fixed;
-      right: 14px;
-      bottom: 78px;
+      right: 16px;
+      bottom: 80px;
       z-index: 600;
     }
     .hud-btn-circle {
-      width: 42px;
-      height: 42px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: rgba(6, 16, 9, 0.85);
-      border: 1px solid var(--glass-border);
-      color: var(--neon-green);
+      background: rgba(20, 20, 20, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FFF;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
       backdrop-filter: blur(12px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.8), 0 0 12px rgba(0,255,136,0.2);
-      transition: transform 0.1s;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      transition: all 0.2s;
     }
-    .hud-btn-circle:active { transform: scale(0.9); }
+    .hud-btn-circle:active { transform: scale(0.92); }
 
     /* ==== VIEWPORT SCREENS ==== */
     .viewport-container {
@@ -127,7 +122,7 @@
       display: block;
     }
 
-    /* ==== 1. FULL PAGE REAL TRADINGVIEW ==== */
+    /* ==== 1. FULL PAGE TRADINGVIEW ==== */
     #tab-terminal {
       height: 100%;
       width: 100%;
@@ -139,7 +134,7 @@
       height: 100%;
     }
 
-    /* ==== HIGH-PERFORMANCE VIDEO BACKGROUND ==== */
+    /* ==== LUXURY VIDEO BACKGROUND ==== */
     .bg-video-layer {
       position: absolute;
       inset: 0;
@@ -147,81 +142,67 @@
       height: 100%;
       object-fit: cover;
       opacity: 0.32;
-      mix-blend-mode: screen;
       pointer-events: none;
       z-index: 1;
-      transform: scale(1.02);
     }
 
-    /* ==== 2. DAKICKS TAB (3D DEPTH) ==== */
+    /* ==== 2. DAKICKS TAB ==== */
     .dakicks-body {
       position: relative;
       z-index: 5;
-      padding: 18px 14px 90px;
+      padding: 20px 16px 90px;
       display: flex;
       flex-direction: column;
       gap: 14px;
-      transform-style: preserve-3d;
     }
-    .cyber-3d-card {
-      background: var(--panel-glass);
-      border: 1px solid var(--glass-border);
+    .luxury-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 18px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
-      transform: translateZ(10px);
-      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
     }
-    .cyber-3d-card:active {
-      transform: translateZ(0px) scale(0.98);
-      border-color: var(--neon-green);
-    }
-    .cyber-card-hdr {
+    .luxury-card-hdr {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
     }
-    .cyber-card-hdr h3 {
+    .luxury-card-hdr h3 {
       font-size: 15px;
-      font-weight: 800;
-      letter-spacing: 0.4px;
+      font-weight: 700;
+      color: var(--text-pure);
     }
-    .cyber-tag {
+    .luxury-tag {
       font-size: 10px;
-      font-weight: 800;
-      padding: 4px 8px;
-      border-radius: 5px;
-      background: rgba(0, 255, 136, 0.12);
-      color: var(--neon-green);
-      border: 1px solid var(--glass-border);
-      letter-spacing: 0.8px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-pure);
+      letter-spacing: 0.5px;
     }
-    .cyber-3d-card p {
-      font-size: 12px;
-      color: var(--text-dim);
-      line-height: 1.55;
+    .luxury-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
     }
 
-    /* ==== 3. ARBO RS COMMUNITY NODES (3D CYBERPUNK TILES) ==== */
+    /* ==== 3. 3D COMMUNITY CARDS (LEFT-RIGHT MOVE PHYSICS) ==== */
     .comm-body {
       position: relative;
       z-index: 5;
-      padding: 18px 14px 90px;
+      padding: 20px 16px 90px;
       transform-style: preserve-3d;
     }
     .comm-nodes-label {
       font-size: 11px;
-      font-weight: 900;
-      color: var(--neon-green);
-      letter-spacing: 2px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
       text-transform: uppercase;
       margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      text-shadow: 0 0 12px rgba(0,255,136,0.6);
     }
     .nodes-grid {
       display: flex;
@@ -230,24 +211,23 @@
     }
     .node-hub-card {
       position: relative;
-      background: linear-gradient(135deg, rgba(8, 24, 13, 0.85), rgba(3, 10, 5, 0.92));
-      border: 1px solid var(--glass-border);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: 18px;
       padding: 16px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       text-decoration: none;
-      color: #fff;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 12px 35px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.15);
-      transform: translateZ(15px);
-      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      color: #FFF;
+      backdrop-filter: blur(25px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.08);
+      transform: translate3d(0, 0, 10px);
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.2s;
     }
-    .node-hub-card:active {
-      transform: translateZ(2px) scale(0.97);
-      border-color: var(--neon-green);
-      box-shadow: 0 0 25px rgba(0, 255, 136, 0.4);
+    .node-hub-card:hover, .node-hub-card:active {
+      transform: translate3d(8px, 0, 20px);
+      border-color: var(--card-border-hover);
     }
     .node-left-wrap {
       display: flex;
@@ -255,146 +235,150 @@
       gap: 15px;
     }
     .node-icon-box {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: #000;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #0A0A0A;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 16px rgba(0,0,0,0.9);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
       flex-shrink: 0;
     }
     .node-icon-box svg {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
     }
     .node-meta h4 {
       font-size: 15px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
+      font-weight: 700;
+      color: var(--text-pure);
     }
     .node-meta p {
       font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 3px;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
     .node-action-btn {
-      background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 240, 255, 0.08));
-      border: 1px solid var(--glass-border);
-      color: var(--neon-green);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FFF;
       font-size: 12px;
-      font-weight: 800;
-      padding: 9px 14px;
-      border-radius: 10px;
-      letter-spacing: 0.5px;
-      box-shadow: 0 0 10px rgba(0,255,136,0.2);
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
     }
 
-    /* ==== 4. VAULT (3D FLOATING HARDWARE SOCKET) ==== */
+    /* ==== 4. 3D FRONT-FACING VAULT CARD (MONOCHROME LUXURY) ==== */
     .vault-body {
       position: relative;
       z-index: 5;
-      padding: 24px 14px 90px;
+      padding: 24px 16px 90px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 150px);
       transform-style: preserve-3d;
     }
     .vault-box-shell {
       width: 100%;
-      background: var(--panel-glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 28px 18px;
+      background: rgba(18, 18, 18, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 32px 20px;
       text-align: center;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.15);
-      transform: translateZ(20px);
+      backdrop-filter: blur(30px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.15);
+      transform: translate3d(0, 0, 45px); /* कार्ड को बिल्कुल फ्रंट में उठाएगा */
     }
     .vault-3d-lock {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 16px;
-      filter: drop-shadow(0 0 20px rgba(0,255,136,0.7));
-      animation: floatLock 3s infinite ease-in-out;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 18px;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6));
+      animation: gentleFloat 3.5s infinite ease-in-out;
     }
-    @keyframes floatLock {
-      0%,100%{ transform: translateY(0) rotateY(0deg); }
-      50%{ transform: translateY(-10px) rotateY(10deg); }
+    @keyframes gentleFloat {
+      0%,100%{ transform: translateY(0); }
+      50%{ transform: translateY(-8px); }
     }
     .vault-box-shell h3 {
-      font-size: 18px;
-      font-weight: 900;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #FFF;
       margin-bottom: 16px;
-      letter-spacing: 0.5px;
     }
     .contract-bar {
-      background: #010402;
-      border: 1px solid rgba(0, 255, 136, 0.3);
+      background: #0A0A0A;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
       padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
+      margin-bottom: 18px;
     }
     .contract-txt {
       font-size: 11px;
-      font-family: monospace;
-      color: var(--neon-green);
-      font-weight: 800;
+      font-family: -apple-system, monospace;
+      color: #D1D1D6;
+      font-weight: 600;
       letter-spacing: 0.5px;
     }
     .copy-pill-btn {
-      background: rgba(0, 255, 136, 0.2);
-      border: 1px solid var(--glass-border);
-      color: var(--neon-green);
+      background: #FFF;
+      border: none;
+      color: #000;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 700;
       padding: 6px 12px;
       border-radius: 6px;
       cursor: pointer;
     }
-    .copy-pill-btn:active { background: var(--neon-green); color: #000; }
+    .copy-pill-btn:active { opacity: 0.8; }
     .vault-box-shell p {
-      font-size: 12px;
-      color: var(--text-dim);
+      font-size: 13px;
+      color: var(--text-muted);
       line-height: 1.6;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
+      padding: 0 6px;
     }
     .connect-wallet-btn {
       width: 100%;
-      background: linear-gradient(90deg, #00FF88, #00F0FF);
-      color: #000;
+      background: #FFFFFF;
+      color: #000000;
       border: none;
-      padding: 15px;
+      padding: 16px;
       border-radius: 14px;
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 0.8px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       cursor: pointer;
-      box-shadow: 0 0 25px rgba(0,255,136,0.5);
+      box-shadow: 0 10px 30px rgba(255,255,255,0.15);
+      transition: transform 0.15s, opacity 0.15s;
     }
-    .connect-wallet-btn:active { transform: scale(0.98); }
+    .connect-wallet-btn:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
 
-    /* ==== BOTTOM 3D HUD NAVIGATION ==== */
+    /* ==== BOTTOM TAB NAVIGATION ==== */
     .bottom-hud-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 66px;
-      background: rgba(2, 6, 3, 0.96);
-      border-top: 1px solid var(--glass-border);
+      height: 64px;
+      background: rgba(10, 10, 10, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       justify-content: space-around;
       align-items: center;
       z-index: 1000;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 -8px 25px rgba(0,0,0,0.8);
+      backdrop-filter: blur(25px);
     }
     .hud-tab-item {
       flex: 1;
@@ -405,100 +389,99 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      color: var(--text-dim);
+      gap: 4px;
+      color: var(--text-muted);
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 700;
       cursor: pointer;
-      letter-spacing: 0.6px;
-      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
     }
     .hud-tab-item.active {
-      color: var(--neon-green);
-      border-top: 2px solid var(--neon-green);
-      background: linear-gradient(180deg, rgba(0, 255, 136, 0.1), transparent);
-      text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+      color: #FFFFFF;
+      border-top: 2px solid #FFFFFF;
+      background: rgba(255, 255, 255, 0.03);
     }
     .tab-icon {
-      font-size: 17px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP 3D STATUS BAR -->
+  <!-- TOP HEADER -->
   <header class="top-status-bar">
     <div class="badge-terminal">
-      <span>⚡</span> DKX INSTITUTIONAL TERMINAL
+      <span>●</span> DKX INSTITUTIONAL
     </div>
     <div class="badge-network">
-      <span class="dot-pulse"></span> BNB #41,920,431 • 3.0 Gwei
+      <span class="dot-pulse"></span> BNB MAINNET #41,920,431
     </div>
   </header>
 
-  <!-- FLOATING VIDEO PLAY/PAUSE CONTROL -->
+  <!-- FLOATING VIDEO CONTROL -->
   <div class="floating-hud-ctrls">
     <button class="hud-btn-circle" id="vid-btn" onclick="toggleAllVideos()" title="Toggle Video">
       ⏸
     </button>
   </div>
 
-  <!-- VIEWPORT TABS -->
+  <!-- VIEWPORT CONTAINER -->
   <div class="viewport-container" id="viewport-box">
 
-    <!-- 1. TERMINAL: FULL PAGE TRADINGVIEW (ALL TOOLS ENABLED) -->
+    <!-- 1. TERMINAL: FULL PAGE TRADINGVIEW -->
     <section id="tab-terminal" class="terminal-tab-screen active">
       <div id="tv_chart_full"></div>
     </section>
 
-    <!-- 2. DAKICKS TAB (WITH dakicks-bg.mp4) -->
+    <!-- 2. DAKICKS TAB -->
     <section id="tab-dakicks" class="terminal-tab-screen">
       <video class="bg-video-layer app-video" autoplay loop muted playsinline>
         <source src="dakicks-bg.mp4" type="video/mp4">
       </video>
       <div class="dakicks-body">
-        <div class="cyber-3d-card">
-          <div class="cyber-card-hdr">
+        <div class="luxury-card">
+          <div class="luxury-card-hdr">
             <h3>DAKICKS® Physical Drops</h3>
-            <span class="cyber-tag">RWA APPAREL</span>
+            <span class="luxury-tag">RWA APPAREL</span>
           </div>
           <p>Genesis footwear products embedded with NFC cryptographic authenticity chips. Verified on BNB Smart Chain.</p>
         </div>
 
-        <div class="cyber-3d-card">
-          <div class="cyber-card-hdr">
+        <div class="luxury-card">
+          <div class="luxury-card-hdr">
             <h3>Revenue-Share Protocol</h3>
-            <span class="cyber-tag">TREASURY</span>
+            <span class="luxury-tag">TREASURY</span>
           </div>
           <p>50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.</p>
         </div>
 
-        <div class="cyber-3d-card">
-          <div class="cyber-card-hdr">
+        <div class="luxury-card">
+          <div class="luxury-card-hdr">
             <h3>DKX Supply Standard</h3>
-            <span class="cyber-tag">DEFLATIONARY</span>
+            <span class="luxury-tag">DEFLATIONARY</span>
           </div>
           <p>Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.</p>
         </div>
       </div>
     </section>
 
-    <!-- 3. ADVANCED COMMUNITY HUB (WITH community-bg.mp4) -->
+    <!-- 3. 3D COMMUNITY HUB -->
     <section id="tab-community" class="terminal-tab-screen">
       <video class="bg-video-layer app-video" autoplay loop muted playsinline>
         <source src="community-bg.mp4" type="video/mp4">
       </video>
       <div class="comm-body">
         <div class="comm-nodes-label">
-          <span>⚡</span> OFFICIAL COMMUNICATION NODES
+          OFFICIAL COMMUNICATION NODES
         </div>
 
         <div class="nodes-grid">
-          <!-- Telegram Node -->
+          <!-- Telegram -->
           <a href="https://t.me/DKXOfficial" target="_blank" class="node-hub-card" onclick="triggerHaptic()">
             <div class="node-left-wrap">
               <div class="node-icon-box">
-                <svg viewBox="0 0 24 24" fill="#00FF88">
+                <svg viewBox="0 0 24 24" fill="#FFFFFF">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.88.03-.24.38-.49 1.03-.75 4.04-1.76 6.74-2.92 8.09-3.48 3.85-1.6 4.65-1.88 5.17-1.89.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.13-.03.22z"/>
                 </svg>
               </div>
@@ -510,11 +493,11 @@
             <div class="node-action-btn">Open Node ↗</div>
           </a>
 
-          <!-- Instagram Node -->
+          <!-- Instagram -->
           <a href="https://instagram.com/dakicks_dkx" target="_blank" class="node-hub-card" onclick="triggerHaptic()">
             <div class="node-left-wrap">
               <div class="node-icon-box">
-                <svg viewBox="0 0 24 24" fill="#E1306C">
+                <svg viewBox="0 0 24 24" fill="#FFFFFF">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                 </svg>
               </div>
@@ -526,7 +509,7 @@
             <div class="node-action-btn">Open Node ↗</div>
           </a>
 
-          <!-- X Node -->
+          <!-- X -->
           <a href="https://x.com/dakicks_dkx" target="_blank" class="node-hub-card" onclick="triggerHaptic()">
             <div class="node-left-wrap">
               <div class="node-icon-box">
@@ -545,7 +528,7 @@
       </div>
     </section>
 
-    <!-- 4. VAULT (WITH bg.mp4) -->
+    <!-- 4. 3D FRONT-FACING VAULT -->
     <section id="tab-vault" class="terminal-tab-screen">
       <video class="bg-video-layer app-video" autoplay loop muted playsinline>
         <source src="bg.mp4" type="video/mp4">
@@ -554,12 +537,10 @@
         <div class="vault-box-shell">
           <div class="vault-3d-lock">
             <svg viewBox="0 0 64 64" fill="none">
-              <rect x="12" y="24" width="40" height="32" rx="8" fill="#F59E0B" stroke="#FBBF24" stroke-width="2"/>
-              <path d="M22 24V16C22 10.477 26.477 6 32 6C37.523 6 42 10.477 42 16V24" stroke="#FBBF24" stroke-width="4" stroke-linecap="round"/>
-              <circle cx="32" cy="38" r="4" fill="#78350F"/>
-              <path d="M32 42V48" stroke="#78350F" stroke-width="3" stroke-linecap="round"/>
-              <circle cx="46" cy="20" r="6" fill="#FBBF24"/>
-              <path d="M46 26V34M46 30H50" stroke="#FBBF24" stroke-width="2" stroke-linecap="round"/>
+              <rect x="12" y="24" width="40" height="32" rx="8" fill="#E5E5EA" stroke="#FFFFFF" stroke-width="2"/>
+              <path d="M22 24V16C22 10.477 26.477 6 32 6C37.523 6 42 10.477 42 16V24" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="32" cy="38" r="4" fill="#1C1C1E"/>
+              <path d="M32 42V48" stroke="#1C1C1E" stroke-width="3" stroke-linecap="round"/>
             </svg>
           </div>
           <h3>On-Chain Smart Contract Socket</h3>
@@ -575,7 +556,7 @@
 
   </div>
 
-  <!-- BOTTOM HUD NAVIGATION -->
+  <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-hud-nav">
     <button class="hud-tab-item active" onclick="switchTab(this, 'tab-terminal')">
       <span class="tab-icon">📈</span>
@@ -593,14 +574,14 @@
       <span class="tab-icon">💎</span>
       <span>VAULT</span>
     </button>
-   </nav>
+  </nav>
 
   <script>
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.expand();
-      tg.setHeaderColor('#020603');
-      tg.setBackgroundColor('#020603');
+      tg.setHeaderColor('#050505');
+      tg.setBackgroundColor('#050505');
     }
 
     function triggerHaptic(type = 'medium') {
@@ -609,40 +590,18 @@
       }
     }
 
-    /* === ADVANCED 3D HARDWARE-ACCELERATED PARALLAX ENGINE === */
-    let lastGamma = 0, lastBeta = 0;
-    function initAdvancedParallaxEngine() {
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      if (window.DeviceOrientationEvent && isMobile) {
-        window.addEventListener('deviceorientation', (event) => {
-          if (event.gamma === null || event.beta === null) return;
-          
-          // Low-pass filter for ultra-smooth 60fps interpolation
-          lastGamma += (event.gamma - lastGamma) * 0.15;
-          lastBeta += (event.beta - 45 - lastBeta) * 0.15;
+    /* === FULL-SUITE TRADINGVIEW INITIALIZATION === */
+    window.addEventListener('DOMContentLoaded', () => {
+      initTradingView();
+      init3DPhysics();
+    });
 
-          const rotX = Math.max(Math.min(-lastBeta * 0.35, 12), -12);
-          const rotY = Math.max(Math.min(lastGamma * 0.35, 12), -12);
-
-          requestAnimationFrame(() => {
-            const cards = document.querySelectorAll('.node-hub-card, .cyber-3d-card, .vault-box-shell');
-            cards.forEach(card => {
-              card.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(14px)`;
-            });
-          });
-        }, { passive: true });
-      }
-    }
-
-    /* === TRADINGVIEW FULL PRO INTEGRATION (ALL TOOLS & INDICATORS) === */
-    let tvInstance = null;
-    function initTradingViewEngine() {
+    function initTradingView() {
       if (typeof TradingView === 'undefined') {
-        setTimeout(initTradingViewEngine, 120);
+        setTimeout(initTradingView, 120);
         return;
       }
-
-      tvInstance = new TradingView.widget({
+      new TradingView.widget({
         "autosize": true,
         "symbol": "BINANCE:BNBUSDT",
         "interval": "15",
@@ -650,7 +609,7 @@
         "theme": "dark",
         "style": "1",
         "locale": "en",
-        "toolbar_bg": "#020603",
+        "toolbar_bg": "#050505",
         "enable_publishing": false,
         "hide_top_toolbar": false,
         "hide_side_toolbar": false,
@@ -658,24 +617,19 @@
         "save_image": true,
         "container_id": "tv_chart_full",
         "overrides": {
-          "paneProperties.background": "#020603",
-          "paneProperties.vertGridProperties.color": "rgba(0, 255, 136, 0.04)",
-          "paneProperties.horzGridProperties.color": "rgba(0, 255, 136, 0.04)",
-          "scalesProperties.textColor": "#8FA594",
-          "mainSeriesProperties.candleStyle.upColor": "#00FF88",
-          "mainSeriesProperties.candleStyle.downColor": "#FF3366",
-          "mainSeriesProperties.candleStyle.borderColor": "#00FF88",
-          "mainSeriesProperties.candleStyle.borderUpColor": "#00FF88",
-          "mainSeriesProperties.candleStyle.borderDownColor": "#FF3366",
-          "mainSeriesProperties.candleStyle.wickUpColor": "#00FF88",
-          "mainSeriesProperties.candleStyle.wickDownColor": "#FF3366"
+          "paneProperties.background": "#050505",
+          "paneProperties.vertGridProperties.color": "rgba(255, 255, 255, 0.04)",
+          "paneProperties.horzGridProperties.color": "rgba(255, 255, 255, 0.04)",
+                    "scalesProperties.textColor": "#8E8E93"
         }
       });
     }
 
-    /* === SEAMLESS TAB ROUTER & VIDEO OPTIMIZER === */
+    /* === HIGH-CONCURRENCY FAST TAB SWITCHER (LAZY VIDEO ROUTER) === */
     function switchTab(btn, targetScreenId) {
       triggerHaptic('light');
+      
+      // Fast UI State Switch
       document.querySelectorAll('.hud-tab-item').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
@@ -693,10 +647,13 @@
         activeScreen.classList.add('active');
         const targetVideo = activeScreen.querySelector('video');
         if (targetVideo) {
-          const playPromise = targetVideo.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(() => {});
-          }
+          // Zero-delay optimized buffer play
+          requestAnimationFrame(() => {
+            const playPromise = targetVideo.play();
+            if (playPromise !== undefined) {
+              playPromise.catch(() => {});
+            }
+          });
         }
       }
     }
@@ -723,15 +680,42 @@
       btn.innerText = isPlaying ? '▶' : '⏸';
     }
 
-    /* === CRYPTOGRAPHIC ADDRESS COPY SYSTEM === */
+    /* === 3D TACTILE PHYSICS (PASSIVE 60FPS RUNTIME) === */
+    function init3DPhysics() {
+      const cards = document.querySelectorAll('.node-hub-card');
+      cards.forEach(card => {
+        let isMoving = false;
+
+        card.addEventListener('pointermove', (e) => {
+          if (!isMoving) {
+            requestAnimationFrame(() => {
+              const rect = card.getBoundingClientRect();
+              const x = e.clientX - rect.left - rect.width / 2;
+              const y = e.clientY - rect.top - rect.height / 2;
+              card.style.transform = `perspective(900px) rotateY(${x * 0.08}deg) rotateX(${-y * 0.08}deg) translate3d(${x * 0.05}px, 0, 20px)`;
+              isMoving = false;
+            });
+            isMoving = true;
+          }
+        }, { passive: true });
+
+        card.addEventListener('pointerleave', () => {
+          requestAnimationFrame(() => {
+            card.style.transform = `perspective(900px) rotateY(0deg) rotateX(0deg) translate3d(0, 0, 10px)`;
+          });
+        });
+      });
+    }
+
+    /* === INSTITUTIONAL CONTRACT COPY === */
     function copyCA() {
       triggerHaptic('rigid');
-      const contractAddress = '0xDKX_INSTITUTIONAL_GENESIS_BSC';
+      const ca = '0xDKX_INSTITUTIONAL_GENESIS_BSC';
       if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(contractAddress);
+        navigator.clipboard.writeText(ca);
       } else {
         const temp = document.createElement('textarea');
-        temp.value = contractAddress;
+        temp.value = ca;
         document.body.appendChild(temp);
         temp.select();
         document.execCommand('copy');
@@ -745,21 +729,15 @@
       }
     }
 
-    /* === WEB3 SOCKET GATEWAY === */
+    /* === WEB3 SOCKET HANDSHAKE === */
     function connectWallet() {
       triggerHaptic('heavy');
       if (tg?.showAlert) {
-        tg.showAlert('DKX Institutional Protocol: Smart contract socket connected to BNB Chain Mainnet.');
+        tg.showAlert('DKX Institutional Protocol: Standby for Genesis Liquidity Injection.');
       } else {
-        alert('DKX Institutional Protocol: Smart contract socket connected to BNB Chain Mainnet.');
+        alert('DKX Institutional Protocol: Standby for Genesis Liquidity Injection.');
       }
     }
-
-    /* === INSTANT SYSTEM BOOT (0ms DELAY) === */
-    window.addEventListener('DOMContentLoaded', () => {
-      initTradingViewEngine();
-      initAdvancedParallaxEngine();
-    });
   </script>
 </body>
 </html>
