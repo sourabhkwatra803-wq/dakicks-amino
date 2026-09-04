@@ -817,8 +817,24 @@
     // Cleaned Intercepted Ads Controller
     let adHandler = null;
     try {
+          // Bulletproof Adsgram Controller (Zero White Error Popups)
+    let adHandler = null;
+
+    const killWhiteModal = new MutationObserver(() => {
+      document.querySelectorAll('div').forEach(el => {
+        if (el.innerText && el.innerText.includes('AdsgramError')) {
+          el.remove();
+        }
+      });
+    });
+    killWhiteModal.observe(document.body, { childList: true, subtree: true });
+
+    try {
       if (window.Adsgram) {
-        adHandler = window.Adsgram.init({ blockId: "46161" });
+        adHandler = window.Adsgram.init({ 
+          blockId: "46161",
+          debug: true
+        });
       }
     } catch (e) {}
 
@@ -834,12 +850,16 @@
           allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
           triggerHaptic('success');
           showHUD("Allocation Granted: +50 $DKX");
-        }).catch(() => {
-          // Block is In-Moderation: Suppress SDK popup, show smooth HUD
+        }).catch((err) => {
+          document.querySelectorAll('div').forEach(el => {
+            if (el.innerText && el.innerText.includes('AdsgramError')) {
+              el.remove();
+            }
+          });
           currentAlloc += 50;
           allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
           triggerHaptic('success');
-          showHUD("Allocation Claimed: +50 $DKX");
+          showHUD("Genesis Allocation: +50 $DKX");
         });
       } else {
         currentAlloc += 50;
@@ -848,6 +868,7 @@
         showHUD("Allocation Claimed: +50 $DKX");
       }
     });
+      
   </script>
 </body>
 </html>
