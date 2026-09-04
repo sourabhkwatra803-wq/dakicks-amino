@@ -38,7 +38,7 @@
       perspective: 1200px;
     }
 
-    /* ==== TOP INSTITUTIONAL STATUS BAR ==== */
+    /* TOP BAR */
     .top-status-bar {
       display: flex;
       justify-content: space-between;
@@ -80,32 +80,38 @@
       box-shadow: 0 0 8px rgba(52, 199, 89, 0.6);
     }
 
-    /* ==== FLOATING VIDEO TOGGLE ==== */
-    .floating-hud-ctrls {
+    /* LUXURY TOAST */
+    #luxury-toast {
       position: fixed;
-      right: 16px;
-      bottom: 80px;
-      z-index: 600;
-    }
-    .hud-btn-circle {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(20, 20, 20, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #FFF;
+      top: 65px;
+      left: 50%;
+      transform: translate3d(-50%, -20px, 100px);
+      background: rgba(25, 25, 25, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(20px);
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      cursor: pointer;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-      transition: all 0.2s;
+      gap: 8px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.8);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      z-index: 99999;
+      pointer-events: none;
     }
-    .hud-btn-circle:active { transform: scale(0.92); }
+    #luxury-toast.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translate3d(-50%, 0, 100px);
+    }
 
-    /* ==== VIEWPORT SCREENS ==== */
+    /* VIEWPORT */
     .viewport-container {
       flex: 1;
       position: relative;
@@ -122,7 +128,7 @@
       display: block;
     }
 
-    /* ==== 1. FULL PAGE TRADINGVIEW ==== */
+    /* TRADINGVIEW */
     #tab-terminal {
       height: 100%;
       width: 100%;
@@ -134,7 +140,7 @@
       height: 100%;
     }
 
-    /* ==== LUXURY VIDEO BACKGROUND ==== */
+    /* VIDEO BG */
     .bg-video-layer {
       position: absolute;
       inset: 0;
@@ -146,7 +152,7 @@
       z-index: 1;
     }
 
-    /* ==== 2. DAKICKS TAB ==== */
+    /* DAKICKS CARDS */
     .dakicks-body {
       position: relative;
       z-index: 5;
@@ -154,14 +160,22 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
+      transform-style: preserve-3d;
     }
-    .luxury-card {
+    .clickable-luxury-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 18px;
       backdrop-filter: blur(20px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.2s;
+      transform: translate3d(0, 0, 15px);
+    }
+    .clickable-luxury-card:active {
+      transform: translate3d(6px, 0, 25px) scale(0.99);
+      border-color: var(--card-border-hover);
     }
     .luxury-card-hdr {
       display: flex;
@@ -183,13 +197,93 @@
       color: var(--text-pure);
       letter-spacing: 0.5px;
     }
-    .luxury-card p {
+    .clickable-luxury-card p {
       font-size: 13px;
       color: var(--text-muted);
       line-height: 1.5;
     }
 
-    /* ==== 3. 3D COMMUNITY CARDS (LEFT-RIGHT MOVE PHYSICS) ==== */
+    /* SUBPAGES */
+    .subpage-container {
+      display: none;
+      position: relative;
+      z-index: 6;
+      padding: 14px 16px 90px;
+      animation: subFadeIn 0.25s ease-out;
+      transform-style: preserve-3d;
+    }
+    .subpage-container.active-subpage {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    @keyframes subFadeIn {
+      from { opacity: 0; transform: translate3d(0, 15px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    .subpage-back-btn {
+      align-self: flex-start;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #FFF;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+    }
+    .subpage-back-btn:active { background: rgba(255,255,255,0.15); }
+
+    .subpage-hero-card {
+      background: rgba(18, 18, 18, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 24px 20px;
+      backdrop-filter: blur(25px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      transform: translate3d(0, 0, 20px);
+    }
+    .subpage-hero-card h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .subpage-hero-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+    .spec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .spec-item {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 12px;
+      border-radius: 12px;
+    }
+    .spec-item .label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .spec-item .val {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFF;
+      margin-top: 4px;
+      font-family: monospace;
+    }
+
+    /* COMMUNITY CARDS */
     .comm-body {
       position: relative;
       z-index: 5;
@@ -270,7 +364,7 @@
       border-radius: 8px;
     }
 
-    /* ==== 4. 3D FRONT-FACING VAULT CARD (MONOCHROME LUXURY) ==== */
+    /* VAULT */
     .vault-body {
       position: relative;
       z-index: 5;
@@ -291,7 +385,7 @@
       text-align: center;
       backdrop-filter: blur(30px);
       box-shadow: 0 25px 60px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.15);
-      transform: translate3d(0, 0, 45px); /* कार्ड को बिल्कुल फ्रंट में उठाएगा */
+      transform: translate3d(0, 0, 45px);
     }
     .vault-3d-lock {
       width: 72px;
@@ -365,7 +459,7 @@
       opacity: 0.9;
     }
 
-    /* ==== BOTTOM TAB NAVIGATION ==== */
+    /* BOTTOM NAV */
     .bottom-hud-nav {
       position: fixed;
       bottom: 0;
@@ -409,7 +503,6 @@
 </head>
 <body>
 
-  <!-- TOP HEADER -->
   <header class="top-status-bar">
     <div class="badge-terminal">
       <span>●</span> DKX INSTITUTIONAL
@@ -419,28 +512,23 @@
     </div>
   </header>
 
-  <!-- FLOATING VIDEO CONTROL -->
-  <div class="floating-hud-ctrls">
-    <button class="hud-btn-circle" id="vid-btn" onclick="toggleAllVideos()" title="Toggle Video">
-      ⏸
-    </button>
+  <div id="luxury-toast">
+    <span>✓</span> Protocol Socket Address Copied
   </div>
 
-  <!-- VIEWPORT CONTAINER -->
   <div class="viewport-container" id="viewport-box">
 
-    <!-- 1. TERMINAL: FULL PAGE TRADINGVIEW -->
     <section id="tab-terminal" class="terminal-tab-screen active">
       <div id="tv_chart_full"></div>
     </section>
 
-    <!-- 2. DAKICKS TAB -->
     <section id="tab-dakicks" class="terminal-tab-screen">
       <video class="bg-video-layer app-video" autoplay loop muted playsinline>
         <source src="dakicks-bg.mp4" type="video/mp4">
       </video>
-      <div class="dakicks-body">
-        <div class="luxury-card">
+
+      <div class="dakicks-body" id="dakicks-main-view">
+        <div class="clickable-luxury-card" onclick="openDakicksSubpage('sub-drops')">
           <div class="luxury-card-hdr">
             <h3>DAKICKS® Physical Drops</h3>
             <span class="luxury-tag">RWA APPAREL</span>
@@ -448,7 +536,7 @@
           <p>Genesis footwear products embedded with NFC cryptographic authenticity chips. Verified on BNB Smart Chain.</p>
         </div>
 
-        <div class="luxury-card">
+        <div class="clickable-luxury-card" onclick="openDakicksSubpage('sub-revshare')">
           <div class="luxury-card-hdr">
             <h3>Revenue-Share Protocol</h3>
             <span class="luxury-tag">TREASURY</span>
@@ -456,7 +544,7 @@
           <p>50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.</p>
         </div>
 
-        <div class="luxury-card">
+        <div class="clickable-luxury-card" onclick="openDakicksSubpage('sub-supply')">
           <div class="luxury-card-hdr">
             <h3>DKX Supply Standard</h3>
             <span class="luxury-tag">DEFLATIONARY</span>
@@ -464,9 +552,87 @@
           <p>Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.</p>
         </div>
       </div>
+
+      <div class="subpage-container" id="sub-drops">
+        <button class="subpage-back-btn" onclick="closeDakicksSubpage()">‹ Back to DAKICKS</button>
+        <div class="subpage-hero-card">
+          <h2>DAKICKS® Physical Drops</h2>
+          <p>Each pair incorporates an encrypted dual-frequency NTAG424 DNA NFC chip seamlessly integrated into the right sneaker sole. Scan directly with your device to claim verifiable digital ownership.</p>
+          <div class="spec-grid">
+            <div class="spec-item">
+              <div class="label">Chip Standard</div>
+              <div class="val">AES-128 NFC</div>
+            </div>
+            <div class="spec-item">
+              <div class="label">Initial Batch</div>
+              <div class="val">500 Genesis Pairs</div>
+            </div>
+            <div class="spec-item">
+              <div class="label">Network Layer</div>
+              <div class="val">BNB Smart Chain</div>
+            </div>
+            <div class="spec-item">
+              <div class="label">Protocol Status</div>
+              <div class="val">Ready for Drop</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subpage-container" id="sub-revshare">
+        <button class="subpage-back-btn" onclick="closeDakicksSubpage()">‹ Back to DAKICKS</button>
+        <div class="subpage-hero-card">
+          <h2>Treasury & Buyback Vault</h2>
+          <p>Real-world revenue generated from footwear sales is channeled straight into smart-contract automated market-buy operations. Tokens bought back are routed directly into the institutional staking treasury.</p>
+          <div class="spec-grid">
+            <div class="spec-item">
+              <div class="label">Buyback Split</div>
+              <div class="val">50.0% Net Revenue</div>
+            </div>
+            <div class="spec-item">
+              <div class="label">Execution Engine</div>
+              <div class="val">Automated Router</div>
+            </div>
+            <div class="spec-item">
+              <div class="label">Vault Governance</div>
+              <div class="val">Timelock Protected</div>
+            </div>
+            <div class="spec-item">
+              <div class="label">Proof of Yield</div>
+              <div class="val">On-Chain Stream</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="subpage-container" id="sub-supply">
+        <button class="subpage-back-btn" onclick="closeDakicksSubpage()">‹ Back to DAKICKS</button>
+        <div class="subpage-hero-card">
+          <h2>DKX Supply Standard</h2>
+          <p>Absolute hard-cap with zero mint capability engineered in bytecode. Liquidity provisions are paired against BNB and permanently locked upon initial deployment.</p>
+          <div class="spec-grid">
+            <div class="spec-item">
+              <div class="label">Max Hard-Cap</div>
+              <div class="val">100,000,000 $DKX</div>
+            </div>
+            <div class="spec-item">
+              <div class="label">Circulating Init</div>
+              <div class="val">15.0% Genesis</div>
+            </div>
+            <div class="spec-item">
+              <div class="label">Liquidity Lock</div>
+              <div class="val">100% Immutable</div>
+            </div>
+            <div class="spec-item">
+              <div class="label">Mint Function</div>
+              <div class="val">Hard-Revoked</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </section>
 
-    <!-- 3. 3D COMMUNITY HUB -->
     <section id="tab-community" class="terminal-tab-screen">
       <video class="bg-video-layer app-video" autoplay loop muted playsinline>
         <source src="community-bg.mp4" type="video/mp4">
@@ -477,7 +643,6 @@
         </div>
 
         <div class="nodes-grid">
-          <!-- Telegram -->
           <a href="https://t.me/DKXOfficial" target="_blank" class="node-hub-card" onclick="triggerHaptic()">
             <div class="node-left-wrap">
               <div class="node-icon-box">
@@ -493,7 +658,6 @@
             <div class="node-action-btn">Open Node ↗</div>
           </a>
 
-          <!-- Instagram -->
           <a href="https://instagram.com/dakicks_dkx" target="_blank" class="node-hub-card" onclick="triggerHaptic()">
             <div class="node-left-wrap">
               <div class="node-icon-box">
@@ -509,7 +673,6 @@
             <div class="node-action-btn">Open Node ↗</div>
           </a>
 
-          <!-- X -->
           <a href="https://x.com/dakicks_dkx" target="_blank" class="node-hub-card" onclick="triggerHaptic()">
             <div class="node-left-wrap">
               <div class="node-icon-box">
@@ -528,7 +691,6 @@
       </div>
     </section>
 
-    <!-- 4. 3D FRONT-FACING VAULT -->
     <section id="tab-vault" class="terminal-tab-screen">
       <video class="bg-video-layer app-video" autoplay loop muted playsinline>
         <source src="bg.mp4" type="video/mp4">
@@ -556,7 +718,6 @@
 
   </div>
 
-  <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-hud-nav">
     <button class="hud-tab-item active" onclick="switchTab(this, 'tab-terminal')">
       <span class="tab-icon">📈</span>
@@ -620,16 +781,30 @@
           "paneProperties.background": "#050505",
           "paneProperties.vertGridProperties.color": "rgba(255, 255, 255, 0.04)",
           "paneProperties.horzGridProperties.color": "rgba(255, 255, 255, 0.04)",
-                    "scalesProperties.textColor": "#8E8E93"
+          "scalesProperties.textColor": "#8E8E93"
         }
       });
     }
 
-    /* === HIGH-CONCURRENCY FAST TAB SWITCHER (LAZY VIDEO ROUTER) === */
+    /* === DAKICKS SUBPAGE ROUTING SYSTEM === */
+    function openDakicksSubpage(subId) {
+      triggerHaptic('light');
+      document.getElementById('dakicks-main-view').style.display = 'none';
+      document.querySelectorAll('.subpage-container').forEach(sp => sp.classList.remove('active-subpage'));
+      
+      const targetSub = document.getElementById(subId);
+      if (targetSub) targetSub.classList.add('active-subpage');
+    }
+
+    function closeDakicksSubpage() {
+      triggerHaptic('light');
+      document.querySelectorAll('.subpage-container').forEach(sp => sp.classList.remove('active-subpage'));
+      document.getElementById('dakicks-main-view').style.display = 'flex';
+    }
+
+    /* === TAB SWITCHING & SEAMLESS VIDEO PLAYBACK === */
     function switchTab(btn, targetScreenId) {
       triggerHaptic('light');
-      
-      // Fast UI State Switch
       document.querySelectorAll('.hud-tab-item').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
@@ -647,67 +822,28 @@
         activeScreen.classList.add('active');
         const targetVideo = activeScreen.querySelector('video');
         if (targetVideo) {
-          // Zero-delay optimized buffer play
-          requestAnimationFrame(() => {
-            const playPromise = targetVideo.play();
-            if (playPromise !== undefined) {
-              playPromise.catch(() => {});
-            }
-          });
+          targetVideo.play().catch(() => {});
         }
       }
     }
 
-    /* === GLOBAL VIDEO MASTER SWITCH === */
-    function toggleAllVideos() {
-      triggerHaptic('medium');
-      const allVideos = document.querySelectorAll('.app-video');
-      const btn = document.getElementById('vid-btn');
-      let isPlaying = false;
-
-      allVideos.forEach(v => {
-        if (!v.paused) isPlaying = true;
-      });
-
-      allVideos.forEach(v => {
-        if (isPlaying) {
-          v.pause();
-        } else {
-          v.play().catch(() => {});
-        }
-      });
-
-      btn.innerText = isPlaying ? '▶' : '⏸';
-    }
-
-    /* === 3D TACTILE PHYSICS (PASSIVE 60FPS RUNTIME) === */
+    /* === 3D TACTILE PHYSICS === */
     function init3DPhysics() {
-      const cards = document.querySelectorAll('.node-hub-card');
+      const cards = document.querySelectorAll('.node-hub-card, .clickable-luxury-card');
       cards.forEach(card => {
-        let isMoving = false;
-
         card.addEventListener('pointermove', (e) => {
-          if (!isMoving) {
-            requestAnimationFrame(() => {
-              const rect = card.getBoundingClientRect();
-              const x = e.clientX - rect.left - rect.width / 2;
-              const y = e.clientY - rect.top - rect.height / 2;
-              card.style.transform = `perspective(900px) rotateY(${x * 0.08}deg) rotateX(${-y * 0.08}deg) translate3d(${x * 0.05}px, 0, 20px)`;
-              isMoving = false;
-            });
-            isMoving = true;
-          }
-        }, { passive: true });
-
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          card.style.transform = `perspective(800px) rotateY(${x * 0.08}deg) rotateX(${-y * 0.08}deg) translate3d(${x * 0.05}px, 0, 20px)`;
+        });
         card.addEventListener('pointerleave', () => {
-          requestAnimationFrame(() => {
-            card.style.transform = `perspective(900px) rotateY(0deg) rotateX(0deg) translate3d(0, 0, 10px)`;
-          });
+          card.style.transform = `perspective(800px) rotateY(0deg) rotateX(0deg) translate3d(0, 0, 15px)`;
         });
       });
     }
 
-    /* === INSTITUTIONAL CONTRACT COPY === */
+    /* === ULTRA-LUXURY TOAST TRIGGER === */
     function copyCA() {
       triggerHaptic('rigid');
       const ca = '0xDKX_INSTITUTIONAL_GENESIS_BSC';
@@ -722,21 +858,23 @@
         document.body.removeChild(temp);
       }
 
-      if (tg?.showAlert) {
-        tg.showAlert('Protocol Socket Address Copied!');
-      } else {
-        alert('Protocol Socket Address Copied!');
-      }
+      const toast = document.getElementById('luxury-toast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 1800);
     }
 
-    /* === WEB3 SOCKET HANDSHAKE === */
+    /* === WALLET GATEWAY === */
     function connectWallet() {
       triggerHaptic('heavy');
-      if (tg?.showAlert) {
-        tg.showAlert('DKX Institutional Protocol: Standby for Genesis Liquidity Injection.');
-      } else {
-        alert('DKX Institutional Protocol: Standby for Genesis Liquidity Injection.');
-      }
+      const toast = document.getElementById('luxury-toast');
+      toast.innerHTML = '<span>●</span> Standby for Genesis Liquidity Injection';
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        toast.innerHTML = '<span>✓</span> Protocol Socket Address Copied';
+      }, 2400);
     }
   </script>
 </body>
