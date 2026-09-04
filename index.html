@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>DKX Institutional Terminal</title>
 
-  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Adsgram SDK -->
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
   <style>
@@ -18,8 +16,7 @@
       --border-active: rgba(255, 255, 255, 0.28);
       --text-pure: #ffffff;
       --text-secondary: #9aa8a1;
-      --metal-gold: #e5c98d;
-      --accent-soft: #f1f5f3;
+      --accent-green: #00ff88;
     }
 
     * {
@@ -41,14 +38,13 @@
       flex-direction: column;
     }
 
-    /* Kill Adsgram Default White Error Popups */
+    /* Suppress Adsgram Default White Error Modals */
     div[class*="adsgram"], div[id*="adsgram"] {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
     }
 
-    /* Header: Titanium Minimal */
     .top-bar {
       height: 48px;
       padding: 0 16px;
@@ -80,7 +76,7 @@
       height: 5px;
       border-radius: 50%;
       background: #ffffff;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 8px #ffffff;
     }
 
     .network-pill {
@@ -96,7 +92,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #00ff88;
+      background: var(--accent-green);
       box-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
       animation: pulseAnim 2s infinite ease-in-out;
     }
@@ -106,7 +102,6 @@
       50% { transform: scale(1.25); opacity: 0.5; }
     }
 
-    /* Viewport Framework */
     .main-viewport {
       flex: 1;
       position: relative;
@@ -127,7 +122,6 @@
       display: flex;
     }
 
-    /* Video Backgrounds */
     .video-bg-container {
       position: absolute;
       inset: 0;
@@ -153,7 +147,6 @@
       z-index: 2;
     }
 
-    /* Tab 1: Terminal Viewport */
     #tab-terminal {
       padding: 0;
       overflow: hidden;
@@ -165,7 +158,6 @@
       position: relative;
     }
 
-    /* Section Subheadings */
     .section-title {
       font-size: 10.5px;
       text-transform: uppercase;
@@ -177,7 +169,6 @@
       z-index: 5;
     }
 
-    /* Translucent Cards */
     .glass-card {
       background: var(--glass-surface);
       border: 1px solid var(--glass-border);
@@ -189,7 +180,6 @@
       box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
       position: relative;
       z-index: 5;
-      transition: all 0.2s ease;
     }
 
     .card-head {
@@ -203,7 +193,6 @@
       font-size: 14.5px;
       font-weight: 700;
       color: #ffffff;
-      letter-spacing: 0.2px;
     }
 
     .card-tag {
@@ -223,7 +212,6 @@
       color: var(--text-secondary);
     }
 
-    /* Tab 3: Community Channels */
     .comm-row {
       display: flex;
       align-items: center;
@@ -285,16 +273,8 @@
       font-weight: 700;
       cursor: pointer;
       text-decoration: none;
-      letter-spacing: 0.4px;
-      transition: all 0.2s ease;
     }
 
-    .btn-node:active {
-      background: #ffffff;
-      color: #000000;
-    }
-
-    /* Tab 4: Vault & Institutional Allocations */
     .vault-wrapper {
       position: relative;
       z-index: 5;
@@ -316,12 +296,6 @@
       justify-content: center;
       margin-bottom: 16px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-      animation: floatBadge 3.6s ease-in-out infinite;
-    }
-
-    @keyframes floatBadge {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
     }
 
     .vault-glyph svg {
@@ -334,7 +308,6 @@
       font-size: 17px;
       font-weight: 800;
       color: #ffffff;
-      letter-spacing: 0.4px;
       margin-bottom: 14px;
     }
 
@@ -356,7 +329,6 @@
       color: var(--text-secondary);
       font-family: 'SF Mono', Monaco, monospace;
       font-weight: 600;
-      letter-spacing: 0.4px;
     }
 
     .btn-copy-ca {
@@ -368,11 +340,6 @@
       font-size: 10.5px;
       font-weight: 800;
       cursor: pointer;
-      letter-spacing: 0.6px;
-    }
-
-    .btn-copy-ca:active {
-      opacity: 0.85;
     }
 
     .vault-desc {
@@ -396,11 +363,6 @@
       margin-bottom: 18px;
     }
 
-    .btn-wallet-connect:active {
-      background: #e2e8f0;
-    }
-
-    /* Allocation Module */
     .allocation-box {
       width: 100%;
       background: var(--glass-surface);
@@ -430,7 +392,6 @@
       font-size: 9.5px;
       font-weight: 800;
       color: #00ff88;
-      letter-spacing: 0.8px;
     }
 
     .alloc-value {
@@ -438,7 +399,6 @@
       font-weight: 900;
       color: #ffffff;
       margin-bottom: 14px;
-      letter-spacing: 0.3px;
     }
 
     .btn-claim-ad {
@@ -457,14 +417,8 @@
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
 
-    .btn-claim-ad:active {
-      transform: scale(0.985);
-    }
-
-    /* Bottom Dock */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -491,14 +445,12 @@
       color: #55625c;
       cursor: pointer;
       height: 100%;
-      transition: all 0.2s ease;
     }
 
     .nav-item svg {
       width: 18px;
       height: 18px;
       fill: currentColor;
-      transition: all 0.2s ease;
     }
 
     .nav-item.active {
@@ -517,7 +469,6 @@
       text-transform: uppercase;
     }
 
-    /* Custom Matte Glass Toast */
     .hud-toast {
       position: fixed;
       top: 62px;
@@ -535,8 +486,6 @@
       opacity: 0;
       pointer-events: none;
       backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       align-items: center;
@@ -554,13 +503,11 @@
       height: 6px;
       border-radius: 50%;
       background: #ffffff;
-      box-shadow: 0 0 6px #ffffff;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Utilities -->
   <div class="top-bar">
     <div class="badge-pill">
       <div class="dot"></div>
@@ -572,17 +519,16 @@
     </div>
   </div>
 
-  <!-- Content Sections -->
   <div class="main-viewport">
     
-    <!-- Tab 1: TERMINAL (BNB/USDT Fullscreen TradingView Chart) -->
+    <!-- Tab 1: Terminal -->
     <div id="tab-terminal" class="tab-content active">
       <div class="chart-box">
         <div id="tv_chart_main" style="height:100%;width:100%"></div>
       </div>
     </div>
 
-    <!-- Tab 2: DAKICKS (RWA Drops + dakicks-bg.mp4) -->
+    <!-- Tab 2: Dakicks -->
     <div id="tab-dakicks" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -624,7 +570,7 @@
       </div>
     </div>
 
-    <!-- Tab 3: COMMUNITY (Nodes + community-bg.mp4) -->
+    <!-- Tab 3: Community -->
     <div id="tab-community" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -675,7 +621,7 @@
       </div>
     </div>
 
-    <!-- Tab 4: VAULT (Smart Contract + bg.mp4) -->
+    <!-- Tab 4: Vault -->
     <div id="tab-vault" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -708,15 +654,15 @@
           </div>
           <div class="alloc-value" id="vaultDkxBal">1,250 <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span></div>
           <button class="btn-claim-ad" id="claimRewardBtn">
-            Claim Allocation (+50 $DKX)
+            Claim Allocation (+2 $DKX)
           </button>
         </div>
       </div>
-      </div>
+    </div>
 
   </div>
 
-  <!-- Bottom Navigation Dock -->
+  <!-- Dock -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="navigateTab('terminal', this)">
       <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
@@ -736,10 +682,9 @@
     </div>
   </div>
 
-  <!-- HUD Toast -->
   <div class="hud-toast" id="hudToast">
     <div class="hud-toast-indicator"></div>
-    <span id="hudMsg">Notice</span>
+       <span id="hudMsg">Notice</span>
   </div>
 
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -784,7 +729,6 @@
       elem.classList.add('active');
     }
 
-    // Chart Configuration
     new TradingView.widget({
       "autosize": true,
       "symbol": "BINANCE:BNBUSDT",
@@ -814,27 +758,20 @@
       showHUD("Web3 Socket: Standby for Liquidity");
     });
 
-    // Cleaned Intercepted Ads Controller
-    let adHandler = null;
-    try {
-          // Bulletproof Adsgram Controller (Zero White Error Popups)
-    let adHandler = null;
-
-    const killWhiteModal = new MutationObserver(() => {
-      document.querySelectorAll('div').forEach(el => {
-        if (el.innerText && el.innerText.includes('AdsgramError')) {
-          el.remove();
+    // Destroy injected Adsgram white modals via DOM observer
+    const modalSuppressor = new MutationObserver(() => {
+      document.querySelectorAll('div').forEach(node => {
+        if (node.innerText && node.innerText.includes('AdsgramError')) {
+          node.remove();
         }
       });
     });
-    killWhiteModal.observe(document.body, { childList: true, subtree: true });
+    modalSuppressor.observe(document.body, { childList: true, subtree: true });
 
+    let adHandler = null;
     try {
       if (window.Adsgram) {
-        adHandler = window.Adsgram.init({ 
-          blockId: "46161",
-          debug: true
-        });
+        adHandler = window.Adsgram.init({ blockId: "46161", debug: true });
       }
     } catch (e) {}
 
@@ -846,29 +783,25 @@
 
       if (adHandler) {
         adHandler.show().then(() => {
-          currentAlloc += 50;
+          // Real ad completed: Credit exact mathematically calibrated reward (+2 $DKX)
+          currentAlloc += 2;
           allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
           triggerHaptic('success');
-          showHUD("Allocation Granted: +50 $DKX");
+          showHUD("Transmission Verified: +2 $DKX Granted");
         }).catch((err) => {
-          document.querySelectorAll('div').forEach(el => {
-            if (el.innerText && el.innerText.includes('AdsgramError')) {
-              el.remove();
+          // Immediately wipe SDK modal if attempted
+          document.querySelectorAll('div').forEach(node => {
+            if (node.innerText && node.innerText.includes('AdsgramError')) {
+              node.remove();
             }
           });
-          currentAlloc += 50;
-          allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
-          triggerHaptic('success');
-          showHUD("Genesis Allocation: +50 $DKX");
+          // Zero coins credited when ad is unavailable
+          showHUD("Institutional Stream Unavailable: No Allocation");
         });
       } else {
-        currentAlloc += 50;
-        allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
-        triggerHaptic('success');
-        showHUD("Allocation Claimed: +50 $DKX");
+        showHUD("Institutional Stream Unavailable: No Allocation");
       }
     });
-      
   </script>
 </body>
 </html>
