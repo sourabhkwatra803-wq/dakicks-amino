@@ -758,50 +758,62 @@
       showHUD("Web3 Socket: Standby for Liquidity");
     });
 
-    // Destroy injected Adsgram white modals via DOM observer
-    const modalSuppressor = new MutationObserver(() => {
-      document.querySelectorAll('div').forEach(node => {
-        if (node.innerText && node.innerText.includes('AdsgramError')) {
-          node.remove();
+        // ✅ Bulletproof Adsgram Controller with New UnitID: 46202
+    let adHandler = null;
+
+    // MutationObserver to instantly kill any unexpected white error modals
+    const killWhiteModal = new MutationObserver(() => {
+      document.querySelectorAll('div').forEach(el => {
+        if (el.innerText && el.innerText.includes('AdsgramError')) {
+          el.remove();
         }
       });
     });
-    modalSuppressor.observe(document.body, { childList: true, subtree: true });
+    killWhiteModal.observe(document.body, { childList: true, subtree: true });
 
-    let adHandler = null;
     try {
       if (window.Adsgram) {
-        adHandler = window.Adsgram.init({ blockId: "46161", debug: true });
+        adHandler = window.Adsgram.init({ 
+          blockId: "46202", // 👈 NEW UNIT ID UPDATED
+          debug: true       // Disables native blocking modal during moderation
+        });
       }
     } catch (e) {}
 
+    // Initialize display with calibration value
     let currentAlloc = 1250;
     const allocDisplay = document.getElementById('vaultDkxBal');
+    if (allocDisplay) {
+      allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
+    }
 
+    // Allocation Claim Handler
     document.getElementById('claimRewardBtn').addEventListener('click', () => {
       triggerHaptic('medium');
 
       if (adHandler) {
         adHandler.show().then(() => {
-          // Real ad completed: Credit exact mathematically calibrated reward (+2 $DKX)
+          // Transmission Verified: Credit mathematically calibrated allocation (+2 $DKX)
           currentAlloc += 2;
           allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
           triggerHaptic('success');
-          showHUD("Transmission Verified: +2 $DKX Granted");
+          showHUD("Verified: +2 $DKX Allocation Granted!");
         }).catch((err) => {
-          // Immediately wipe SDK modal if attempted
-          document.querySelectorAll('div').forEach(node => {
-            if (node.innerText && node.innerText.includes('AdsgramError')) {
-              node.remove();
+          // Block native modal if triggered
+          document.querySelectorAll('div').forEach(el => {
+            if (el.innerText && el.innerText.includes('AdsgramError')) {
+              el.remove();
             }
           });
-          // Zero coins credited when ad is unavailable
+          // Zero coins credited if stream is unavailable
           showHUD("Institutional Stream Unavailable: No Allocation");
         });
       } else {
+        // SDK missing fallback
         showHUD("Institutional Stream Unavailable: No Allocation");
       }
     });
+    
   </script>
 </body>
 </html>
