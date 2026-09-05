@@ -1377,19 +1377,17 @@
         btn.disabled = false;
         triggerHaptic('success');
 
-        // Display Blum Monkey Modal
+                // Display Blum Monkey Modal
         document.getElementById('blumCheckText').innerHTML = `Confirm <b>${maskEmail(emailVal)}</b> to secure your account. Didn't get it? <span style="text-decoration:underline; cursor:pointer;" onclick="resendEmail()">Resend</span>`;
         document.getElementById('blumCheckModal').classList.add('show');
       }).catch((err) => {
         btn.innerText = "Link Email";
         btn.disabled = false;
         triggerHaptic('error');
-        showHUD("Transmission failed. Please retry.");
+        alert("Error: " + (err.text || JSON.stringify(err)));
       });
     }
-
-    document.getElementById('btnSendVerification').addEventListener('click', dispatchEmail);
-
+    
     function resendEmail() {
       dispatchEmail();
     }
