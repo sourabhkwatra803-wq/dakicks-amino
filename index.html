@@ -38,7 +38,7 @@
       flex-direction: column;
     }
 
-    /* Suppress Adsgram Default White Error Modals */
+    /* Professional Suppression of SDK-level Modals */
     div[class*="adsgram"], div[id*="adsgram"] {
       display: none !important;
       opacity: 0 !important;
@@ -521,14 +521,12 @@
 
   <div class="main-viewport">
     
-    <!-- Tab 1: Terminal -->
     <div id="tab-terminal" class="tab-content active">
       <div class="chart-box">
         <div id="tv_chart_main" style="height:100%;width:100%"></div>
       </div>
     </div>
 
-    <!-- Tab 2: Dakicks -->
     <div id="tab-dakicks" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -570,7 +568,6 @@
       </div>
     </div>
 
-    <!-- Tab 3: Community -->
     <div id="tab-community" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -621,7 +618,6 @@
       </div>
     </div>
 
-    <!-- Tab 4: Vault -->
     <div id="tab-vault" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -662,7 +658,6 @@
 
   </div>
 
-  <!-- Dock -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="navigateTab('terminal', this)">
       <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
@@ -684,10 +679,10 @@
 
   <div class="hud-toast" id="hudToast">
     <div class="hud-toast-indicator"></div>
-       <span id="hudMsg">Notice</span>
+    <span id="hudMsg">Notice</span>
   </div>
 
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
   <script>
     const tg = window.Telegram?.WebApp;
@@ -758,62 +753,53 @@
       showHUD("Web3 Socket: Standby for Liquidity");
     });
 
-        // ✅ Bulletproof Adsgram Controller with New UnitID: 46202
-    let adHandler = null;
-
-    // MutationObserver to instantly kill any unexpected white error modals
-    const killWhiteModal = new MutationObserver(() => {
-      document.querySelectorAll('div').forEach(el => {
-        if (el.innerText && el.innerText.includes('AdsgramError')) {
-          el.remove();
+    // Bulletrproof DOM suppressor for native Adsgram modals
+    const modalObserver = new MutationObserver(() => {
+      document.querySelectorAll('div').forEach(node => {
+        if (node.innerText && node.innerText.includes('AdsgramError')) {
+          node.remove();
         }
       });
     });
-    killWhiteModal.observe(document.body, { childList: true, subtree: true });
+    modalObserver.observe(document.body, { childList: true, subtree: true });
 
+    let adHandler = null;
     try {
       if (window.Adsgram) {
-        adHandler = window.Adsgram.init({ 
-          blockId: "46202", // 👈 NEW UNIT ID UPDATED
-          debug: true       // Disables native blocking modal during moderation
-        });
+        adHandler = window.Adsgram.init({ blockId: "46202", debug: true });
       }
     } catch (e) {}
 
-    // Initialize display with calibration value
     let currentAlloc = 1250;
     const allocDisplay = document.getElementById('vaultDkxBal');
-    if (allocDisplay) {
-      allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
-    }
 
-    // Allocation Claim Handler
     document.getElementById('claimRewardBtn').addEventListener('click', () => {
       triggerHaptic('medium');
 
       if (adHandler) {
         adHandler.show().then(() => {
-          // Transmission Verified: Credit mathematically calibrated allocation (+2 $DKX)
+          // Transmission Verified: Credit calibrated allocation (+2 $DKX)
           currentAlloc += 2;
           allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
           triggerHaptic('success');
-          showHUD("Verified: +2 $DKX Allocation Granted!");
+          showHUD("Transmission Verified: +2 $DKX Granted");
         }).catch((err) => {
-          // Block native modal if triggered
-          document.querySelectorAll('div').forEach(el => {
-            if (el.innerText && el.innerText.includes('AdsgramError')) {
-              el.remove();
+          // Zero coins credited if stream is unavailable
+          document.querySelectorAll('div').forEach(node => {
+            if (node.innerText && node.innerText.includes('AdsgramError')) {
+              node.remove();
             }
           });
-          // Zero coins credited if stream is unavailable
-          showHUD("Institutional Stream Unavailable: No Allocation");
+          showHUD("Transmissions Unavailable: High Network Load");
         });
       } else {
         // SDK missing fallback
-        showHUD("Institutional Stream Unavailable: No Allocation");
+        showHUD("Transmissions Unavailable: High Network Load");
       }
     });
-    
   </script>
 </body>
 </html>
+
+
+  
