@@ -40,14 +40,12 @@
       flex-direction: column;
     }
 
-    /* Suppress Native Adsgram White Modals */
     div[class*="adsgram"], div[id*="adsgram"] {
       display: none !important;
       opacity: 0 !important;
       pointer-events: none !important;
     }
 
-    /* Top Bar Header */
     .top-bar {
       height: 54px;
       padding: 0 16px;
@@ -292,7 +290,6 @@
       text-decoration: none;
     }
 
-    /* Vault Layout */
     .vault-wrapper {
       position: relative;
       z-index: 5;
@@ -437,7 +434,6 @@
       letter-spacing: 0.8px;
     }
 
-    /* Bottom Navigation Dock */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -488,7 +484,6 @@
       text-transform: uppercase;
     }
 
-    /* HUD Toast Notifications */
     .hud-toast {
       position: fixed;
       top: 68px;
@@ -525,7 +520,6 @@
       background: #ffffff;
     }
 
-    /* First-Time Onboarding Gate */
     .gate-overlay {
       position: fixed;
       inset: 0;
@@ -628,7 +622,6 @@
       margin-top: 10px;
     }
 
-    /* Blum Profile Drawer & Avatar Pencil Edit */
     .profile-drawer-backdrop {
       position: fixed;
       inset: 0;
@@ -743,7 +736,6 @@
       max-width: 310px;
     }
 
-    /* Email Verification Input Form & Linked Cards */
     .drawer-email-form {
       width: 100%;
       display: flex;
@@ -812,7 +804,6 @@
       cursor: pointer;
     }
 
-    /* Blum Monkey Modal (Check Your Email) */
     .blum-check-modal {
       position: fixed;
       left: 0;
@@ -870,7 +861,6 @@
 </head>
 <body>
 
-  <!-- Top Bar with Touchable Profile -->
   <div class="top-bar">
     <div class="top-left-profile" id="topLeftProfileBtn">
       <div class="user-avatar-badge" id="topAvatarBadge">DK</div>
@@ -882,22 +872,19 @@
     </div>
   </div>
 
-  <!-- Main Viewport -->
-  <  <div class="main-viewport">
+  <div class="main-viewport">
     
-    <!-- Tab 1: Terminal -->
     <div id="tab-terminal" class="tab-content active">
       <div class="chart-box">
         <div id="tv_chart_main" style="height:100%;width:100%"></div>
       </div>
     </div>
 
-    <!-- Tab 2: Dakicks -->
     <div id="tab-dakicks" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
           <source src="./dakicks-bg.mp4" type="video/mp4" />
-        </video>
+                </video>
         <div class="video-overlay-gradient"></div>
       </div>
 
@@ -934,7 +921,6 @@
       </div>
     </div>
 
-    <!-- Tab 3: Community -->
     <div id="tab-community" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -984,8 +970,6 @@
         <a href="https://x.com/dakicks_dkx" target="_blank" class="btn-node">Open Node ↗</a>
       </div>
     </div>
-
-    <!-- Tab 4: Vault -->
     <div id="tab-vault" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -1026,7 +1010,6 @@
 
   </div>
 
-  <!-- Bottom Navigation -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="navigateTab('terminal', this)">
       <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
@@ -1046,13 +1029,11 @@
     </div>
   </div>
 
-  <!-- HUD Toast -->
   <div class="hud-toast" id="hudToast">
     <div class="hud-toast-indicator"></div>
     <span id="hudMsg">Notice</span>
   </div>
 
-  <!-- First-Time Onboarding Modal -->
   <div class="gate-overlay" id="firstTimeGate" style="display: none;">
     <div class="gate-card">
       <div class="gate-icon-box">
@@ -1075,7 +1056,6 @@
     </div>
   </div>
 
-  <!-- Blum Profile Drawer -->
   <div class="profile-drawer-backdrop" id="profileBackdrop"></div>
   <div class="profile-drawer" id="profileDrawer">
     <div class="drawer-handle-bar"></div>
@@ -1098,15 +1078,12 @@
       Secure your account. Add another login method besides Telegram to keep access safe and easy.
     </p>
 
-    <!-- Email Verification Container -->
     <div style="width: 100%;">
-      <!-- Input & Action Button -->
       <div class="drawer-email-form" id="emailInputWrap">
         <input type="email" id="drawerEmailInput" class="drawer-email-input" placeholder="Enter personal email" />
         <button class="btn-link-action" id="btnSendVerification">Link Email</button>
       </div>
 
-      <!-- Verified State Pill -->
       <div class="oauth-linked-card" id="emailVerifiedCard" style="display: none;">
         <div>
           <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;" id="verifiedEmailText">user@mail.com</div>
@@ -1119,7 +1096,6 @@
     </div>
   </div>
 
-  <!-- Blum "Check Your Email" Monkey Modal -->
   <div class="blum-check-modal" id="blumCheckModal">
     <div class="monkey-emoji">🙈</div>
     <div class="blum-check-title">Check your email</div>
@@ -1142,7 +1118,6 @@
       } catch (e) {}
     }
 
-    // Initialize EmailJS with Public Key
     (function() {
       emailjs.init({
         publicKey: "xCYMN85l2uOwR5kpY",
@@ -1207,13 +1182,9 @@
       showHUD("Web3 Socket: Standby for Liquidity");
     });
 
-    /* =========================================================
-       IDENTITY, PROFILE & AVATAR EDIT LOGIC
-    ========================================================= */
     const storedUsername = localStorage.getItem('dkx_user_name');
     const storedDob = localStorage.getItem('dkx_user_dob');
 
-    // Check if user returned from email verification link
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('verify_email') === 'true') {
       localStorage.setItem('dkx_email_verified', 'true');
@@ -1290,7 +1261,6 @@
       showHUD(`Welcome to DKX, ${uVal}`);
     });
 
-    // Profile Drawer Handlers
     const profileBackdrop = document.getElementById('profileBackdrop');
     const profileDrawer = document.getElementById('profileDrawer');
 
@@ -1309,7 +1279,6 @@
     document.getElementById('drawerCloseBtn').addEventListener('click', closeProfileDrawer);
     profileBackdrop.addEventListener('click', closeProfileDrawer);
 
-    // Profile Photo Change via Pencil Trigger
     const pencilBtn = document.getElementById('btnPencilTrigger');
     const avatarFileInput = document.getElementById('avatarFileInput');
 
@@ -1338,9 +1307,6 @@
       reader.readAsDataURL(file);
     });
 
-    /* =========================================================
-       EMAILJS LIVE DISPATCH & BLUM MODAL LOGIC
-    ========================================================= */
     function maskEmail(email) {
       const parts = email.split('@');
       if (parts[0].length <= 3) return parts[0] + '***@' + parts[1];
@@ -1357,7 +1323,7 @@
         return;
       }
 
-            localStorage.setItem('dkx_user_email', emailVal);
+      localStorage.setItem('dkx_user_email', emailVal);
       triggerHaptic('medium');
       showHUD("Sending verification transmission...");
 
@@ -1365,10 +1331,8 @@
       btn.innerText = "Sending...";
       btn.disabled = true;
 
-      // Verification redirect URL back to mini app
       const verifyLink = `${window.location.origin}${window.location.pathname}?verify_email=true`;
 
-      // Live EmailJS Send Execution
       emailjs.send("service_7r5ivv2", "template_dcqh44z", {
         to_email: emailVal,
         verify_link: verifyLink
@@ -1377,17 +1341,18 @@
         btn.disabled = false;
         triggerHaptic('success');
 
-                // Display Blum Monkey Modal
         document.getElementById('blumCheckText').innerHTML = `Confirm <b>${maskEmail(emailVal)}</b> to secure your account. Didn't get it? <span style="text-decoration:underline; cursor:pointer;" onclick="resendEmail()">Resend</span>`;
         document.getElementById('blumCheckModal').classList.add('show');
       }).catch((err) => {
         btn.innerText = "Link Email";
         btn.disabled = false;
         triggerHaptic('error');
-        alert("Error: " + (err.text || JSON.stringify(err)));
+        alert("EmailJS Error: " + (err.text || JSON.stringify(err)));
       });
     }
-    
+
+    document.getElementById('btnSendVerification').addEventListener('click', dispatchEmail);
+
     function resendEmail() {
       dispatchEmail();
     }
@@ -1396,9 +1361,6 @@
       document.getElementById('blumCheckModal').classList.remove('show');
     });
 
-    /* =========================================================
-       ADSGRAM INITIALIZATION & REWARD LOGIC (UNIT: 46202)
-    ========================================================= */
     setInterval(() => {
       document.querySelectorAll('div, dialog').forEach(el => {
         if (el.innerText && el.innerText.includes('AdsgramError')) {
@@ -1440,4 +1402,5 @@
     });
   </script>
 </body>
-</html>
+      </html>
+      
