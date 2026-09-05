@@ -1351,4 +1351,56 @@
       });
     }
 
-    document.getElementById('btnSendVerific
+        document.getElementById('btnSendVerification').addEventListener('click', dispatchEmail);
+
+    function resendEmail() {
+      dispatchEmail();
+    }
+
+    document.getElementById('btnGotIt').addEventListener('click', () => {
+      document.getElementById('blumCheckModal').classList.remove('show');
+    });
+
+    setInterval(() => {
+      document.querySelectorAll('div, dialog').forEach(el => {
+        if (el.innerText && el.innerText.includes('AdsgramError')) {
+          el.remove();
+        }
+      });
+    }, 50);
+
+    let adHandler = null;
+    try {
+      if (window.Adsgram) {
+        adHandler = window.Adsgram.init({ blockId: "46202", debug: false });
+      }
+    } catch (e) {}
+
+    let currentAlloc = 1250;
+    const allocDisplay = document.getElementById('vaultDkxBal');
+
+    document.getElementById('claimRewardBtn').addEventListener('click', () => {
+      triggerHaptic('medium');
+
+      if (adHandler) {
+        adHandler.show().then(() => {
+          currentAlloc += 2;
+          allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
+          triggerHaptic('success');
+          showHUD("Transmission Verified: +2 $DKX Granted");
+        }).catch((err) => {
+          document.querySelectorAll('div, dialog').forEach(el => {
+            if (el.innerText && el.innerText.includes('AdsgramError')) {
+              el.remove();
+            }
+          });
+          showHUD("Transmissions Unavailable: High Network Load");
+        });
+      } else {
+        showHUD("Transmissions Unavailable: High Network Load");
+      }
+    });
+  </script>
+</body>
+</html>
+
