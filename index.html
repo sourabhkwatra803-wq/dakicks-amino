@@ -1353,5 +1353,109 @@
     });
 
     // CHANGE EMAIL HANDLER
-    document.getElementById('btnChangeEmail').addEventListener('click', () => {
-      triggerHap
+        document.getElementById('btnChangeEmail').addEventListener('click', () => {
+      triggerHaptic('medium');
+      localStorage.removeItem('dkx_email_verified');
+      localStorage.removeItem('dkx_user_email');
+      document.getElementById('drawerEmailInput').value = '';
+      updateProfileUI(localStorage.getItem('dkx_user_name'), localStorage.getItem('dkx_user_dob'));
+      showHUD("Enter your new email address");
+    });
+
+    function maskEmail(email) {
+      const parts = email.split('@');
+      if (parts[0].length <= 3) return parts[0] + '***@' + parts[1];
+      return parts[0].slice(0, 3) + '***@' + parts[1];
+    }
+
+    function dispatchEmail() {
+      const emailInput = document.getElementById('drawerEmailInput');
+      const emailVal = emailInput.value.trim();
+
+      if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
+        triggerHaptic('error');
+        showHUD("Please provide a valid email");
+        return;
+      }
+
+      triggerHaptic('medium');
+      showHUD("Transmitting link...");
+
+      const btn = document.getElementById('btnSendVerification');
+      btn.innerText = "Sending...";
+      btn.disabled = true;
+
+      // Direct Telegram Bot Deep Link
+      const verifyLink = `https://t.me/DakicksAmino_bot/app?startapp=verify_${encodeURIComponent(emailVal)}`;
+
+      emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+        to_email: emailVal,
+        verify_link: verifyLink
+      }, EMAILJS_CONFIG.publicKey).then(() => {
+        btn.innerText = "Link Email";
+        btn.disabled = false;
+        triggerHaptic('success');
+
+        document.getElementById('blumCheckText').innerHTML = `Confirm <b>${maskEmail(emailVal)}</b> to secure your account. Didn't get it? <span style="text-decoration:underline; cursor:pointer;" onclick="resendEmail()">Resend</span>`;
+        document.getElementById('blumCheckModal').classList.add('show');
+      }).catch((err) => {
+        btn.innerText = "Link Email";
+        btn.disabled = false;
+        triggerHaptic('error');
+        alert("EmailJS Error: " + (err.text || JSON.stringify(err)));
+      });
+    }
+
+    document.getElementById('btnSendVerification').addEventListener('click', dispatchEmail);
+
+    function resendEmail() {
+      dispatchEmail();
+    }
+
+    document.getElementById('btnGotIt').addEventListener('click', () => {
+      document.getElementById('blumCheckModal').classList.remove('show');
+    });
+
+    setInterval(() => {
+      document.querySelectorAll('div, dialog').forEach(el => {
+        if (el.innerText && el.innerText.includes('AdsgramError')) {
+          el.remove();
+        }
+      });
+    }, 50);
+
+    let adHandler = null;
+    try {
+      if (window.Adsgram) {
+        adHandler = window.Adsgram.init({ blockId: "46202", debug: false });
+      }
+    } catch (e) {}
+
+    let currentAlloc = 1250;
+    const allocDisplay = document.getElementById('vaultDkxBal');
+
+    document.getElementById('claimRewardBtn').addEventListener('click', () => {
+      triggerHaptic('medium');
+
+      if (adHandler) {
+        adHandler.show().then(() => {
+          currentAlloc += 2;
+          allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
+          triggerHaptic('success');
+          showHUD("Transmission Verified: +2 $DKX Granted");
+        }).catch((err) => {
+          document.querySelectorAll('div, dialog').forEach(el => {
+            if (el.innerText && el.innerText.includes('AdsgramError')) {
+              el.remove();
+            }
+          });
+          showHUD("Transmissions Unavailable: High Network Load");
+        });
+      } else {
+        showHUD("Transmissions Unavailable: High Network Load");
+      }
+    });
+  </script>
+</body>
+</html>
+
