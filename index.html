@@ -1328,4 +1328,249 @@
         
         if (pendingOtp && (Date.now() - pendingTs <= TEN_MINUTES_MS)) {
           document.getElementById('emailInputWrap').style.display = 'none';
-          document.getEleme
+                    document.getElementById('otpInputWrap').style.display = 'flex';
+          const pendingEmail = localStorage.getItem('dkx_pending_email') || 'your email';
+          document.getElementById('drawerInstructionText').innerText = `Verification code sent to ${pendingEmail}. Enter 6-digit code or tap email link.`;
+        } else {
+          localStorage.removeItem('dkx_pending_otp');
+          localStorage.removeItem('dkx_pending_timestamp');
+          document.getElementById('emailInputWrap').style.display = 'flex';
+          document.getElementById('otpInputWrap').style.display = 'none';
+          document.getElementById('drawerInstructionText').innerText = "Enter your email address to begin authentication.";
+        }
+      }
+    }
+
+    if (!storedUsername || !storedDob) {
+      document.getElementById('firstTimeGate').style.display = 'flex';
+    } else {
+      updateProfileUI(storedUsername, storedDob);
+    }
+
+    document.getElementById('submitGateBtn').addEventListener('click', () => {
+      const uVal = document.getElementById('inputUsername').value.trim();
+      const dVal = document.getElementById('inputDob').value;
+
+      if (!uVal || uVal.length < 3) {
+        triggerHaptic('error');
+        showHUD("Handle must be at least 3 chars");
+        return;
+      }
+      if (!dVal) {
+        triggerHaptic('error');
+        showHUD("Please enter your Date of Birth");
+        return;
+      }
+
+      localStorage.setItem('dkx_user_name', uVal);
+      localStorage.setItem('dkx_user_dob', dVal);
+      updateProfileUI(uVal, dVal);
+
+      triggerHaptic('success');
+      document.getElementById('firstTimeGate').style.display = 'none';
+      showHUD(`Welcome to DAKICKS, ${uVal}`);
+    });
+
+    const profileBackdrop = document.getElementById('profileBackdrop');
+    const profileDrawer = document.getElementById('profileDrawer');
+
+    function openProfileDrawer() {
+      triggerHaptic('medium');
+      profileBackdrop.classList.add('show');
+      profileDrawer.classList.add('show');
+    }
+
+    function closeProfileDrawer() {
+      profileDrawer.classList.remove('show');
+      profileBackdrop.classList.remove('show');
+    }
+
+    document.getElementById('topLeftProfileBtn').addEventListener('click', openProfileDrawer);
+    document.getElementById('drawerCloseBtn').addEventListener('click', closeProfileDrawer);
+    profileBackdrop.addEventListener('click', closeProfileDrawer);
+
+    const pencilBtn = document.getElementById('btnPencilTrigger');
+    const avatarFileInput = document.getElementById('avatarFileInput');
+
+    pencilBtn.addEventListener('click', () => {
+      triggerHaptic('light');
+      avatarFileInput.click();
+    });
+
+    avatarFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (file.size > 2 * 1024 * 1024) {
+        showHUD("Image must be under 2MB");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Data = event.target.result;
+        localStorage.setItem('dkx_user_avatar', base64Data);
+        applyAvatar(base64Data, getInitials(localStorage.getItem('dkx_user_name')));
+        triggerHaptic('success');
+        showHUD("Profile Photo Updated!");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 1-MINUTE RESEND COUNTDOWN LOGIC
+    function startResendCountdown() {
+      clearInterval(countdownInterval);
+      let secRemaining = 60;
+      const timerLabel = document.getElementById('resendTimerLabel');
+      const resendBtn = document.getElementById('btnResendOtp');
+      resendBtn.disabled = true;
+
+      countdownInterval = setInterval(() => {
+        secRemaining--;
+        const formatted = secRemaining < 10 ? `0${secRemaining}` : secRemaining;
+        timerLabel.innerText = `Resend in 00:${formatted}`;
+        if (secRemaining <= 0) {
+          clearInterval(countdownInterval);
+          timerLabel.innerText = "Code ready to resend";
+          resendBtn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    // DISPATCH CODE & LINK
+    function dispatchEmail() {
+      const emailInput = document.getElementById('drawerEmailInput');
+      const emailVal = emailInput.value.trim();
+
+      if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
+        triggerHaptic('error');
+        showHUD("Please provide a valid email");
+        return;
+      }
+
+      triggerHaptic('medium');
+      showHUD("Sending verification...");
+
+      const btn = document.getElementById('btnSendVerification');
+      btn.innerText = "Sending...";
+      btn.disabled = true;
+
+      const randomOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      const currentTimestamp = Date.now();
+
+      localStorage.setItem('dkx_pending_otp', randomOtp);
+      localStorage.setItem('dkx_pending_email', emailVal);
+      localStorage.setItem('dkx_pending_timestamp', currentTimestamp.toString());
+
+      const verifyLink = `https://t.me/DakicksAmino_bot/app?startapp=verify_${encodeURIComponent(emailVal)}_ts_${currentTimestamp}`;
+
+      emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+        to_email: emailVal,
+        verify_link: verifyLink,
+        passcode: randomOtp,
+        code: randomOtp
+      }, EMAILJS_CONFIG.publicKey).then(() => {
+        btn.innerText = "Send Verification";
+        btn.disabled = false;
+        triggerHaptic('success');
+
+        document.getElementById('emailInputWrap').style.display = 'none';
+        document.getElementById('otpInputWrap').style.display = 'flex';
+        document.getElementById('drawerInstructionText').innerText = `Verification code sent to ${emailVal}. Enter 6-digit code or tap email link.`;
+        
+        startResendCountdown();
+        showHUD("Code Transmitted Successfully");
+      }).catch((err) => {
+        btn.innerText = "Send Verification";
+        btn.disabled = false;
+        triggerHaptic('error');
+        alert("EmailJS Error: " + (err.text || JSON.stringify(err)));
+      });
+    }
+
+    document.getElementById('btnSendVerification').addEventListener('click', dispatchEmail);
+    document.getElementById('btnResendOtp').addEventListener('click', dispatchEmail);
+
+    // OPTION 1: CODE SUBMIT VERIFICATION
+    document.getElementById('btnVerifyOtp').addEventListener('click', () => {
+      const enteredOtp = document.getElementById('otpCodeInput').value.trim();
+      const savedOtp = localStorage.getItem('dkx_pending_otp');
+      const pendingEmail = localStorage.getItem('dkx_pending_email');
+      const pendingTs = parseInt(localStorage.getItem('dkx_pending_timestamp') || '0', 10);
+
+      if (!savedOtp || (Date.now() - pendingTs > TEN_MINUTES_MS)) {
+        triggerHaptic('error');
+        showHUD("Verification code expired (10m). Request a new one.");
+        localStorage.removeItem('dkx_pending_otp');
+        localStorage.removeItem('dkx_pending_timestamp');
+        updateProfileUI(localStorage.getItem('dkx_user_name'), localStorage.getItem('dkx_user_dob'));
+        return;
+      }
+
+      if (enteredOtp && enteredOtp === savedOtp) {
+        completeVerification(pendingEmail);
+      } else {
+        triggerHaptic('error');
+        showHUD("Incorrect 6-digit code");
+      }
+    });
+
+    // CHANGE / WRONG EMAIL RESET HANDLER
+    function returnToEmailInput() {
+      triggerHaptic('light');
+      clearInterval(countdownInterval);
+      localStorage.removeItem('dkx_pending_otp');
+      localStorage.removeItem('dkx_pending_timestamp');
+      localStorage.removeItem('dkx_email_verified');
+      document.getElementById('drawerEmailInput').value = '';
+      document.getElementById('otpCodeInput').value = '';
+      updateProfileUI(localStorage.getItem('dkx_user_name'), localStorage.getItem('dkx_user_dob'));
+      showHUD("Enter your email address");
+    }
+
+    document.getElementById('btnBackToEmail').addEventListener('click', returnToEmailInput);
+    document.getElementById('btnChangeEmail').addEventListener('click', returnToEmailInput);
+
+    setInterval(() => {
+      document.querySelectorAll('div, dialog').forEach(el => {
+        if (el.innerText && el.innerText.includes('AdsgramError')) {
+          el.remove();
+        }
+      });
+    }, 50);
+
+    let adHandler = null;
+    try {
+      if (window.Adsgram) {
+        adHandler = window.Adsgram.init({ blockId: "46202", debug: false });
+      }
+    } catch (e) {}
+
+    let currentAlloc = 1250;
+    const allocDisplay = document.getElementById('vaultDkxBal');
+
+    document.getElementById('claimRewardBtn').addEventListener('click', () => {
+      triggerHaptic('medium');
+
+      if (adHandler) {
+        adHandler.show().then(() => {
+          currentAlloc += 2;
+          allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
+          triggerHaptic('success');
+          showHUD("Transmission Verified: +2 $DKX Granted");
+        }).catch((err) => {
+          document.querySelectorAll('div, dialog').forEach(el => {
+            if (el.innerText && el.innerText.includes('AdsgramError')) {
+              el.remove();
+            }
+          });
+          showHUD("Transmissions Unavailable: High Network Load");
+        });
+      } else {
+        showHUD("Transmissions Unavailable: High Network Load");
+      }
+    });
+  </script>
+</body>
+</html>
+
