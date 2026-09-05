@@ -1120,7 +1120,7 @@
 
     (function() {
       emailjs.init({
-        publicKey: "xCYMN85l2uOwR5kpY",
+        publicKey: "xCYMN8Sl2uOwRSkpY",
       });
     })();
 
@@ -1336,7 +1336,7 @@
       emailjs.send("service_7r5ivv2", "template_dcqh44z", {
         to_email: emailVal,
         verify_link: verifyLink
-      }).then(() => {
+      }, "xCYMN8Sl2uOwRSkpY").then(() => {
         btn.innerText = "Link Email";
         btn.disabled = false;
         triggerHaptic('success');
@@ -1402,5 +1402,4 @@
     });
   </script>
 </body>
-      </html>
-      
+</html>
