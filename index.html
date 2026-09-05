@@ -38,12 +38,15 @@
       flex-direction: column;
     }
 
-    /* Professional Suppression of SDK-level Modals */
-    div[class*="adsgram"], div[id*="adsgram"] {
+        /* Kill ALL Injected White Popups and Modals Permanently */
+    div[class*="adsgram"], div[id*="adsgram"], [class*="modal"], [id*="modal"] {
       display: none !important;
       opacity: 0 !important;
+      visibility: hidden !important;
       pointer-events: none !important;
+      z-index: -99999 !important;
     }
+    
 
     .top-bar {
       height: 48px;
