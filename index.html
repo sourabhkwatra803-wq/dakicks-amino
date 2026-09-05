@@ -773,6 +773,15 @@
       }
     } catch (e) {}
 
+        // 100% Aggressive White Modal Destroyer
+    setInterval(() => {
+      document.querySelectorAll('div, dialog').forEach(el => {
+        if (el.innerText && el.innerText.includes('AdsgramError')) {
+          el.remove();
+        }
+      });
+    }, 50);
+
     let currentAlloc = 1250;
     const allocDisplay = document.getElementById('vaultDkxBal');
 
@@ -781,25 +790,23 @@
 
       if (adHandler) {
         adHandler.show().then(() => {
-          // Transmission Verified: Credit calibrated allocation (+2 $DKX)
           currentAlloc += 2;
           allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
           triggerHaptic('success');
           showHUD("Transmission Verified: +2 $DKX Granted");
         }).catch((err) => {
-          // Zero coins credited if stream is unavailable
-          document.querySelectorAll('div').forEach(node => {
-            if (node.innerText && node.innerText.includes('AdsgramError')) {
-              node.remove();
+          document.querySelectorAll('div, dialog').forEach(el => {
+            if (el.innerText && el.innerText.includes('AdsgramError')) {
+              el.remove();
             }
           });
           showHUD("Transmissions Unavailable: High Network Load");
         });
       } else {
-        // SDK missing fallback
         showHUD("Transmissions Unavailable: High Network Load");
       }
     });
+    
   </script>
 </body>
 </html>
