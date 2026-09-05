@@ -5,18 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>DKX Institutional Terminal</title>
 
+  <!-- Telegram WebApp & Adsgram SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+  <!-- EmailJS SDK for direct browser-to-email notifications -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <style>
     :root {
       --bg-dark: #070908;
-      --glass-surface: rgba(18, 22, 20, 0.72);
-      --glass-border: rgba(255, 255, 255, 0.11);
-      --border-active: rgba(255, 255, 255, 0.28);
+      --glass-surface: rgba(18, 22, 20, 0.76);
+      --glass-border: rgba(255, 255, 255, 0.12);
       --text-pure: #ffffff;
       --text-secondary: #9aa8a1;
       --accent-green: #00ff88;
+      --accent-blue: #38bdf8;
     }
 
     * {
@@ -38,48 +41,57 @@
       flex-direction: column;
     }
 
-        /* Kill ALL Injected White Popups and Modals Permanently */
-    div[class*="adsgram"], div[id*="adsgram"], [class*="modal"], [id*="modal"] {
+    /* Suppress Native Adsgram White Modals */
+    div[class*="adsgram"], div[id*="adsgram"] {
       display: none !important;
       opacity: 0 !important;
-      visibility: hidden !important;
       pointer-events: none !important;
-      z-index: -99999 !important;
     }
-    
 
+    /* Top Bar Header */
     .top-bar {
-      height: 48px;
+      height: 54px;
       padding: 0 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(7, 9, 8, 0.96);
+      background: rgba(7, 9, 8, 0.94);
       border-bottom: 1px solid var(--glass-border);
       z-index: 50;
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
     }
 
-    .badge-pill {
+    .top-left-profile {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 5px 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.9px;
-      text-transform: uppercase;
+      gap: 10px;
+      cursor: pointer;
     }
 
-    .badge-pill .dot {
-      width: 5px;
-      height: 5px;
+    .user-avatar-badge {
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: #ffffff;
-      box-shadow: 0 0 8px #ffffff;
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .user-handle-txt {
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .network-pill {
@@ -157,7 +169,7 @@
 
     .chart-box {
       width: 100%;
-      height: calc(100vh - 110px);
+      height: calc(100vh - 116px);
       position: relative;
     }
 
@@ -278,6 +290,7 @@
       text-decoration: none;
     }
 
+    /* Vault Layout */
     .vault-wrapper {
       position: relative;
       z-index: 5;
@@ -422,6 +435,7 @@
       letter-spacing: 0.8px;
     }
 
+    /* Bottom Navigation Dock */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -472,12 +486,13 @@
       text-transform: uppercase;
     }
 
+    /* HUD Toast Notifications */
     .hud-toast {
       position: fixed;
-      top: 62px;
+      top: 68px;
       left: 50%;
       transform: translateX(-50%) translateY(-20px);
-      background: rgba(14, 18, 16, 0.94);
+      background: rgba(14, 18, 16, 0.95);
       border: 1px solid var(--glass-border);
       color: #ffffff;
       padding: 11px 22px;
@@ -507,29 +522,279 @@
       border-radius: 50%;
       background: #ffffff;
     }
+
+    /* =========================================================
+       LUXURY ONBOARDING GATE MODAL (FIRST TIME ONLY)
+    ========================================================= */
+    .gate-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 5, 5, 0.96);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .gate-card {
+      width: 100%;
+      max-width: 380px;
+      background: linear-gradient(160deg, rgba(22, 28, 25, 0.9), rgba(12, 15, 14, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 24px;
+      padding: 28px 22px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    .gate-icon-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
+    }
+
+    .gate-icon-box svg {
+      width: 32px;
+      height: 32px;
+      fill: #ffffff;
+    }
+
+    .gate-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .gate-subtitle {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .gate-input-wrap {
+      text-align: left;
+      margin-bottom: 14px;
+    }
+
+    .gate-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .gate-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      padding: 13px 15px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .gate-input:focus {
+      border-color: #38bdf8;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-gate-submit {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* =========================================================
+       BLUM-STYLE PROFILE DRAWER MODAL
+    ========================================================= */
+    .profile-drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(12px);
+      z-index: 99990;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .profile-drawer-backdrop.show {
+      display: block;
+      opacity: 1;
+    }
+
+    .profile-drawer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: -100%;
+      background: #0f1211;
+      border-top: 1px solid var(--glass-border);
+      border-radius: 28px 28px 0 0;
+      padding: 24px 20px 40px 20px;
+      z-index: 99995;
+      transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .profile-drawer.show {
+      bottom: 0;
+    }
+
+    .drawer-handle-bar {
+      width: 38px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      margin-bottom: 20px;
+    }
+
+    .drawer-avatar {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 28px rgba(56, 189, 248, 0.45);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      margin-bottom: 12px;
+    }
+
+    .drawer-name {
+      font-size: 19px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .drawer-dob-tag {
+      font-size: 11px;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      margin-bottom: 18px;
+    }
+
+    .drawer-info-text {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      max-width: 300px;
+    }
+
+    .drawer-email-box {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .drawer-email-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13.5px;
+    }
+
+    .btn-link-email {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+
+    .drawer-close-btn {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      color: #ffffff;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Top Bar with Touchable Profile -->
   <div class="top-bar">
-    <div class="badge-pill">
-      <div class="dot"></div>
-      <span>DKX Institutional</span>
+    <div class="top-left-profile" id="topLeftProfileBtn">
+      <div class="user-avatar-badge" id="topAvatarInitials">DK</div>
+      <div class="user-handle-txt" id="topHandleText">Loading...</div>
     </div>
     <div class="network-pill">
       <div class="pulse-dot"></div>
-      <span>BNB MAINNET #41,920,431</span>
+      <span>BNB #41,920,431</span>
     </div>
   </div>
 
+  <!-- Main Viewport -->
   <div class="main-viewport">
     
+    <!-- Tab 1: Terminal -->
     <div id="tab-terminal" class="tab-content active">
       <div class="chart-box">
         <div id="tv_chart_main" style="height:100%;width:100%"></div>
       </div>
     </div>
 
+    <!-- Tab 2: Dakicks -->
     <div id="tab-dakicks" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -571,8 +836,9 @@
       </div>
     </div>
 
+    <!-- Tab 3: Community -->
     <div id="tab-community" class="tab-content">
-      <div class="video-bg-container">
+            <div class="video-bg-container">
         <video autoplay loop muted playsinline>
           <source src="./community-bg.mp4" type="video/mp4" />
         </video>
@@ -621,6 +887,7 @@
       </div>
     </div>
 
+    <!-- Tab 4: Vault -->
     <div id="tab-vault" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline>
@@ -661,6 +928,7 @@
 
   </div>
 
+  <!-- Bottom Navigation -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="navigateTab('terminal', this)">
       <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
@@ -680,12 +948,56 @@
     </div>
   </div>
 
+  <!-- HUD Toast -->
   <div class="hud-toast" id="hudToast">
     <div class="hud-toast-indicator"></div>
     <span id="hudMsg">Notice</span>
   </div>
 
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <!-- LUXURY FIRST-TIME ONBOARDING MODAL -->
+  <div class="gate-overlay" id="firstTimeGate" style="display: none;">
+    <div class="gate-card">
+      <div class="gate-icon-box">
+        <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 12c-4.42 0-8 2.24-8 5v3h16v-3c0-2.76-3.58-5-8-5z"/></svg>
+      </div>
+      <h2 class="gate-title">Genesis Identification</h2>
+      <p class="gate-subtitle">Create your institutional identity to unlock the DKX Terminal and decentralized liquidity vaults.</p>
+
+      <div class="gate-input-wrap">
+        <label class="gate-label">Choose Handle / Username</label>
+        <input type="text" id="inputUsername" class="gate-input" placeholder="e.g. Satoshi_DKX" maxlength="20" />
+      </div>
+
+      <div class="gate-input-wrap">
+        <label class="gate-label">Date of Birth</label>
+        <input type="date" id="inputDob" class="gate-input" />
+      </div>
+
+      <button class="btn-gate-submit" id="submitGateBtn">INITIALIZE TERMINAL</button>
+    </div>
+  </div>
+
+  <!-- BLUM-STYLE PROFILE DRAWER -->
+  <div class="profile-drawer-backdrop" id="profileBackdrop"></div>
+  <div class="profile-drawer" id="profileDrawer">
+    <div class="drawer-handle-bar"></div>
+    <button class="drawer-close-btn" id="drawerCloseBtn">✕</button>
+
+    <div class="drawer-avatar" id="drawerAvatarBadge">DK</div>
+    <div class="drawer-name" id="drawerUsername">User Handle</div>
+    <div class="drawer-dob-tag" id="drawerDobTag">DOB: Verified</div>
+
+    <p class="drawer-info-text">
+      Secure your account. Add another login method besides Telegram to keep access safe and easy.
+    </p>
+
+    <div class="drawer-email-box">
+      <input type="email" id="drawerEmailInput" class="drawer-email-input" placeholder="Enter personal email" />
+      <button class="btn-link-email" id="btnLinkEmailAction">Link Email</button>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
   <script>
     const tg = window.Telegram?.WebApp;
@@ -756,24 +1068,120 @@
       showHUD("Web3 Socket: Standby for Liquidity");
     });
 
-    // Bulletrproof DOM suppressor for native Adsgram modals
-    const modalObserver = new MutationObserver(() => {
-      document.querySelectorAll('div').forEach(node => {
-        if (node.innerText && node.innerText.includes('AdsgramError')) {
-          node.remove();
-        }
-      });
-    });
-    modalObserver.observe(document.body, { childList: true, subtree: true });
+    const storedUsername = localStorage.getItem('dkx_user_name');
+    const storedDob = localStorage.getItem('dkx_user_dob');
+    const storedEmail = localStorage.getItem('dkx_user_email');
 
-    let adHandler = null;
-    try {
-      if (window.Adsgram) {
-        adHandler = window.Adsgram.init({ blockId: "46202", debug: true });
+    function getInitials(name) {
+      if (!name) return 'DK';
+      const clean = name.replace(/[^a-zA-Z0-9]/g, '');
+      return clean.slice(0, 2).toUpperCase() || 'DK';
+    }
+
+    function updateProfileUI(name, dob, email) {
+      const initials = getInitials(name);
+      document.getElementById('topAvatarInitials').innerText = initials;
+      document.getElementById('topHandleText').innerText = name || 'Anonymous';
+
+      document.getElementById('drawerAvatarBadge').innerText = initials;
+      document.getElementById('drawerUsername').innerText = name || 'Anonymous';
+      document.getElementById('drawerDobTag').innerText = dob ? `DOB: ${dob}` : 'DOB: Verified';
+
+      if (email) {
+        document.getElementById('drawerEmailInput').value = email;
+        document.getElementById('drawerEmailInput').disabled = true;
+        document.getElementById('btnLinkEmailAction').innerText = 'Email Linked ✓';
+        document.getElementById('btnLinkEmailAction').style.background = '#00ff88';
+        document.getElementById('btnLinkEmailAction').style.color = '#000000';
       }
-    } catch (e) {}
+    }
 
-        // 100% Aggressive White Modal Destroyer
+    if (!storedUsername || !storedDob) {
+      document.getElementById('firstTimeGate').style.display = 'flex';
+    } else {
+      updateProfileUI(storedUsername, storedDob, storedEmail);
+    }
+
+    document.getElementById('submitGateBtn').addEventListener('click', () => {
+      const uVal = document.getElementById('inputUsername').value.trim();
+      const dVal = document.getElementById('inputDob').value;
+
+      if (!uVal || uVal.length < 3) {
+        triggerHaptic('error');
+        showHUD("Handle must be at least 3 chars");
+        return;
+      }
+      if (!dVal) {
+        triggerHaptic('error');
+        showHUD("Please enter your Date of Birth");
+        return;
+      }
+
+      localStorage.setItem('dkx_user_name', uVal);
+      localStorage.setItem('dkx_user_dob', dVal);
+      updateProfileUI(uVal, dVal, null);
+
+      triggerHaptic('success');
+      document.getElementById('firstTimeGate').style.display = 'none';
+      showHUD(`Welcome to DKX, ${uVal}`);
+    });
+
+    const profileBackdrop = document.getElementById('profileBackdrop');
+    const profileDrawer = document.getElementById('profileDrawer');
+
+    function openProfileDrawer() {
+      triggerHaptic('medium');
+      profileBackdrop.classList.add('show');
+      profileDrawer.classList.add('show');
+    }
+
+    function closeProfileDrawer() {
+      profileDrawer.classList.remove('show');
+      profileBackdrop.classList.remove('show');
+    }
+
+    document.getElementById('topLeftProfileBtn').addEventListener('click', openProfileDrawer);
+    document.getElementById('drawerCloseBtn').addEventListener('click', closeProfileDrawer);
+    profileBackdrop.addEventListener('click', closeProfileDrawer);
+
+    document.getElementById('btnLinkEmailAction').addEventListener('click', () => {
+      triggerHaptic('medium');
+      const emailInput = document.getElementById('drawerEmailInput');
+      const emailVal = emailInput.value.trim();
+
+      if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
+        showHUD("Please provide a valid email");
+        return;
+      }
+
+      if (localStorage.getItem('dkx_user_email')) {
+        showHUD("Email already securely linked");
+        return;
+      }
+
+      localStorage.setItem('dkx_user_email', emailVal);
+      emailInput.disabled = true;
+      document.getElementById('btnLinkEmailAction').innerText = 'Linking...';
+
+      fetch("https://formspree.io/f/mqaejddq", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          recipient: emailVal,
+          user_handle: localStorage.getItem('dkx_user_name'),
+          message: "Congratulations! Your email has been successfully linked with DKX Institutional Terminal."
+        })
+      }).catch(() => {});
+
+      setTimeout(() => {
+        triggerHaptic('success');
+        document.getElementById('btnLinkEmailAction').innerText = 'Email Linked ✓';
+        document.getElementById('btnLinkEmailAction').style.background = '#00ff88';
+        document.getElementById('btnLinkEmailAction').style.color = '#000000';
+        showHUD("Congratulations! Email Linked & Confirmed");
+      }, 1200);
+    });
+
     setInterval(() => {
       document.querySelectorAll('div, dialog').forEach(el => {
         if (el.innerText && el.innerText.includes('AdsgramError')) {
@@ -781,6 +1189,13 @@
         }
       });
     }, 50);
+
+    let adHandler = null;
+    try {
+      if (window.Adsgram) {
+        adHandler = window.Adsgram.init({ blockId: "46202", debug: false });
+      }
+    } catch (e) {}
 
     let currentAlloc = 1250;
     const allocDisplay = document.getElementById('vaultDkxBal');
@@ -806,10 +1221,6 @@
         showHUD("Transmissions Unavailable: High Network Load");
       }
     });
-    
   </script>
 </body>
 </html>
-
-
-  
