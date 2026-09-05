@@ -1356,4 +1356,184 @@
       showHUD(`Welcome to DAKICKS, ${uVal}`);
     });
 
-    const profileBackdrop = document.getElementById(
+        const profileBackdrop = document.getElementById('profileBackdrop');
+    const profileDrawer = document.getElementById('profileDrawer');
+
+    function openProfileDrawer() {
+      triggerHaptic('medium');
+      profileBackdrop.classList.add('show');
+      profileDrawer.classList.add('show');
+    }
+
+    function closeProfileDrawer() {
+      profileDrawer.classList.remove('show');
+      profileBackdrop.classList.remove('show');
+    }
+
+    document.getElementById('topLeftProfileBtn').addEventListener('click', openProfileDrawer);
+    document.getElementById('drawerCloseBtn').addEventListener('click', closeProfileDrawer);
+    profileBackdrop.addEventListener('click', closeProfileDrawer);
+
+    const pencilBtn = document.getElementById('btnPencilTrigger');
+    const avatarFileInput = document.getElementById('avatarFileInput');
+
+    pencilBtn.addEventListener('click', () => {
+      triggerHaptic('light');
+      avatarFileInput.click();
+    });
+
+    avatarFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (file.size > 2 * 1024 * 1024) {
+        showHUD("Image must be under 2MB");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Data = event.target.result;
+        localStorage.setItem('dkx_user_avatar', base64Data);
+        applyAvatar(base64Data, getInitials(localStorage.getItem('dkx_user_name')));
+        triggerHaptic('success');
+        showHUD("Profile Photo Updated!");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // CHANGE EMAIL HANDLER
+    document.getElementById('btnChangeEmail').addEventListener('click', () => {
+      triggerHaptic('medium');
+      localStorage.removeItem('dkx_email_verified');
+      localStorage.removeItem('dkx_user_email');
+      localStorage.removeItem('dkx_pending_otp');
+      document.getElementById('drawerEmailInput').value = '';
+      updateProfileUI(localStorage.getItem('dkx_user_name'), localStorage.getItem('dkx_user_dob'));
+      showHUD("Enter your new email address");
+    });
+
+    function maskEmail(email) {
+      const parts = email.split('@');
+      if (parts[0].length <= 3) return parts[0] + '***@' + parts[1];
+      return parts[0].slice(0, 3) + '***@' + parts[1];
+    }
+
+    // DISPATCH CODE & LINK
+    function dispatchEmail() {
+      const emailInput = document.getElementById('drawerEmailInput');
+      const emailVal = emailInput.value.trim();
+
+      if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
+        triggerHaptic('error');
+        showHUD("Please provide a valid email");
+        return;
+      }
+
+      triggerHaptic('medium');
+      showHUD("Generating verification...");
+
+      const btn = document.getElementById('btnSendVerification');
+      btn.innerText = "Sending...";
+      btn.disabled = true;
+
+      // 6-Digit Verification Code Generator
+      const randomOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      localStorage.setItem('dkx_pending_otp', randomOtp);
+      localStorage.setItem('dkx_pending_email', emailVal);
+
+      // Direct Link
+      const verifyLink = `https://t.me/DakicksAmino_bot/app?startapp=verify_${encodeURIComponent(emailVal)}`;
+
+      emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+        to_email: emailVal,
+        verify_link: verifyLink,
+        passcode: randomOtp,
+        code: randomOtp
+      }, EMAILJS_CONFIG.publicKey).then(() => {
+        btn.innerText = "Send Verification";
+        btn.disabled = false;
+        triggerHaptic('success');
+
+        document.getElementById('emailInputWrap').style.display = 'none';
+        document.getElementById('otpInputWrap').style.display = 'flex';
+
+        document.getElementById('blumCheckText').innerHTML = `Verification sent to <b>${maskEmail(emailVal)}</b>. Enter 6-digit code or tap link!`;
+        document.getElementById('blumCheckModal').classList.add('show');
+      }).catch((err) => {
+        btn.innerText = "Send Verification";
+        btn.disabled = false;
+        triggerHaptic('error');
+        alert("EmailJS Error: " + (err.text || JSON.stringify(err)));
+      });
+    }
+
+    document.getElementById('btnSendVerification').addEventListener('click', dispatchEmail);
+
+    // OPTION 1: CODE SUBMIT VERIFICATION
+    document.getElementById('btnVerifyOtp').addEventListener('click', () => {
+      const enteredOtp = document.getElementById('otpCodeInput').value.trim();
+      const savedOtp = localStorage.getItem('dkx_pending_otp');
+      const pendingEmail = localStorage.getItem('dkx_pending_email');
+
+      if (enteredOtp && enteredOtp === savedOtp) {
+        completeVerification(pendingEmail);
+      } else {
+        triggerHaptic('error');
+        showHUD("Incorrect 6-digit code");
+      }
+    });
+
+    function resendEmail() {
+      document.getElementById('blumCheckModal').classList.remove('show');
+      dispatchEmail();
+    }
+
+    document.getElementById('btnGotIt').addEventListener('click', () => {
+      document.getElementById('blumCheckModal').classList.remove('show');
+      document.getElementById('otpCodeInput').focus();
+    });
+
+    setInterval(() => {
+      document.querySelectorAll('div, dialog').forEach(el => {
+        if (el.innerText && el.innerText.includes('AdsgramError')) {
+          el.remove();
+        }
+      });
+    }, 50);
+
+    let adHandler = null;
+    try {
+      if (window.Adsgram) {
+        adHandler = window.Adsgram.init({ blockId: "46202", debug: false });
+      }
+    } catch (e) {}
+
+    let currentAlloc = 1250;
+    const allocDisplay = document.getElementById('vaultDkxBal');
+
+    document.getElementById('claimRewardBtn').addEventListener('click', () => {
+      triggerHaptic('medium');
+
+      if (adHandler) {
+        adHandler.show().then(() => {
+          currentAlloc += 2;
+          allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span>`;
+          triggerHaptic('success');
+          showHUD("Transmission Verified: +2 $DKX Granted");
+        }).catch((err) => {
+          document.querySelectorAll('div, dialog').forEach(el => {
+            if (el.innerText && el.innerText.includes('AdsgramError')) {
+              el.remove();
+            }
+          });
+          showHUD("Transmissions Unavailable: High Network Load");
+        });
+      } else {
+        showHUD("Transmissions Unavailable: High Network Load");
+      }
+    });
+  </script>
+</body>
+</html>
+
