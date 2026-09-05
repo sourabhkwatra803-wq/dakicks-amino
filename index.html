@@ -834,4 +834,630 @@
         <div class="chart-status-row">
           <div>
             <div class="active-pair-name" id="chartPairTitle">BTC / USDT</div>
-            <div style="font-size:10.5px; color:var(--text-mute
+                        <div style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Real-Time Socket</div>
+          </div>
+          <div style="text-align: right;">
+            <div class="active-pair-price" id="chartPriceLabel">$0.00</div>
+            <span class="active-pair-delta text-up" id="chartDeltaLabel">+0.00%</span>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="proprietaryCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Asset / Pair Selector -->
+      <div class="market-listing-group" id="marketGroupContainer">
+        <div class="market-row-item active" onclick="switchPair('BTCUSDT', 'BTC / USDT', 91400)">
+          <div class="market-row-left">
+            <span class="market-symbol">BTC / USDT</span>
+            <span class="market-asset-tag">Bitcoin Core</span>
+          </div>
+          <div class="market-row-right">
+            <span class="market-val" id="row-val-BTCUSDT">$91,420.00</span>
+            <span class="market-change-badge bg-up">+2.41%</span>
+          </div>
+        </div>
+
+        <div class="market-row-item" onclick="switchPair('ETHUSDT', 'ETH / USDT', 3340)">
+          <div class="market-row-left">
+            <span class="market-symbol">ETH / USDT</span>
+            <span class="market-asset-tag">Ethereum Foundation</span>
+          </div>
+          <div class="market-row-right">
+            <span class="market-val" id="row-val-ETHUSDT">$3,342.10</span>
+            <span class="market-change-badge bg-up">+1.85%</span>
+          </div>
+        </div>
+
+        <div class="market-row-item" onclick="switchPair('SOLUSDT', 'SOL / USDT', 194)">
+          <div class="market-row-left">
+            <span class="market-symbol">SOL / USDT</span>
+            <span class="market-asset-tag">Solana Network</span>
+          </div>
+          <div class="market-row-right">
+            <span class="market-val" id="row-val-SOLUSDT">$194.80</span>
+            <span class="market-change-badge bg-up">+4.12%</span>
+          </div>
+        </div>
+
+        <div class="market-row-item" onclick="switchPair('BNBUSDT', 'BNB / USDT', 648)">
+          <div class="market-row-left">
+            <span class="market-symbol">BNB / USDT</span>
+            <span class="market-asset-tag">Binance Smart Chain</span>
+          </div>
+          <div class="market-row-right">
+            <span class="market-val" id="row-val-BNBUSDT">$648.50</span>
+            <span class="market-change-badge bg-up">+0.95%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Allocation Card -->
+      <div class="institutional-box">
+        <div class="box-header-row">
+          <span class="box-eyebrow">Decentralized Allocation</span>
+          <span style="font-size: 10px; color: var(--accent-success); font-weight: 800;">ACTIVE</span>
+        </div>
+        <div class="box-metric" id="vaultDisplayValue">1,250 <span style="font-size:14px; color:var(--text-muted); font-weight:600;">$DKX</span></div>
+        <button class="btn-luxury-action" id="claimAllocButton">Claim Allocation (+2 $DKX)</button>
+      </div>
+
+    </section>
+
+    <!-- Tab: Drops / Specs -->
+    <section id="tab-drops" class="screen-tab">
+      <div class="market-section-head">Institutional Architecture</div>
+      <div class="institutional-box" style="margin-top:0;">
+        <div class="box-eyebrow" style="margin-bottom:8px;">Real-World Footwear</div>
+        <div style="font-size:15px; font-weight:800; margin-bottom:8px;">Physical Embedded Microchips</div>
+        <div style="font-size:12.5px; color:var(--text-muted); line-height:1.6;">
+          Genesis luxury footwear verified with on-chain cryptographic NFC authenticity seals mapped onto BNB Smart Chain.
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab: Community -->
+    <section id="tab-community" class="screen-tab">
+      <div class="market-section-head">Verified Nodes</div>
+      <div class="market-listing-group">
+        <a href="https://t.me/DKXOfficial" target="_blank" class="market-row-item" style="text-decoration:none;">
+          <div class="market-row-left">
+            <span class="market-symbol">Telegram Communications</span>
+            <span class="market-asset-tag">@DKXOfficial</span>
+          </div>
+          <span style="font-size:12px; font-weight:800; color:#fff;">JOIN ↗</span>
+        </a>
+        <a href="https://instagram.com/dakicks_dkx" target="_blank" class="market-row-item" style="text-decoration:none;">
+          <div class="market-row-left">
+            <span class="market-symbol">Instagram Hub</span>
+            <span class="market-asset-tag">@dakicks_dkx</span>
+          </div>
+          <span style="font-size:12px; font-weight:800; color:#fff;">VISIT ↗</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation Dock -->
+  <nav class="bottom-bar">
+    <div class="dock-tab active" onclick="switchMainTab('home', this)">
+      <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+      <span class="dock-label">Markets</span>
+    </div>
+    <div class="dock-tab" onclick="switchMainTab('drops', this)">
+      <svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/></svg>
+      <span class="dock-label">Drops</span>
+    </div>
+    <div class="dock-tab" onclick="switchMainTab('community', this)">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      <span class="dock-label">Community</span>
+    </div>
+  </nav>
+
+  <!-- Apple-Style Profile & Verification Sheet -->
+  <div class="modal-overlay" id="sheetBackdrop"></div>
+  <div class="profile-drawer" id="profileSheet">
+    <div class="sheet-handle"></div>
+    <button class="btn-sheet-close" id="btnSheetClose">✕</button>
+
+    <div class="drawer-photo-wrap">
+      <div class="drawer-big-avatar" id="drawerBigAvatar">DK</div>
+      <div class="edit-photo-trigger" id="avatarEditTrigger">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      </div>
+      <input type="file" id="filePickerHidden" accept="image/*" style="display: none;" />
+    </div>
+
+    <div class="drawer-user-title" id="drawerUserTitle">Founder Handle</div>
+    <div class="drawer-user-sub" id="drawerDobBadge">DOB: Verified</div>
+
+    <div class="flow-guidance-text" id="drawerInstructionText">
+      Enter your email address. You will receive an instant 6-digit code valid for 10 minutes.
+    </div>
+
+    <!-- Step 1: Clean Email Input Form -->
+    <div class="form-segment" id="stageEmailEntry">
+      <input type="email" id="emailField" class="minimal-text-input" placeholder="Enter your email" />
+      <button class="btn-action-primary" id="btnDispatchEmail">Send Code</button>
+    </div>
+
+    <!-- Step 2: Monochrome Code Verification Form -->
+    <div class="form-segment" id="stageCodeVerification" style="display: none;">
+      <input type="text" id="otpEntryField" class="luxury-code-input" placeholder="••••••" maxlength="6" inputmode="numeric" />
+      <button class="btn-action-primary" id="btnValidateOtp">Verify Code</button>
+      
+      <div class="verification-sub-actions">
+        <span class="resend-countdown-text" id="resendCountdown">Resend in 00:60</span>
+        <button class="action-sub-btn" id="btnResendTrigger" disabled>Resend Code</button>
+        <button class="action-sub-btn" id="btnChangeTargetEmail">Change Email</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Verified Card State -->
+    <div id="stageVerifiedCard" style="display: none; width: 100%;">
+      <div class="card-verified-container">
+        <div>
+          <div class="verified-email-text" id="confirmedEmailDisplay">user@domain.com</div>
+          <div class="verified-sub-caption">Identity Encrypted & Verified</div>
+        </div>
+        <div class="verified-seal-pill">LINKED ✓</div>
+      </div>
+      <button class="btn-action-primary" id="btnResetEmailFlow" style="margin-top:14px; background:rgba(255,255,255,0.06); color:#fff;">Change Email</button>
+    </div>
+  </div>
+
+  <!-- First Time Gate Identification -->
+  <div class="gate-backdrop" id="genesisGate" style="display: none;">
+    <div class="gate-card-box">
+      <h2 class="gate-header-title">Identity Registration</h2>
+      <p class="gate-header-desc">Set your handle to initialize DAKICKS Terminal infrastructure.</p>
+      
+      <div style="margin-bottom: 12px; text-align: left;">
+        <label style="font-size: 10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Choose Handle</label>
+        <input type="text" id="gateHandle" class="minimal-text-input" placeholder="e.g. Satoshi_DKX" maxlength="20" style="margin-top:6px;" />
+      </div>
+
+      <div style="margin-bottom: 20px; text-align: left;">
+        <label style="font-size: 10px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Date of Birth</label>
+        <input type="date" id="gateDob" class="minimal-text-input" style="margin-top:6px;" />
+      </div>
+
+      <button class="btn-action-primary" id="btnGateProceed">INITIALIZE TERMINAL</button>
+    </div>
+  </div>
+
+  <!-- Minimal HUD Toast -->
+  <div class="toast-hud" id="hudNotification">
+    <div class="toast-dot"></div>
+    <span id="hudNotificationMsg">Status Updated</span>
+  </div>
+
+  <script>
+    // 1. TELEGRAM WEBAPP BOOT
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      try {
+        tg.setHeaderColor('#060707');
+        tg.setBackgroundColor('#060707');
+      } catch (e) {}
+    }
+
+    // 2. EMAILJS CONFIGURATION
+    const EMAILJS_CONFIG = {
+      serviceId: "service_91i0edt",
+      templateId: "template_6a78v2d", 
+      publicKey: "UZVvtLHuf8uZWHdkg"
+    };
+
+    (function() {
+      try {
+        emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+      } catch (e) {}
+    })();
+
+    const TEN_MINUTES_MS = 10 * 60 * 1000;
+    let resendInterval = null;
+
+    function haptic(type = 'light') {
+      try {
+        if (tg?.HapticFeedback) {
+          if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+          else tg.HapticFeedback.impactOccurred(type);
+        }
+      } catch (e) {}
+    }
+
+    let toastTimer;
+    function notify(text) {
+      const toast = document.getElementById('hudNotification');
+      document.getElementById('hudNotificationMsg').innerText = text;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    // 3. PROPRIETARY HIGH-PERFORMANCE CANVAS CHART ENGINE
+    const canvas = document.getElementById('proprietaryCanvas');
+    const ctx = canvas.getContext('2d');
+    let points = [];
+    let currentBasePrice = 91400;
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth * window.devicePixelRatio;
+      canvas.height = canvas.parentElement.clientHeight * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function initPoints(base) {
+      points = [];
+      let cur = base;
+      for (let i = 0; i < 40; i++) {
+        cur += (Math.random() - 0.48) * (base * 0.002);
+        points.push(cur);
+      }
+    }
+    initPoints(currentBasePrice);
+
+    function renderChart() {
+      const w = canvas.parentElement.clientWidth;
+      const h = canvas.parentElement.clientHeight;
+
+      ctx.clearRect(0, 0, w, h);
+
+      const min = Math.min(...points);
+      const max = Math.max(...points);
+      const range = max - min || 1;
+
+      // Draw Gradient Area
+      ctx.beginPath();
+      for (let i = 0; i < points.length; i++) {
+        const x = (i / (points.length - 1)) * w;
+        const y = h - ((points[i] - min) / range) * (h - 24) - 12;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Soft Area Fill
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, "rgba(255, 255, 255, 0.08)");
+      grad.addColorStop(1, "rgba(255, 255, 255, 0.0)");
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+
+    setInterval(() => {
+      const last = points[points.length - 1];
+      const delta = (Math.random() - 0.49) * (currentBasePrice * 0.001);
+      const next = last + delta;
+      points.shift();
+      points.push(next);
+      renderChart();
+
+      document.getElementById('chartPriceLabel').innerText = '$' + next.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }, 1200);
+
+    function switchPair(symbol, label, base) {
+      haptic('light');
+      currentBasePrice = base;
+      initPoints(base);
+      renderChart();
+      document.getElementById('chartPairTitle').innerText = label;
+
+      document.querySelectorAll('.market-row-item').forEach(el => el.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+
+    // 4. MAIN TAB SWITCHER
+    function switchMainTab(tabId, el) {
+      haptic('light');
+      document.querySelectorAll('.screen-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.dock-tab').forEach(d => d.classList.remove('active'));
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+      el.classList.add('active');
+    }
+
+    // 5. PROFILE & VERIFICATION ORCHESTRATION
+    const sheetBackdrop = document.getElementById('sheetBackdrop');
+    const profileSheet = document.getElementById('profileSheet');
+
+    function openProfile() {
+      haptic('medium');
+      sheetBackdrop.classList.add('open');
+      profileSheet.classList.add('open');
+    }
+
+    function closeProfile() {
+      profileSheet.classList.remove('open');
+      sheetBackdrop.classList.remove('open');
+    }
+
+    document.getElementById('headerProfileTrigger').addEventListener('click', openProfile);
+    document.getElementById('btnSheetClose').addEventListener('click', closeProfile);
+    sheetBackdrop.addEventListener('click', closeProfile);
+
+    // Initial Profile Sync
+    function refreshProfileUI() {
+      const username = localStorage.getItem('dkx_user_name') || 'DkxFounder';
+      const dob = localStorage.getItem('dkx_user_dob') || 'Verified';
+      const avatar = localStorage.getItem('dkx_user_avatar');
+      const isVerified = localStorage.getItem('dkx_email_verified') === 'true';
+      const userEmail = localStorage.getItem('dkx_user_email');
+
+      document.getElementById('topUsernameLabel').innerText = username;
+      document.getElementById('drawerUserTitle').innerText = username;
+      document.getElementById('drawerDobBadge').innerText = 'DOB: ' + dob;
+
+      const topOrb = document.getElementById('topAvatarOrb');
+      const drawerOrb = document.getElementById('drawerBigAvatar');
+
+      if (avatar) {
+        topOrb.style.backgroundImage = `url(${avatar})`;
+        topOrb.innerText = '';
+        drawerOrb.style.backgroundImage = `url(${avatar})`;
+        drawerOrb.innerText = '';
+      } else {
+        const initials = username.slice(0, 2).toUpperCase();
+        topOrb.style.backgroundImage = 'none';
+        topOrb.innerText = initials;
+        drawerOrb.style.backgroundImage = 'none';
+        drawerOrb.innerText = initials;
+      }
+
+      if (isVerified && userEmail) {
+        document.getElementById('stageEmailEntry').style.display = 'none';
+        document.getElementById('stageCodeVerification').style.display = 'none';
+        document.getElementById('stageVerifiedCard').style.display = 'block';
+        document.getElementById('confirmedEmailDisplay').innerText = userEmail;
+        document.getElementById('drawerInstructionText').innerText = "Your DAKICKS terminal identity is linked and authenticated.";
+      } else {
+        document.getElementById('stageVerifiedCard').style.display = 'none';
+        const pendingOtp = localStorage.getItem('dkx_pending_otp');
+        if (pendingOtp) {
+          document.getElementById('stageEmailEntry').style.display = 'none';
+          document.getElementById('stageCodeVerification').style.display = 'flex';
+          document.getElementById('drawerInstructionText').innerText = `Verification code transmitted. Enter the 6 digits below.`;
+        } else {
+          document.getElementById('stageEmailEntry').style.display = 'flex';
+          document.getElementById('stageCodeVerification').style.display = 'none';
+          document.getElementById('drawerInstructionText').innerText = "Enter your email address to authenticate your profile.";
+        }
+      }
+    }
+
+    // Avatar Upload Handler
+    const filePicker = document.getElementById('filePickerHidden');
+    document.getElementById('avatarEditTrigger').addEventListener('click', () => filePicker.click());
+    filePicker.addEventListener('change', (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      if (f.size > 2 * 1024 * 1024) {
+        notify("Photo must be under 2MB");
+        return;
+      }
+      const r = new FileReader();
+      r.onload = (evt) => {
+        localStorage.setItem('dkx_user_avatar', evt.target.result);
+        refreshProfileUI();
+        haptic('success');
+        notify("Profile Photo Synchronized");
+      };
+      r.readAsDataURL(f);
+    });
+
+    // Countdown Timer (60s)
+    function startResendTimer() {
+      clearInterval(resendInterval);
+      let timeLeft = 60;
+      const label = document.getElementById('resendCountdown');
+      const btn = document.getElementById('btnResendTrigger');
+      btn.disabled = true;
+
+      resendInterval = setInterval(() => {
+        timeLeft--;
+        const formatted = timeLeft < 10 ? `0${timeLeft}` : timeLeft;
+        label.innerText = `Resend in 00:${formatted}`;
+        if (timeLeft <= 0) {
+          clearInterval(resendInterval);
+          label.innerText = "Ready to resend";
+          btn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    // Email Dispatch
+    function sendAuthEmail() {
+      const email = document.getElementById('emailField').value.trim();
+      if (!email || !email.includes('@') || !email.includes('.')) {
+        haptic('error');
+        notify("Enter a valid email address");
+        return;
+      }
+
+      haptic('medium');
+      notify("Transmitting authentication code...");
+
+      const btn = document.getElementById('btnDispatchEmail');
+      btn.innerText = "Transmitting...";
+      btn.disabled = true;
+
+      const randomOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      const currentTs = Date.now();
+
+      localStorage.setItem('dkx_pending_otp', randomOtp);
+      localStorage.setItem('dkx_pending_email', email);
+      localStorage.setItem('dkx_pending_ts', currentTs.toString());
+
+      const verifyLink = `https://t.me/DakicksAmino_bot/app?startapp=verify_${encodeURIComponent(email)}_ts_${currentTs}`;
+
+      emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+        to_email: email,
+        verify_link: verifyLink,
+        code: randomOtp,
+        passcode: randomOtp
+      }, EMAILJS_CONFIG.publicKey).then(() => {
+        btn.innerText = "Send Code";
+        btn.disabled = false;
+        haptic('success');
+
+        document.getElementById('stageEmailEntry').style.display = 'none';
+        document.getElementById('stageCodeVerification').style.display = 'flex';
+        document.getElementById('drawerInstructionText').innerText = `Authentication code sent to ${email}`;
+        startResendTimer();
+        notify("Code Transmitted Successfully");
+      }).catch((err) => {
+        btn.innerText = "Send Code";
+        btn.disabled = false;
+        haptic('error');
+        notify("Transmission Error: Verify EmailJS Keys");
+      });
+    }
+
+    document.getElementById('btnDispatchEmail').addEventListener('click', sendAuthEmail);
+    document.getElementById('btnResendTrigger').addEventListener('click', sendAuthEmail);
+
+    // Verify OTP Code
+    document.getElementById('btnValidateOtp').addEventListener('click', () => {
+      const inputVal = document.getElementById('otpEntryField').value.trim();
+      const savedOtp = localStorage.getItem('dkx_pending_otp');
+      const savedTs = parseInt(localStorage.getItem('dkx_pending_ts') || '0', 10);
+      const pendingEmail = localStorage.getItem('dkx_pending_email');
+
+      if (!savedOtp || (Date.now() - savedTs > TEN_MINUTES_MS)) {
+        haptic('error');
+        notify("Verification code expired (10m passed)");
+        localStorage.removeItem('dkx_pending_otp');
+        refreshProfileUI();
+        return;
+      }
+
+      if (inputVal === savedOtp) {
+        completeVerification(pendingEmail);
+      } else {
+        haptic('error');
+        notify("Invalid 6-digit code");
+      }
+    });
+
+    function completeVerification(email) {
+      localStorage.setItem('dkx_email_verified', 'true');
+      localStorage.setItem('dkx_user_email', email);
+      localStorage.removeItem('dkx_pending_otp');
+      localStorage.removeItem('dkx_pending_ts');
+
+      if (window.confetti) {
+        confetti({
+          particleCount: 140,
+          spread: 100,
+          origin: { y: 0.55 },
+          colors: ['#ffffff', '#00e575', '#38bdf8']
+        });
+      }
+      haptic('success');
+      notify("Profile Linked & Verified ✓");
+      refreshProfileUI();
+    }
+
+    // Change Email / Reset Flow
+    function resetToEmailInput() {
+      haptic('light');
+      clearInterval(resendInterval);
+      localStorage.removeItem('dkx_pending_otp');
+      localStorage.removeItem('dkx_pending_ts');
+      localStorage.removeItem('dkx_email_verified');
+      document.getElementById('emailField').value = '';
+      document.getElementById('otpEntryField').value = '';
+      refreshProfileUI();
+    }
+
+    document.getElementById('btnChangeTargetEmail').addEventListener('click', resetToEmailInput);
+    document.getElementById('btnResetEmailFlow').addEventListener('click', resetToEmailInput);
+
+    // Deep Link 10-Minute Verification Fallback
+    (function checkUrlVerify() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const startParam = tg?.initDataUnsafe?.start_param || urlParams.get('tgWebAppStartParam') || urlParams.get('startapp');
+
+      if (startParam && startParam.startsWith('verify_')) {
+        const payload = decodeURIComponent(startParam.replace('verify_', ''));
+        const parts = payload.split('_ts_');
+        const email = parts[0];
+        const ts = parseInt(parts[1], 10);
+
+        if (ts && (Date.now() - ts > TEN_MINUTES_MS)) {
+          setTimeout(() => notify("One-tap verification link expired"), 300);
+        } else {
+          setTimeout(() => completeVerification(email), 200);
+        }
+      }
+    })();
+
+    // First-Time Registration Check
+    const storedUser = localStorage.getItem('dkx_user_name');
+    if (!storedUser) {
+      document.getElementById('genesisGate').style.display = 'flex';
+    } else {
+      refreshProfileUI();
+    }
+
+    document.getElementById('btnGateProceed').addEventListener('click', () => {
+      const handle = document.getElementById('gateHandle').value.trim();
+      const dob = document.getElementById('gateDob').value;
+
+      if (!handle || handle.length < 3) {
+        notify("Handle must be at least 3 characters");
+        return;
+      }
+      if (!dob) {
+        notify("Please enter Date of Birth");
+        return;
+      }
+
+      localStorage.setItem('dkx_user_name', handle);
+      localStorage.setItem('dkx_user_dob', dob);
+      document.getElementById('genesisGate').style.display = 'none';
+      haptic('success');
+      refreshProfileUI();
+      notify(`Welcome, ${handle}`);
+    });
+
+    // Allocation Claim Handler
+    let totalAllocation = 1250;
+    let adHandler = null;
+    try {
+      if (window.Adsgram) adHandler = window.Adsgram.init({ blockId: "46202", debug: false });
+    } catch (e) {}
+
+    document.getElementById('claimAllocButton').addEventListener('click', () => {
+      haptic('medium');
+      if (adHandler) {
+        adHandler.show().then(() => {
+          totalAllocation += 2;
+          document.getElementById('vaultDisplayValue').innerHTML = `${totalAllocation.toLocaleString()} <span style="font-size:14px; color:var(--text-muted); font-weight:600;">$DKX</span>`;
+          haptic('success');
+          notify("+2 $DKX Allocation Granted");
+        }).catch(() => notify("Network Busy: Retry in moments"));
+      } else {
+        totalAllocation += 2;
+        document.getElementById('vaultDisplayValue').innerHTML = `${totalAllocation.toLocaleString()} <span style="font-size:14px; color:var(--text-muted); font-weight:600;">$DKX</span>`;
+        haptic('success');
+        notify("+2 $DKX Granted");
+      }
+    });
+  </script>
+</body>
+</html>
+
