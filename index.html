@@ -1002,9 +1002,7 @@
           </button>
         </div>
       </div>
-    </div>
-
-  </div>
+     </div>
 
   <div class="bottom-nav">
     <div class="nav-item active" onclick="navigateTab('terminal', this)">
@@ -1135,7 +1133,7 @@
   </script>
 
   <script>
-    // 1. INSTANT TELEGRAM EXPAND (Zero UI Block)
+    // 1. INSTANT TELEGRAM EXPAND
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.ready();
@@ -1146,10 +1144,10 @@
       } catch (e) {}
     }
 
-    // 2. CONFIG WITH YOUR EXACT VERIFIED KEYS
+    // 2. CONFIG WITH YOUR EXACT NEW VERIFIED KEYS
     const EMAILJS_CONFIG = {
       serviceId: "service_91i0edt",
-      templateId: "template_dcqh44z", 
+      templateId: "template_6a78v2d", 
       publicKey: "UZVvtLHuf8uZWHdkg"
     };
 
@@ -1353,7 +1351,7 @@
     });
 
     // CHANGE EMAIL HANDLER
-        document.getElementById('btnChangeEmail').addEventListener('click', () => {
+    document.getElementById('btnChangeEmail').addEventListener('click', () => {
       triggerHaptic('medium');
       localStorage.removeItem('dkx_email_verified');
       localStorage.removeItem('dkx_user_email');
@@ -1458,4 +1456,3 @@
   </script>
 </body>
 </html>
-
