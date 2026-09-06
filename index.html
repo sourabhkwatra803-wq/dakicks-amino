@@ -566,7 +566,7 @@
             </div>
         </div>
 
-        <!-- 2. DAKICKS TAB -->
+                <!-- 2. DAKICKS TAB -->
         <div id="tab-dakicks" class="tab-pane" style="position: relative;">
             <div class="section-title">Institutional RWA Architecture</div>
             
@@ -574,4 +574,392 @@
                 <div class="dakicks-text-side">
                     <span class="tag">RWA APPAREL</span>
                     <h3 style="margin-bottom: 4px; font-size: 15px;">DAKICKS® Physical Drops</h3>
-                    <p class="desc">Genesis luxury footwear embedded with 
+                    <p class="desc">Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on BNB Smart Chain.</p>
+                </div>
+                <div class="dakicks-coin-side">
+                    <video autoplay loop muted playsinline><source src="bg.mp4" type="video/mp4"></video>
+                </div>
+            </div></div>
+
+            <div class="card"><div class="card-inner dakicks-card-flex">
+                <div class="dakicks-text-side">
+                    <span class="tag">TREASURY</span>
+                    <h3 style="margin-bottom: 4px; font-size: 15px;">Revenue-Share Protocol</h3>
+                    <p class="desc">50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.</p>
+                </div>
+                <div class="dakicks-coin-side">
+                    <video autoplay loop muted playsinline><source src="bg.mp4" type="video/mp4"></video>
+                </div>
+            </div></div>
+
+            <div class="card"><div class="card-inner dakicks-card-flex">
+                <div class="dakicks-text-side">
+                    <span class="tag">DEFLATIONARY</span>
+                    <h3 style="margin-bottom: 4px; font-size: 15px;">DKX Supply Standard</h3>
+                    <p class="desc">Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.</p>
+                </div>
+                <div class="dakicks-coin-side">
+                    <video autoplay loop muted playsinline><source src="bg.mp4" type="video/mp4"></video>
+                </div>
+            </div></div>
+        </div>
+
+        <!-- 3. COMMUNITY TAB (community-bg.mp4 with 3D Squirrel) -->
+        <div id="tab-community" class="tab-pane" style="position: relative;">
+            <div class="section-title">Official Communication Nodes</div>
+            
+            <a href="https://t.me/DKXOfficial" target="_blank" class="social-card">
+                <div class="social-left">
+                    <div class="social-icon-box">TG</div>
+                    <div>
+                        <h3 style="font-size: 14px; margin-bottom: 2px;">Telegram Network</h3>
+                        <p style="font-size:11px;color:var(--text-secondary);">@DKXOfficial</p>
+                    </div>
+                </div>
+                <div class="node-btn">Open Node ↗</div>
+            </a>
+
+            <a href="https://instagram.com" target="_blank" class="social-card">
+                <div class="social-left">
+                    <div class="social-icon-box">IG</div>
+                    <div>
+                        <h3 style="font-size: 14px; margin-bottom: 2px;">Instagram Hub</h3>
+                        <p style="font-size:11px;color:var(--text-secondary);">@dakicks_dkx</p>
+                    </div>
+                </div>
+                <div class="node-btn">Open Node ↗</div>
+            </a>
+
+            <a href="https://twitter.com" target="_blank" class="social-card">
+                <div class="community-squirrel">
+                    <video autoplay loop muted playsinline><source src="bg.mp4" type="video/mp4"></video>
+                </div>
+                <div class="social-left" style="padding-left: 28px;">
+                    <div class="social-icon-box">𝕏</div>
+                    <div>
+                        <h3 style="font-size: 14px; margin-bottom: 2px;">X Protocol Comms</h3>
+                        <p style="font-size:11px;color:var(--text-secondary);">@dakicks_dkx</p>
+                    </div>
+                </div>
+                <div class="node-btn">Open Node ↗</div>
+            </a>
+        </div>
+
+        <!-- 4. VAULT TAB (outlaybg.mp4 with Transparent Toast & No White Alerts) -->
+        <div id="tab-vault" class="tab-pane" style="position: relative;">
+            <div class="section-title">On-Chain Smart Contract Socket</div>
+            
+            <div class="card">
+                <div class="card-inner" style="text-align: center;">
+                    <div style="width: 50px; height: 50px; margin: 0 auto 12px auto; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+                        <svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <div style="background: #09090b; border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
+                        <span id="caText" style="font-size: 11px; color: var(--text-secondary); font-family: monospace;">DEPLOYING AT LAUNCH (BNB CHAIN)</span>
+                        <button onclick="copyContractAddress()" style="background: #fff; color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer;">COPY CA</button>
+                    </div>
+                    <p style="font-size: 10px; color: var(--text-secondary); line-height: 1.4; margin-top: 8px;">Official $DKX contract address will be verified and mapped here directly upon DEX liquidity provisioning on BNB Smart Chain.</p>
+                </div>
+            </div>
+
+            <!-- Trust Wallet Connect Socket -->
+            <div class="card">
+                <div class="card-inner">
+                    <button class="action-btn" onclick="connectTrustWallet()" style="background: #3375BB; color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; padding: 12px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z"/></svg>
+                        CONNECT TRUST WALLET
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-inner">
+                    <span class="tag">GENESIS LIQUIDITY ALLOCATION</span>
+                    <h3 style="font-size: 20px; margin: 8px 0;">1,250 $DKX</h3>
+                    <button class="action-btn" onclick="showTransparentToast('Smart contract synchronization pending launch')" style="padding: 10px; font-size: 13px;">Claim Allocation (+2 $DKX)</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-inner">
+                    <span class="tag">VERIFIED PROTOCOL</span>
+                    <h3 style="font-size: 14px; margin-bottom: 6px;">Recent On-Chain Allocations</h3>
+                    <p class="desc" style="margin-bottom: 4px; display: flex; justify-content: space-between;"><span>0x88c4...9a21</span> <b>+2 $DKX</b> <span style="color:#00ff80;">Just now</span></p>
+                    <p class="desc" style="margin-bottom: 4px; display: flex; justify-content: space-between;"><span>0x3f12...4b08</span> <b>+2 $DKX</b> <span style="color:#00ff80;">1m ago</span></p>
+                    <p class="desc" style="margin-bottom: 0; display: flex; justify-content: space-between;"><span>0x99e5...11c7</span> <b>+2 $DKX</b> <span style="color:#00ff80;">3m ago</span></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar (Zero Emojis) -->
+    <div class="nav-bar">
+        <button class="nav-btn active" onclick="switchTab('terminal', this)">Terminal</button>
+        <button class="nav-btn" onclick="switchTab('dakicks', this)">Dakicks</button>
+        <button class="nav-btn" onclick="switchTab('community', this)">Community</button>
+        <button class="nav-btn" onclick="switchTab('vault', this)">Vault</button>
+    </div>
+
+    <script>
+        // Initialize EmailJS with Public Key
+        emailjs.init("UZVvtLHuf8uZWHdkg");
+
+        let activeOtp = null;
+        let otpTimer = null;
+
+        // Telegram WebApp Initialization & Local Storage Persistence
+        window.addEventListener('DOMContentLoaded', () => {
+            let savedUsername = localStorage.getItem('dakicks_username');
+            let savedDob = localStorage.getItem('dakicks_dob');
+            let savedAvatar = localStorage.getItem('dakicks_avatar');
+            let savedEmail = localStorage.getItem('dakicks_email');
+
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+                const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+                if (tgUser && tgUser.first_name && !savedUsername) {
+                    savedUsername = tgUser.first_name;
+                    localStorage.setItem('dakicks_username', savedUsername);
+                }
+            }
+
+            if (!savedUsername) {
+                document.getElementById('onboardingModal').classList.add('active');
+            } else {
+                applyUserData(savedUsername, savedAvatar, savedEmail);
+            }
+        });
+
+        function applyUserData(username, avatar, email) {
+            document.getElementById('usernameText').innerText = username;
+            document.getElementById('modalUsernameDisplay').innerText = username;
+
+            if (avatar) {
+                document.getElementById('userAvatarContainer').innerHTML = `<img src="${avatar}" alt="Avatar">`;
+                document.getElementById('modalAvatarDisplay').innerHTML = `<img src="${avatar}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                const initial = username.charAt(0).toUpperCase();
+                document.getElementById('userAvatarContainer').innerHTML = `<span id="avatarLetter">${initial}</span>`;
+                document.getElementById('modalAvatarDisplay').innerHTML = initial;
+            }
+
+            if (email) {
+                document.getElementById('modalEmailUnlinked').style.display = 'none';
+                document.getElementById('modalEmailVerify').style.display = 'none';
+                document.getElementById('modalEmailLinked').style.display = 'block';
+                document.getElementById('modalLinkedEmailText').innerText = email;
+            } else {
+                document.getElementById('modalEmailUnlinked').style.display = 'block';
+                document.getElementById('modalEmailVerify').style.display = 'none';
+                document.getElementById('modalEmailLinked').style.display = 'none';
+            }
+        }
+
+        // Onboarding Completion with Realistic Confetti Animation
+        function completeOnboarding() {
+            const username = document.getElementById('setupUsername').value.trim();
+            const dob = document.getElementById('setupDob').value;
+
+            if (!username) {
+                showTransparentToast('Please enter a valid username');
+                return;
+            }
+
+            localStorage.setItem('dakicks_username', username);
+            if (dob) localStorage.setItem('dakicks_dob', dob);
+
+            document.getElementById('onboardingModal').classList.remove('active');
+            applyUserData(username, null, null);
+            triggerRealisticConfetti();
+        }
+
+        // Profile Modal Control
+        function toggleProfileModal(open) {
+            const modal = document.getElementById('profileModal');
+            if (open) {
+                modal.classList.add('active');
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+
+        function closeProfileModalOnBg(e) {
+            if (e.target.id === 'profileModal') {
+                toggleProfileModal(false);
+            }
+        }
+
+        // Custom Avatar Upload Trigger
+        function triggerProfileEdit() {
+            document.getElementById('avatarFileInput').click();
+        }
+
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Img = e.target.result;
+                    localStorage.setItem('dakicks_avatar', base64Img);
+                    const username = localStorage.getItem('dakicks_username') || 'DkxFounder';
+                    applyUserData(username, base64Img, localStorage.getItem('dakicks_email'));
+                    showTransparentToast('Avatar updated successfully');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // EmailJS Verification Flow
+        function sendVerificationCode() {
+            const emailInput = document.getElementById('modalEmailInput').value.trim();
+            if (!emailInput || !emailInput.includes('@')) {
+                showTransparentToast('Please enter a valid Gmail');
+                return;
+            }
+
+            activeOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            const username = localStorage.getItem('dakicks_username') || 'DkxFounder';
+            const verificationLink = window.location.origin + window.location.pathname + "?verify=" + activeOtp;
+
+            const templateParams = {
+                to_email: emailInput,
+                user_name: username,
+                verification_code: activeOtp,
+                verification_link: verificationLink
+            };
+
+            const btn = document.querySelector('#modalEmailUnlinked button');
+            btn.innerText = 'Dispatching Code...';
+            btn.disabled = true;
+
+            emailjs.send('service_91i0edt', 'template_6a78v2d', templateParams)
+                .then(function(response) {
+                    document.getElementById('modalEmailUnlinked').style.display = 'none';
+                    document.getElementById('modalEmailVerify').style.display = 'block';
+                    
+                    let timeLeft = 60;
+                    const statusMsg = document.getElementById('modalOtpStatus');
+                    statusMsg.innerText = `OTP code & link sent! Expires in 60s.`;
+                    
+                    if (otpTimer) clearInterval(otpTimer);
+                    otpTimer = setInterval(() => {
+                        timeLeft--;
+                        if (timeLeft > 0) {
+                            statusMsg.innerText = `Code sent! Expires in ${timeLeft}s.`;
+                        } else {
+                            clearInterval(otpTimer);
+                            statusMsg.innerText = 'OTP code expired. Please resend.';
+                            activeOtp = null;
+                        }
+                    }, 1000);
+
+                }, function(error) {
+                    showTransparentToast('Transmission failed');
+                    btn.innerText = 'Send OTP & Link';
+                    btn.disabled = false;
+                });
+        }
+
+        function confirmVerificationCode() {
+            const enteredOtp = document.getElementById('modalOtpInput').value.trim();
+            if (!activeOtp) {
+                showTransparentToast('Verification code expired');
+                resetEmailState();
+                return;
+            }
+            if (enteredOtp !== activeOtp) {
+                showTransparentToast('Invalid OTP code');
+                return;
+            }
+
+            if (otpTimer) clearInterval(otpTimer);
+            const emailInput = document.getElementById('modalEmailInput').value.trim();
+            localStorage.setItem('dakicks_email', emailInput);
+
+            document.getElementById('modalEmailVerify').style.display = 'none';
+            document.getElementById('modalEmailLinked').style.display = 'block';
+            document.getElementById('modalLinkedEmailText').innerText = emailInput;
+            showTransparentToast('Email verified successfully');
+            triggerRealisticConfetti();
+        }
+
+        function resetEmailState() {
+            if (otpTimer) clearInterval(otpTimer);
+            activeOtp = null;
+            document.getElementById('modalEmailVerify').style.display = 'none';
+            document.getElementById('modalEmailUnlinked').style.display = 'block';
+            const btn = document.querySelector('#modalEmailUnlinked button');
+            btn.innerText = 'Send OTP & Link';
+            btn.disabled = false;
+        }
+
+        function disconnectEmail() {
+            localStorage.removeItem('dakicks_email');
+            document.getElementById('modalEmailLinked').style.display = 'none';
+            document.getElementById('modalEmailUnlinked').style.display = 'block';
+            document.getElementById('modalEmailInput').value = '';
+            resetEmailState();
+            showTransparentToast('Email disconnected');
+        }
+
+        // Transparent Toast Notification Function
+        function showTransparentToast(message) {
+            const toast = document.getElementById('toastNotification');
+            toast.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // Copy Contract Address Action with Clean Toast
+        function copyContractAddress() {
+            const caText = "DEPLOYING AT LAUNCH (BNB CHAIN)";
+            navigator.clipboard.writeText(caText).then(() => {
+                showTransparentToast('Contract status copied to clipboard');
+            });
+        }
+
+        // Trust Wallet Connection Simulation
+        function connectTrustWallet() {
+            showTransparentToast('Trust Wallet bridge initialized');
+        }
+
+        // Tab Switching Engine with Dynamic Background Switch (`bg.mp4` for Terminal/Dakicks, `community-bg.mp4` for Community, `outlaybg.mp4` for Vault)
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            btnElement.classList.add('active');
+
+            const bgVideo = document.getElementById('mainBgVideo');
+            if (tabName === 'terminal' || tabName === 'dakicks') {
+                bgVideo.src = 'bg.mp4';
+            } else if (tabName === 'community') {
+                bgVideo.src = 'community-bg.mp4';
+            } else if (tabName === 'vault') {
+                bgVideo.src = 'outlaybg.mp4';
+            }
+            bgVideo.play().catch(e => {});
+        }
+
+        // High-Performance Realistic Confetti Engine
+        function triggerRealisticConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.style.display = 'block';
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#ffffff', '#00ff80', '#3375BB', '#ff2d55', '#e5e5ea', '#ffd700'];
+
+            for (let i = 0; i < 140; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2 + 50,
+                    vx: (Math.random() - 0.5) * 16,
+                    vy: (Math.random() - 0.7) * 16 - 4,
+                    size: Math.random() 
