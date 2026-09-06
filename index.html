@@ -745,4 +745,404 @@
               X
             </button>
             <button class="btn-social-share" id="shareWhatsAppBtn">
-              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.2
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.27.403h-.004a9.87 9.87 0 0 1-5.031-1.371l-.361-.214-3.732.982 9.982-2.583.235.148a8.212 8.212 0 0 0 4.413 1.29c4.538 0 8.232-3.694 8.232-8.232 0-4.538-3.694-8.233-8.232-8.233s-8.232 3.695-8.232 8.233c0 1.45.379 2.85 1.103 4.088l.241.408-1.571 4.73 4.881-1.282.38.223a9.837 9.837 0 0 1 4.965 1.341z"/></svg>
+              WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <div class="ref-progress-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="ref-code-label" style="margin:0;" data-i18n="refProgress">Your Referral Progress</div>
+            <div style="font-size: 11px; font-weight: 700; color: #ffffff;" id="frenProgressCount">0 / 100 Frens</div>
+          </div>
+          <div class="progress-milestones">
+            <span class="milestone-node">0</span>
+            <span class="milestone-node">10 (Claim Unlocked)</span>
+            <span class="milestone-node">50</span>
+            <span class="milestone-node">100</span>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+          </div>
+          <div style="font-size: 11.5px; color: var(--text-secondary); line-height: 1.4;" id="progressSubText">
+            Invite min 10 frens to unlock airdrop claims. Max tier target: 100 frens.
+          </div>
+        </div>
+
+        <div class="leaderboard-section-box">
+          <div class="ref-code-label" data-i18n="globalLeaderboard">Global Leaderboard Rankings</div>
+          <div class="leaderboard-list">
+            <div class="leaderboard-item">
+              <div class="lb-left"><span class="lb-rank top-1">1</span><span class="lb-name">Satoshi_Global</span></div>
+              <span class="lb-score">4,850 $DKX</span>
+            </div>
+            <div class="leaderboard-item">
+              <div class="lb-left"><span class="lb-rank top-2">2</span><span class="lb-name">CryptoAlpha_JP</span></div>
+              <span class="lb-score">3,920 $DKX</span>
+            </div>
+            <div class="leaderboard-item">
+              <div class="lb-left"><span class="lb-rank top-3">3</span><span class="lb-name">DakicksWhale</span></div>
+              <span class="lb-score">3,100 $DKX</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WALLET TAB -->
+    <div id="tab-wallet" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="none"><source src="./community-bg.mp4" type="video/mp4" /></video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+      <div class="vault-card">
+        <div class="vault-title" data-i18n="connectWalletTitle">WEB3 WALLET INTEGRATION</div>
+        <div style="font-size: 13px; color: var(--text-secondary); text-align: center;" data-i18n="connectWalletSub">Connect your non-custodial EVM wallet to prepare for $DKX token distribution on BNB Chain.</div>
+        <button class="vault-btn" id="connectWalletBtn" data-i18n="connectWalletBtnTxt">Connect Wallet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="nav-bar">
+    <button class="nav-item active" onclick="navigateTab('home', this)">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span data-i18n="navHome">Home</span>
+    </button>
+    <button class="nav-item" onclick="navigateTab('earn', this)">
+      <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+      <span data-i18n="navEarn">Earn</span>
+    </button>
+    <button class="nav-item" onclick="navigateTab('frens', this)">
+      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      <span data-i18n="navFrens">Frens</span>
+    </button>
+    <button class="nav-item" onclick="navigateTab('wallet', this)">
+      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+      <span data-i18n="navWallet">Wallet</span>
+    </button>
+  </div>
+
+  <!-- First Time Gate Modal -->
+  <div class="modal-backdrop" id="firstTimeGate">
+    <div class="modal-box">
+      <div class="modal-title" data-i18n="welcomeGenesis">Welcome to DAKICKS Genesis</div>
+      <div style="font-size: 12px; color: var(--text-secondary); text-align: center;" data-i18n="welcomeSub">Enter your unique handle, date of birth, and optional referral code to claim initial allocation.</div>
+      <input type="text" class="modal-input" id="inputUsername" placeholder="Telegram Handle (e.g. Satoshi)">
+      <input type="date" class="modal-input" id="inputDob">
+      <input type="text" class="modal-input" id="inputReferralCode" placeholder="Referral Code (Optional)">
+      <button class="vault-btn" id="submitGateBtn" data-i18n="initializeProfile">Initialize Terminal</button>
+    </div>
+  </div>
+
+  <!-- Profile Drawer -->
+  <div class="profile-drawer" id="profileDrawer">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="font-size: 16px; font-weight: 800;" data-i18n="profileTitle">Terminal Profile</div>
+      <button id="drawerCloseBtn" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.04); padding: 14px; border-radius: 14px; border: 1px solid var(--glass-border);">
+      <div class="user-avatar-badge" id="drawerAvatarBadge" style="width: 44px; height: 44px; font-size: 16px;">DK</div>
+      <div>
+        <div style="font-size: 14px; font-weight: 800;" id="drawerUsername">Anonymous</div>
+        <div style="font-size: 11px; color: var(--text-secondary);" id="drawerDobTag">DOB: Verified</div>
+      </div>
+    </div>
+    <div style="font-size: 11.5px; color: var(--text-secondary);" id="drawerInstructionText" data-i18n="drawerInstruct">Your DAKICKS profile is cryptographically secured.</div>
+  </div>
+  <div class="modal-backdrop" id="profileBackdrop" style="background: rgba(0,0,0,0.5);"></div>
+
+  <!-- HUD Toast -->
+  <div class="hud-toast" id="hudToast"><span id="hudMsg">Notification</span></div>
+
+  <script>
+    const i18n = {
+      en: {
+        yourAllocation: "YOUR GENESIS ALLOCATION",
+        claimBoost: "Unlock +2 $DKX Boost",
+        institutionalArch: "INSTITUTIONAL RWA ARCHITECTURE",
+        rwaTitle: "DAKICKS® Physical Drops",
+        rwaBadge: "RWA APPAREL",
+        rwaDesc: "Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on BNB Smart Chain.",
+        revTitle: "Revenue-Share Protocol",
+        revBadge: "TREASURY",
+        revDesc: "50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.",
+        earnHeader: "ECOSYSTEM STAKING & METRICS",
+        supplyTitle: "DKX Supply Standard",
+        supplyBadge: "DEFLATIONARY",
+        supplyDesc: "Fixed hard-cap supply of 10,000,000,000 $DKX with 30% Ecosystem & Team Vesting Reserve. Non-inflationary allocation verified by smart contract integrity checks.",
+        unlockRewards: "UNLOCK YOUR REWARDS",
+        unlockSub: "Invite Your Frens & Earn Up To 25% Allocation Boost.",
+        refCodeLabel: "Referral Code & Link",
+        copyBtn: "Copy",
+        refProgress: "Your Referral Progress",
+        globalLeaderboard: "Global Leaderboard Rankings",
+        connectWalletTitle: "WEB3 WALLET INTEGRATION",
+        connectWalletSub: "Connect your non-custodial EVM wallet to prepare for $DKX token distribution on BNB Chain.",
+        connectWalletBtnTxt: "Connect Wallet",
+        navHome: "Home",
+        navEarn: "Earn",
+        navFrens: "Frens",
+        navWallet: "Wallet",
+        welcomeGenesis: "Welcome to DAKICKS Genesis",
+        welcomeSub: "Enter your unique handle, date of birth, and optional referral code to claim initial allocation.",
+        initializeProfile: "Initialize Terminal",
+        profileTitle: "Terminal Profile",
+        drawerInstruct: "Your DAKICKS profile is cryptographically secured."
+      },
+      hi: {
+        yourAllocation: "आपका जेनेसिस आंट्रेशन",
+        claimBoost: "प्लस 2 $DKX बूस्ट अनलॉक करें",
+        institutionalArch: "संस्थागत RWA आर्किटेक्चर",
+        rwaTitle: "DAKICKS® फिजिकल ड्रॉप्स",
+        rwaBadge: "RWA अपैरल",
+        rwaDesc: "क्रिप्टोग्राफिक NFC चिप्स से एम्बेडेड जेनेसिस लग्जरी जूते। BNB स्मार्ट चेन पर मैप किया गया भौतिक स्वामित्व।",
+        revTitle: "रेवेन्यू-शेयर प्रोटोकॉल",
+        revBadge: "ट्रेजरी",
+        revDesc: "वास्तविक दुनिया के जूते की बिक्री और कॉर्पोरेट ब्रांड प्रायोजन का 50% संस्थागत बायबैक रिजर्व वॉल्ट में जाता है।",
+        earnHeader: "इकोसिस्टम स्टेकिंग और मेट्रिक्स",
+        supplyTitle: "DKX सप्लाई स्टैंडर्ड",
+        supplyBadge: "डिफ्लेशनरी",
+        supplyDesc: "स्मार्ट अनुबंध अखंडता जांच द्वारा सत्यापित 30% इकोसिस्टम और टीम वेस्टिंग रिजर्व के साथ 10,000,000,000 $DKX की निश्चित हार्ड-कैप आपूर्ति।",
+        unlockRewards: "अपने पुरस्कार अनलॉक करें",
+        unlockSub: "अपने दोस्तों को आमंत्रित करें और 25% तक एलोकेशन बूस्ट प्राप्त करें।",
+        refCodeLabel: "रेफरल कोड और लिंक",
+        copyBtn: "कॉपी",
+        refProgress: "आपकी रेफरल प्रगति",
+        globalLeaderboard: "वैश्विक लीडरबोर्ड रैंकिंग",
+        connectWalletTitle: "WEB3 वॉलेट इंटीग्रेशन",
+        connectWalletSub: "BNB चेन पर $DKX टोकन वितरण के लिए अपना नॉन-कस्टोदियल EVM वॉलेट कनेक्ट करें।",
+        connectWalletBtnTxt: "वॉलेट कनेक्ट करें",
+        navHome: "होम",
+        navEarn: "अर्न",
+        navFrens: "फ्रेंड्स",
+        navWallet: "वॉलेट",
+        welcomeGenesis: "DAKICKS जेनेसिस में आपका स्वागत है",
+        welcomeSub: "शुरुआती एलोकेशन का दावा करने के लिए अपना यूजरनेम, जन्म तिथि और वैकल्पिक रेफरल कोड दर्ज करें।",
+        initializeProfile: "टर्मिनल शुरू करें",
+        profileTitle: "टर्मिनल प्रोफाइल",
+        drawerInstruct: "आपकी DAKICKS प्रोफाइल क्रिप्टोग्राफिक रूप से सुरक्षित है।"
+      },
+      ru: {
+        yourAllocation: "ВАШЕ РАСПРЕДЕЛЕНИЕ GENESIS",
+        claimBoost: "Разблокировать бонус +2 $DKX",
+        institutionalArch: "ИНСТИТУЦИОНАЛЬНАЯ АРХИТЕКТУРА RWA",
+        rwaTitle: "Физические дропы DAKICKS®",
+        rwaBadge: "ОДЕЖДА RWA",
+        rwaDesc: "Роскошная обувь Genesis со встроенными NFC-чипами. Физическое владение привязано к BNB Smart Chain.",
+        revTitle: "Протокол разделения доходов",
+        revBadge: "КАЗНА",
+        revDesc: "50% от продаж обуви направляется в институциональные резервные хранилища обратного выкупа.",
+        earnHeader: "СТЕКИНГ И МЕТРИКИ ЭКОСИСТЕМЫ",
+        supplyTitle: "Стандарт поставки DKX",
+        supplyBadge: "ДЕФЛЯЦИОННЫЙ",
+        supplyDesc: "Фиксированная жесткая крышка предложения 10 000 000 000 $DKX с резервом экосистемы 30%.",
+        unlockRewards: "РАЗБЛОКИРУЙТЕ НАГРАДЫ",
+        unlockSub: "Приглашайте друзей и получайте бонус до 25%.",
+        refCodeLabel: "Реферальный код и ссылка",
+        copyBtn: "Копировать",
+        refProgress: "Ваш реферальный прогресс",
+        globalLeaderboard: "Глобальный рейтинг лидеров",
+        connectWalletTitle: "ИНТЕГРАЦИЯ WEB3 КОШЕЛЬКА",
+        connectWalletSub: "Подключите некастодиальный EVM-кошелек для получения токенов $DKX в сети BNB.",
+        connectWalletBtnTxt: "Подключить кошелек",
+        navHome: "Главная",
+        navEarn: "Доход",
+        navFrens: "Друзья",
+        navWallet: "Кошелек",
+        welcomeGenesis: "Добро пожаловать в DAKICKS Genesis",
+        welcomeSub: "Введите свой ник, дату рождения и реферальный код.",
+        initializeProfile: "Инициализировать",
+        profileTitle: "Профиль терминала",
+        drawerInstruct: "Ваш профиль DAKICKS надежно защищен."
+      },
+      ja: {
+        yourAllocation: "ジェネシス・アロケーション",
+        claimBoost: "+2 $DKX ブーストを解除",
+        institutionalArch: "機関投資家向け RWA アーキテクチャ",
+        rwaTitle: "DAKICKS® フィジカルドロップ",
+        rwaBadge: "RWA アパレル",
+        rwaDesc: "NFCチップを内蔵した高級フットウェア。BNBスマートチェーン上で所有権をマッピング。",
+        revTitle: "レベニューシェアプロトコル",
+        revBadge: "財務省",
+        revDesc: "実世界の売上の50%が買い戻しリザーブに還元されます。",
+        earnHeader: "エコシステム・ステーキング",
+        supplyTitle: "DKX サプライ基準",
+        supplyBadge: "デフレ型",
+        supplyDesc: "10,000,000,000 $DKX のハードキャップ供給。",
+        unlockRewards: "報酬のアンロック",
+        unlockSub: "フレンドを招待して最大25%のブーストを獲得。",
+        refCodeLabel: "紹介コードとリンク",
+        copyBtn: "コピー",
+        refProgress: "紹介の進捗状況",
+        globalLeaderboard: "グローバルリーダーボード",
+        connectWalletTitle: "WEB3 ウォレット連携",
+        connectWalletSub: "BNBチェーンでの配布に備えてEVMウォレットを接続してください。",
+        connectWalletBtnTxt: "ウォレットを接続",
+        navHome: "ホーム",
+        navEarn: "獲得",
+        navFrens: "フレンド",
+        navWallet: "ウォレット",
+        welcomeGenesis: "DAKICKS Genesisへようこそ",
+        welcomeSub: "ハンドルネームと生年月日を入力してください。",
+        initializeProfile: "初期化する",
+        profileTitle: "ターミナルプロフィール",
+        drawerInstruct: "プロフィールは暗号学的に保護されています。"
+      },
+      ko: {
+        yourAllocation: "제네시스 할당량",
+        claimBoost: "+2 $DKX 부스트 잠금 해제",
+        institutionalArch: "기관 RWA 아키텍처",
+        rwaTitle: "DAKICKS® 피지컬 드롭",
+        rwaBadge: "RWA 의류",
+        rwaDesc: "NFC 칩이 내장된 럭셔리 신발. BNB 스마트 체인에 매핑된 실제 소유권.",
+        revTitle: "수익 공유 프로토콜",
+        revBadge: "재무부",
+        revDesc: "실제 신발 판매 수익의 50%가 바이백 볼트로 유입됩니다.",
+        earnHeader: "생태계 스테이킹 및 지표",
+        supplyTitle: "DKX 공급 표준",
+        supplyBadge: "디플레이션",
+        supplyDesc: "총 10,000,000,000 $DKX 고정 공급량.",
+        unlockRewards: "보상 잠금 해제",
+        unlockSub: "친구를 초대하고 최대 25% 할당 부스트를 받으세요.",
+        refCodeLabel: "추천 코드 및 링크",
+        copyBtn: "복사",
+        refProgress: "추천 진행 상황",
+        globalLeaderboard: "글로벌 리더보드 순위",
+        connectWalletTitle: "WEB3 지갑 연동",
+        connectWalletSub: "BNB 체인에서의 $DKX 분배를 위해 EVM 지갑을 연동하세요.",
+        connectWalletBtnTxt: "지갑 연동",
+        navHome: "홈",
+        navEarn: "적립",
+        navFrens: "친구",
+        navWallet: "지갑",
+        welcomeGenesis: "DAKICKS 제네시스 환영",
+        welcomeSub: "핸들 및 생년월일을 입력하여 초기 할당량을 청구하세요.",
+        initializeProfile: "터미널 초기화",
+        profileTitle: "터미널 프로필",
+        drawerInstruct: "DAKICKS 프로필이 암호화 보호됩니다."
+      },
+      ar: {
+        yourAllocation: "تخصص التكوين الخاص بك",
+        claimBoost: "فتح تعزيز +2 $DKX",
+        institutionalArch: "هندسة RWA المؤسسية",
+        rwaTitle: "إصدارات DAKICKS® الفعلية",
+        rwaBadge: "ملابس RWA",
+        rwaDesc: "أحذية فاخرة مزودة برقائق NFC المشفرة. الملكية المادية على شبكة BNB Smart Chain.",
+        revTitle: "بروتوكول مشاركة الإيرادات",
+        revBadge: "الخزينة",
+        revDesc: "50% من مبيعات الأحذية تُعاد توجيهها إلى خزائن احتياطي إعادة الشراء المؤسسية.",
+        earnHeader: "رهان النظام البيئي والمقاييس",
+        supplyTitle: "معيار العرض DKX",
+        supplyBadge: "انكماشي",
+        supplyDesc: "إجمالي عرض ثابت يبلغ 10,000,000,000 $DKX.",
+        unlockRewards: "افتح مكافآت",
+        unlockSub: "ادع أصدقاءك واكسب ما يصل إلى 25% تعزيز تخصيص.",
+        refCodeLabel: "رمز الإحالة والرابط",
+        copyBtn: "نسخ",
+        refProgress: "تقدم الإحالة الخاص بك",
+        globalLeaderboard: "لوحة المتصدرين العالمية",
+        connectWalletTitle: "تكامل محفظة WEB3",
+        connectWalletSub: "قم بتوصيل محفظتك لتوزيع رموز $DKX.",
+        connectWalletBtnTxt: "اتصال المحفظة",
+        navHome: "الرئيسية",
+        navEarn: "الكسب",
+        navFrens: "الأصدقاء",
+        navWallet: "المحفظة",
+        welcomeGenesis: "مرحبًا بك في DAKICKS Genesis",
+        welcomeSub: "أدخل اسم المستخدم وتاريخ الميلاد للمطالبة بالتخصيص الأولي.",
+        initializeProfile: "تهيئة المحطة",
+        profileTitle: "ملف المحطة",
+        drawerInstruct: "ملف تعريف DAKICKS الخاص بك محمي بشكل مشفر."
+      },
+      ur: {
+        yourAllocation: "آپ کا جینسس الاٹمنٹ",
+        claimBoost: "+2 $DKX بوسٹ کھولیں",
+        institutionalArch: "ادارہ جاتی RWA آرکیটেक्चर",
+        rwaTitle: "DAKICKS® فزیکل ڈراپس",
+        rwaBadge: "RWA اپریل",
+        rwaDesc: "این ایف سی چپس کے ساتھ لگژری جوتے۔ بی این بی سمارٹ چین پر نقشہ سازی کی گئی۔",
+        revTitle: "ریونیو شیئر پروٹوکول",
+        revBadge: "ٹریژری",
+        revDesc: "فٹویئر کی فروخت کا 50% بائ بیک ریزرو والٹس میں جاتا ہے۔",
+        earnHeader: "ایکوسسٹم اور میٹرکس",
+        supplyTitle: "DKX سپلائی معیار",
+        supplyBadge: "ڈیفلیশনারি",
+        supplyDesc: "10,000,000,000 $DKX کی فکسڈ سپلائی۔",
+        unlockRewards: "اپنے انعامات کھولیں",
+        unlockSub: "دوستوں کو مدعو کریں اور 25% تک بوسٹ حاصل کریں۔",
+        refCodeLabel: "ریفرل کوڈ اور لنک",
+        copyBtn: "کاپی",
+        refProgress: "آپ کی ریفرل پیش رفت",
+        globalLeaderboard: "عالمی لیڈر بورڈ",
+        connectWalletTitle: "WEB3 والٹ انٹیگریشن",
+        connectWalletSub: "ٹکن کی تقسیم کے لیے اپنا والٹ متصل کریں۔",
+        connectWalletBtnTxt: "والٹ کنیکٹ کریں",
+        navHome: "ہوم",
+        navEarn: "کمائیں",
+        navFrens: "دوست",
+        navWallet: "والٹ",
+        welcomeGenesis: "DAKICKS جینسس میں خوش آمدید",
+        welcomeSub: "اپنا ہینڈل اور تاریخ پیدائش درج کریں۔",
+        initializeProfile: "ٹرمینل شروع کریں",
+        profileTitle: "پرافাইল",
+        drawerInstruct: "آپ کا پروفائل محفوظ ہے۔"
+      },
+      ps: {
+        yourAllocation: "ستاسو د جینسس تخصیص",
+        claimBoost: "خلاص کړئ +2 $DKX",
+        institutionalArch: "بنټ RWA معمارۍ",
+        rwaTitle: "DAKICKS® فزیکی څاڅکي",
+        rwaBadge: "RWA جامې",
+        rwaDesc: "عشقی بوټان د NFC چپونو سره.",
+        revTitle: "د عاید شریکولو پروټوکول",
+        revBadge: "خزانه",
+        revDesc: "د بوټانو د خرڅلاو 50% بیرته اخیستلو خزانې ته ځي.",
+        earnHeader: "ایکوسسټم سټیکینګ",
+        supplyTitle: "DKX رسولو معیار",
+        supplyBadge: "کمیدونکی",
+        supplyDesc: "ټولټال 10,000,000,000 $DKX عرضه.",
+        unlockRewards: "خپل جایزې پرانیزئ",
+        unlockSub: "خپل دوستان بلنه کړئ.",
+        refCodeLabel: "د راجع کولو کوډ",
+        copyBtn: "کاپی",
+        refProgress: "ستاسو د راجع کولو پرمختګ",
+        globalLeaderboard: "نړیوال مشران",
+        connectWalletTitle: "WEB3 والټ انٹیگریشن",
+        connectWalletSub: "خپل والټ وصل کړئ.",
+        connectWalletBtnTxt: "والټ وصل کړئ",
+        navHome: "کور",
+        navEarn: "ترلاسه",
+        navFrens: "ملګري",
+        navWallet: "والټ",
+        welcomeGenesis: "ښه راغلاست DAKICKS Genesis ته",
+        welcomeSub: "خپل نوم او زیږون نېټه دننه کړئ.",
+        initializeProfile: "پیل کول",
+        profileTitle: "پروفایل",
+        drawerInstruct: "ستاسو پروفایل خوندي دی."
+      },
+      fa: {
+        yourAllocation: "تخصیص جنسیس شما",
+        claimBoost: "باز کردن بوست +2 $DKX",
+        institutionalArch: "معماری نهادی RWA",
+        rwaTitle: "دراپ های فیزیکی DAKICKS®",
+        rwaBadge: "پوشاک RWA",
+        rwaDesc: "کفش های لوکس همراه با تراشه های امنیتی NFC.",
+        revTitle: "پروتکل تقسیم درآمد",
+        revBadge: "خزانه",
+        revDesc: "50 درصد فروش واقعی به خزانه های ذخیره بازخرید هدایت می شود.",
+        earnHeader: "استیکینگ اکوسیستم",
+        supplyTitle: "استاندارد عرضه DKX",
+        supplyBadge: "تورم‌زدا",
+        supplyDesc: "عرضه ثابت 10,000,000,000 $DKX.",
+        unlockRewards: "جوایز خود را باز کنید",
+        unlockSub: "دوستان خود را دعوت کنید و تا 25٪ پاداش بگیرید.",
+        refCodeLabel: "کد و لینک معرفی",
+        copyBtn: "کپی",
+        refProgress: "پیشرفت معرفی شما",
+        globalLeaderboard: "رتبه بندی جهانی",
+        connectWalletTitle: "یکپارچه‌سازی کیف پول WEB3",
+        connectWalletSub: "کیف پول EVM خود را متصل کنید.",
+        connectWalletBtnTxt: "اتصال کیف پول",
+        navHome: "خان
