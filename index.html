@@ -469,8 +469,354 @@
                 <button class="action-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=BINANCE%3ABNBUSDT', '_blank')">Open Full Page Trading Chart ↗</button>
             </div>
 
-            <div class="card">
+                        <div class="card">
                 <span class="tag">TOP CRYPTO TOKENS</span>
                 <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; font-weight:700;"><span>BNB / USDT</span> <span style="color:var(--accent-green);">+4.82%</span></div>
                 <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; font-weight:700;"><span>TON / USDT</span> <span style="color:var(--accent-green);">+7.14%</span></div>
-                <div style="display:flex; justify-content:space-between; margin-t
+                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; font-weight:700;"><span>$DKX / USDT</span> <span style="color:var(--accent-green);">+32.50% (Genesis)</span></div>
+            </div>
+        </div>
+
+        <!-- 4. REFERRAL TAB -->
+        <div id="tab-referral" class="tab-pane">
+            <div class="section-title">Sovereign Referral Network</div>
+            <div class="card" style="text-align: center;">
+                <span class="tag">INVITE & EARN</span>
+                <h3 style="font-size: 18px; margin: 6px 0;">Earn +50 $DKX Per Friend</h3>
+                <p class="desc" style="margin-bottom: 14px;">Share your exclusive referral link across global networks.</p>
+                <button class="action-btn" onclick="navigator.clipboard.writeText('https://t.me/DkxTerminalBot?start=ref_001'); showToast('Referral link copied to clipboard!');">Copy Invite Link</button>
+            </div>
+
+            <div class="card">
+                <span class="tag">MONTHLY LEADERBOARD</span>
+                <h3 style="font-size: 14px; margin-bottom: 8px;">Top Referrers (Global)</h3>
+                <p class="desc" style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>1. @CryptoKing_99</span> <b>14,250 $DKX</b></p>
+                <p class="desc" style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>2. @SovereignWhale</span> <b>11,100 $DKX</b></p>
+                <p class="desc" style="display:flex; justify-content:space-between;"><span>3. @Anubhav_DKX</span> <b>9,850 $DKX</b></p>
+            </div>
+        </div>
+
+        <!-- 5. WALLET TAB (Real Logos & Redirects) -->
+        <div id="tab-wallet" class="tab-pane">
+            <div class="section-title">Web3 Wallet Integration</div>
+            <div class="card">
+                <h3 style="font-size: 16px; margin-bottom: 6px;">Connect Web3 Socket</h3>
+                <p class="desc" style="margin-bottom: 14px;">Select your preferred institutional gateway for asset withdrawal & liquidity drops.</p>
+                
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="action-btn" style="background:#3375BB; color:#fff; display:flex; align-items:center; justify-content:center; gap:10px;" onclick="window.open('https://link.trustwallet.com/', '_blank')">
+                        <span style="font-size:16px;">🛡️</span> Connect Trust Wallet
+                    </button>
+                    <button class="action-btn" style="background:#0088cc; color:#fff; display:flex; align-items:center; justify-content:center; gap:10px;" onclick="window.open('https://tonkeeper.com/', '_blank')">
+                        <span style="font-size:16px;">💎</span> Connect Tonkeeper
+                    </button>
+                    <button class="action-btn" style="background:#E6007A; color:#fff; display:flex; align-items:center; justify-content:center; gap:10px;" onclick="window.open('https://pancakeswap.finance/', '_blank')">
+                        <span style="font-size:16px;">🥞</span> Connect PancakeSwap
+                    </button>
+                    <button class="action-btn" style="background:#F6851B; color:#fff; display:flex; align-items:center; justify-content:center; gap:10px;" onclick="window.open('https://metamask.io/', '_blank')">
+                        <span style="font-size:16px;">🦊</span> Connect MetaMask
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Gen-Z Bottom Navigation -->
+    <div class="nav-bar">
+        <button class="nav-btn active" onclick="switchTab('home', this)"><span>Home</span></button>
+        <button class="nav-btn" onclick="switchTab('games', this)"><span>Games</span></button>
+        <button class="nav-btn" onclick="switchTab('market', this)"><span>Market</span></button>
+        <button class="nav-btn" onclick="switchTab('referral', this)"><span>Referral</span></button>
+        <button class="nav-btn" onclick="switchTab('wallet', this)"><span>Wallet</span></button>
+    </div>
+
+    <script>
+        emailjs.init("UZVvtLHuf8uZWHdkg");
+        let activeOtp = null;
+        let emailTimerInterval = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            let user = localStorage.getItem('dakicks_username');
+            let dob = localStorage.getItem('dakicks_dob');
+            let avatar = localStorage.getItem('dakicks_avatar');
+            let email = localStorage.getItem('dakicks_email');
+
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+                const tg = window.Telegram.WebApp.initDataUnsafe?.user;
+                if (tg && tg.first_name && !user) {
+                    user = tg.first_name;
+                    localStorage.setItem('dakicks_username', user);
+                }
+            }
+
+            if (!user) {
+                document.getElementById('onboardingModal').classList.add('active');
+            } else {
+                applyUserData(user, avatar, email);
+            }
+
+            // Check Persistent Email OTP Timer on Load
+            const savedExpiry = localStorage.getItem('dakicks_otp_expiry');
+            if (savedExpiry) {
+                const remaining = Math.floor((parseInt(savedExpiry) - Date.now()) / 1000);
+                if (remaining > 0) {
+                    document.getElementById('modalEmailUnlinked').style.display = 'none';
+                    document.getElementById('modalEmailVerify').style.display = 'block';
+                    startEmailCountdown(remaining);
+                } else {
+                    localStorage.removeItem('dakicks_otp_expiry');
+                }
+            }
+
+            // Check Daily Code Claim Status
+            checkDailyCodeStatus();
+
+            // Handle One-Tap Email Verification Link (?verify=XXXXXX)
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOtp = urlParams.get('verify');
+            if (urlOtp) {
+                const pendingEmail = localStorage.getItem('dakicks_pending_email') || 'user@gmail.com';
+                localStorage.setItem('dakicks_email', pendingEmail);
+                localStorage.removeItem('dakicks_otp_expiry');
+                toggleProfileModal(true);
+                applyUserData(localStorage.getItem('dakicks_username') || 'DkxFounder', localStorage.getItem('dakicks_avatar'), pendingEmail);
+                showToast('Email verified successfully via One-Tap link!');
+                triggerConfetti();
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+
+        function applyUserData(user, avatar, email) {
+            document.getElementById('headerUsername').innerText = user;
+            document.getElementById('modalUsernameDisplay').innerText = user;
+            if (avatar) {
+                document.getElementById('headerAvatarBox').innerHTML = `<img src="${avatar}" alt="Avatar">`;
+                document.getElementById('modalAvatarDisplay').innerHTML = `<img src="${avatar}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                const initial = user.charAt(0).toUpperCase();
+                document.getElementById('headerAvatarBox').innerHTML = `<span>${initial}</span>`;
+                document.getElementById('modalAvatarDisplay').innerHTML = initial;
+            }
+
+            if (email) {
+                document.getElementById('modalEmailUnlinked').style.display = 'none';
+                document.getElementById('modalEmailVerify').style.display = 'none';
+                document.getElementById('modalEmailLinked').style.display = 'block';
+                document.getElementById('modalLinkedEmailText').innerText = email;
+            }
+        }
+
+        function completeOnboarding() {
+            const u = document.getElementById('setupUsername').value.trim();
+            const d = document.getElementById('setupDob').value;
+            if (!u) { showToast('Please enter a valid username'); return; }
+            localStorage.setItem('dakicks_username', u);
+            if (d) localStorage.setItem('dakicks_dob', d);
+            document.getElementById('onboardingModal').classList.remove('active');
+            applyUserData(u, null, null);
+            triggerConfetti();
+        }
+
+        function toggleProfileModal(open) {
+            const m = document.getElementById('profileModal');
+            if (open) m.classList.add('active'); else m.classList.remove('active');
+        }
+
+        function toggleLinksMenu() {
+            document.getElementById('linksMenu').classList.toggle('active');
+        }
+
+        function handleAvatarUpload(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const r = new FileReader();
+                r.onload = function(evt) {
+                    const base64 = evt.target.result;
+                    localStorage.setItem('dakicks_avatar', base64);
+                    applyUserData(localStorage.getItem('dakicks_username'), base64, localStorage.getItem('dakicks_email'));
+                    showToast('Avatar updated');
+                };
+                r.readAsDataURL(file);
+            }
+        }
+
+        function sendVerificationCode() {
+            const email = document.getElementById('modalEmailInput').value.trim();
+            if (!email || !email.includes('@')) { showToast('Enter valid Gmail'); return; }
+
+            activeOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            const username = localStorage.getItem('dakicks_username') || 'DkxFounder';
+            const verificationLink = window.location.origin + window.location.pathname + "?verify=" + activeOtp;
+            localStorage.setItem('dakicks_pending_email', email);
+
+            // Set 1-minute persistent expiry
+            const expiryTime = Date.now() + 60000;
+            localStorage.setItem('dakicks_otp_expiry', expiryTime);
+
+            const templateParams = {
+                to_email: email,
+                user_name: username,
+                verification_code: activeOtp,
+                verification_link: verificationLink
+            };
+
+            const btn = document.getElementById('sendOtpBtn');
+            btn.innerText = 'Sending OTP...';
+            btn.disabled = true;
+
+            emailjs.send('service_91i0edt', 'template_6a78v2d', templateParams)
+                .then(() => {
+                    document.getElementById('modalEmailUnlinked').style.display = 'none';
+                    document.getElementById('modalEmailVerify').style.display = 'block';
+                    startEmailCountdown(60);
+                    showToast('OTP Dispatched to Gmail');
+                }).catch(() => {
+                    showToast('Transmission failed');
+                    btn.innerText = 'Send 1-Min OTP & Link';
+                    btn.disabled = false;
+                });
+        }
+
+        function startEmailCountdown(duration) {
+            let t = duration;
+            const status = document.getElementById('modalOtpStatus');
+            const resendBtn = document.getElementById('resendOtpBtn');
+            resendBtn.disabled = true;
+
+            if (emailTimerInterval) clearInterval(emailTimerInterval);
+            emailTimerInterval = setInterval(() => {
+                t--;
+                if (t > 0) {
+                    status.innerText = `OTP sent! Expires in ${t}s.`;
+                    resendBtn.innerText = `Resend OTP (${t}s)`;
+                } else {
+                    clearInterval(emailTimerInterval);
+                    status.innerText = 'OTP expired. Request new code.';
+                    resendBtn.disabled = false;
+                    resendBtn.innerText = 'Resend OTP Code';
+                    localStorage.removeItem('dakicks_otp_expiry');
+                    activeOtp = null;
+                }
+            }, 1000);
+        }
+
+        function confirmVerificationCode() {
+            const entered = document.getElementById('modalOtpInput').value.trim();
+            if (!activeOtp || entered !== activeOtp) { showToast('Invalid or expired OTP'); return; }
+            if (emailTimerInterval) clearInterval(emailTimerInterval);
+            localStorage.removeItem('dakicks_otp_expiry');
+            const email = localStorage.getItem('dakicks_pending_email') || 'user@gmail.com';
+            localStorage.setItem('dakicks_email', email);
+            document.getElementById('modalEmailVerify').style.display = 'none';
+            document.getElementById('modalEmailLinked').style.display = 'block';
+            document.getElementById('modalLinkedEmailText').innerText = email;
+            showToast('Email Verified Successfully');
+            triggerConfetti();
+        }
+
+        function disconnectEmail() {
+            localStorage.removeItem('dakicks_email');
+            localStorage.removeItem('dakicks_pending_email');
+            localStorage.removeItem('dakicks_otp_expiry');
+            document.getElementById('modalEmailLinked').style.display = 'none';
+            document.getElementById('modalEmailUnlinked').style.display = 'block';
+            document.getElementById('modalEmailInput').value = '';
+            showToast('Email disconnected successfully');
+        }
+
+        // Daily Code Cipher Logic (24-Hour Cooldown)
+        function checkDailyCodeStatus() {
+            const lastClaim = localStorage.getItem('dakicks_last_claim');
+            if (lastClaim) {
+                const diff = Date.now() - parseInt(lastClaim);
+                const cooldown = 24 * 60 * 60 * 1000; // 24 Hours
+                if (diff < cooldown) {
+                    const remaining = cooldown - diff;
+                    const hours = Math.floor(remaining / (1000 * 60 * 60));
+                    const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                    document.getElementById('claimCodeBtn').disabled = true;
+                    document.getElementById('claimCodeBtn').style.opacity = '0.5';
+                    document.getElementById('claimTimerText').innerText = `Next code claim available in ${hours}h ${mins}m`;
+                } else {
+                    localStorage.removeItem('dakicks_last_claim');
+                }
+            }
+        }
+
+        function claimDailyCode() {
+            const d1 = document.getElementById('codeDigit1').value.trim();
+            const d2 = document.getElementById('codeDigit2').value.trim();
+            const d3 = document.getElementById('codeDigit3').value.trim();
+            const d4 = document.getElementById('codeDigit4').value.trim();
+            const d5 = document.getElementById('codeDigit5').value.trim();
+
+            if (!d1 || !d2 || !d3 || !d4 || !d5) {
+                showToast('Please enter all 5 cipher digits!');
+                return;
+            }
+
+            const enteredCode = d1 + d2 + d3 + d4 + d5;
+            if (enteredCode === '50546') {
+                localStorage.setItem('dakicks_last_claim', Date.now().toString());
+                showToast('Success! +25,000 $DKX Credited');
+                triggerConfetti();
+                document.getElementById('claimCodeBtn').disabled = true;
+                document.getElementById('claimCodeBtn').style.opacity = '0.5';
+                document.getElementById('claimTimerText').innerText = 'Claimed! Next available in 24 hours.';
+            } else {
+                showToast('Incorrect Cipher Code. Try again!');
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastNotification');
+            t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            btn.classList.add('active');
+
+            const bgVideo = document.getElementById('mainBgVideo');
+            if (name === 'home' || name === 'market') bgVideo.src = 'bg.mp4';
+            else if (name === 'games') bgVideo.src = 'community-bg.mp4';
+            else bgVideo.src = 'outlaybg.mp4';
+            bgVideo.play().catch(e => {});
+        }
+
+        function triggerConfetti() {
+            const c = document.getElementById('confetti-canvas');
+            c.style.display = 'block';
+            const ctx = c.getContext('2d');
+            c.width = window.innerWidth; c.height = window.innerHeight;
+            const parts = [];
+            for (let i = 0; i < 100; i++) {
+                parts.push({
+                    x: c.width/2, y: c.height/2,
+                    vx: (Math.random()-0.5)*14, vy: (Math.random()-0.7)*14-3,
+                    size: Math.random()*6+3, color: Math.random() > 0.5 ? '#00ff80' : '#ffffff'
+                });
+            }
+            function render() {
+                ctx.clearRect(0,0,c.width,c.height);
+                parts.forEach((p, idx) => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.3;
+                    ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size);
+                    if (p.y > c.height) parts.splice(idx, 1);
+                });
+                if (parts.length > 0) requestAnimationFrame(render);
+                else { ctx.clearRect(0,0,c.width,c.height); c.style.display='none'; }
+            }
+            render();
+        }
+    </script>
+</body>
+</html>
+
