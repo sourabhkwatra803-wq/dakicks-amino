@@ -1,1004 +1,1110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DAKICKS Terminal - Institutional RWA & Telemetry</title>
-    <!-- Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <style>
-        :root {
-            --bg-deep: #050507;
-            --surface-glass: rgba(18, 18, 22, 0.72);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --text-primary: #f1f1f3;
-            --text-secondary: #8e8e93;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        body {
-            background-color: var(--bg-deep);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding-bottom: 95px;
-        }
-
-        /* 3D High-Performance Video Background Engine */
-        .bg-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            z-index: 0;
-            opacity: 0.35;
-            pointer-events: none;
-            will-change: transform;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 5, 7, 0.75);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Header Architecture */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px;
-            background: rgba(12, 12, 14, 0.92);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border-bottom: 1px solid var(--border-glass);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2c2c30, #161618);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 0 15px rgba(255,255,255,0.15);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .welcome-label {
-            font-size: 9px;
-            color: var(--text-secondary);
-            font-weight: 700;
-            letter-spacing: 1.2px;
-        }
-
-        .username-text {
-            font-weight: 700;
-            font-size: 15px;
-            letter-spacing: 0.3px;
-        }
-
-        .balance-badge {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-glass);
-            padding: 7px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #e5e5ea;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            backdrop-filter: blur(10px);
-        }
-
-        .platinum-dot {
-            width: 6px;
-            height: 6px;
-            background-color: #00ff80;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #00ff80;
-        }
-
-        /* Content Panes */
-        .content {
-            padding: 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .tab-pane {
-            display: none;
-            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .tab-pane.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1.8px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            font-weight: 800;
-        }
-
-        /* High-End Glass Cards */
-        .card {
-            background: var(--surface-glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            padding: 14px 18px;
-            margin-bottom: 12px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-        }
-
-        .card-inner {
-            position: relative;
-            z-index: 1;
-        }
-
-        .tag {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 9px;
-            font-weight: 700;
-            color: #d1d1d6;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-        }
-
-        .desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 0;
-            line-height: 1.4;
-        }
-
-        .input {
-            width: 100%;
-            background: #09090b;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 12px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
-            margin-bottom: 10px;
-        }
-
-        .action-btn {
-            width: 100%;
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .disconnect-btn {
-            background: transparent;
-            color: #ff2d55;
-            border: 1px solid rgba(255, 45, 85, 0.4);
-            padding: 10px;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 13px;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .verified-badge {
-            background: rgba(0, 255, 128, 0.1);
-            border: 1px solid rgba(0, 255, 128, 0.3);
-            color: #00ff80;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 13px;
-        }
-
-        /* Dakicks Card Flex Layout with Outline Video */
-        .dakicks-card-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-        }
-        .dakicks-text-side {
-            flex: 1;
-        }
-        .dakicks-coin-side {
-            width: 54px;
-            height: 54px;
-            flex-shrink: 0;
-            border-radius: 50%;
-            overflow: hidden;
-            position: relative;
-            background: transparent;
-            border: none;
-        }
-        .dakicks-coin-side video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            mix-blend-mode: screen;
-        }
-
-        /* Community Social Hub Cards */
-        .social-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--surface-glass);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            padding: 16px 18px;
-            margin-bottom: 12px;
-            text-decoration: none;
-            color: #fff;
-            position: relative;
-            overflow: visible;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-        }
-
-        .social-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            position: relative;
-            z-index: 3;
-        }
-
-        .social-icon-box {
-            width: 42px;
-            height: 42px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .community-squirrel {
-            position: absolute;
-            left: -18px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 52px;
-            height: 52px;
-            z-index: 20;
-            pointer-events: none;
-            border-radius: 50%;
-            overflow: hidden;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-        }
-        .community-squirrel video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .node-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 8px 14px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #fff;
-            position: relative;
-            z-index: 3;
-        }
-
-        /* Profile Modal & Settings */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(3, 3, 5, 0.92);
-            backdrop-filter: blur(30px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-card {
-            background: #121216;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px;
-            padding: 24px 20px;
-            width: 100%;
-            max-width: 360px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        /* Professional Transparent Toast Notification (No White Alert Box) */
-        #toastNotification {
-            position: fixed;
-            bottom: 95px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(20, 20, 25, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 255, 128, 0.3);
-            color: #00ff80;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            z-index: 3000;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }
-        #toastNotification.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* Realistic Confetti Canvas */
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 2000;
-            display: none;
-        }
-
-        /* Bottom Navigation Bar (Zero Emojis) */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 75px;
-            background: rgba(12, 12, 14, 0.96);
-            backdrop-filter: blur(25px);
-            border-top: 1px solid var(--border-glass);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: #72727a;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            padding: 10px 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
-
-        .nav-btn.active {
-            color: #ffffff;
-            font-weight: 800;
-            text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Primary Background Video Engine -->
-    <video autoplay loop muted playsinline class="bg-video" id="mainBgVideo">
-        <source src="bg.mp4" type="video/mp4">
-    </video>
-    <div class="overlay"></div>
-
-    <!-- Transparent Professional Toast Notification -->
-    <div id="toastNotification">CA Copied Successfully</div>
-
-    <!-- Realistic Confetti Canvas -->
-    <canvas id="confetti-canvas"></canvas>
-
-    <!-- Onboarding Setup Modal (Username & DOB) -->
-    <div id="onboardingModal" class="modal-overlay">
-        <div class="modal-card">
-            <div style="text-align: center; margin-bottom: 18px;">
-                <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 4px;">Initialize Terminal</h2>
-                <p style="font-size: 12px; color: var(--text-secondary);">Configure sovereign credentials.</p>
-            </div>
-            <div style="margin-bottom: 12px;">
-                <label style="font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px;">Username</label>
-                <input type="text" id="setupUsername" class="input" placeholder="Enter username...">
-            </div>
-            <div style="margin-bottom: 18px;">
-                <label style="font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 4px;">Date of Birth (DOB)</label>
-                <input type="date" id="setupDob" class="input">
-            </div>
-            <button class="action-btn" onclick="completeOnboarding()">Authorize & Launch</button>
-        </div>
-    </div>
-
-    <!-- Central Profile & Email Management Modal -->
-    <div id="profileModal" class="modal-overlay" onclick="closeProfileModalOnBg(event)">
-        <div class="modal-card" id="profileModalCard">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="font-size: 16px; font-weight: 800;">Sovereign Profile</h3>
-                <button onclick="toggleProfileModal(false)" style="background:transparent; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
-            </div>
-            
-            <div style="text-align: center; margin-bottom: 16px; position: relative;">
-                <div style="width: 70px; height: 70px; border-radius: 50%; margin: 0 auto; background: #222; border: 2px solid rgba(255,255,255,0.3); overflow: hidden; position: relative; cursor: pointer;" onclick="triggerProfileEdit()">
-                    <div id="modalAvatarDisplay" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:24px;">D</div>
-                    <div style="position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7); font-size: 9px; padding: 2px; text-align: center;">EDIT</div>
-                </div>
-                <div id="modalUsernameDisplay" style="font-weight: 700; font-size: 15px; margin-top: 8px;">DkxFounder</div>
-            </div>
-
-            <!-- Email Management Section -->
-            <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
-                <div style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 8px;">Institutional Gmail Security</div>
-                
-                <div id="modalEmailUnlinked">
-                    <input type="email" id="modalEmailInput" class="input" placeholder="Enter Gmail...">
-                    <button class="action-btn" onclick="sendVerificationCode()">Send OTP & Link</button>
-                </div>
-
-                <div id="modalEmailVerify" style="display: none;">
-                    <p style="font-size: 11px; color: #00ff80; margin-bottom: 6px;" id="modalOtpStatus">Code sent! Valid for 60 seconds.</p>
-                    <input type="text" id="modalOtpInput" class="input" placeholder="Enter 6-digit OTP...">
-                    <button class="action-btn" onclick="confirmVerificationCode()">Verify & Authorize</button>
-                    <button class="disconnect-btn" onclick="resetEmailState()">Resend / Cancel</button>
-                </div>
-
-                <div id="modalEmailLinked" style="display: none;">
-                    <div id="modalLinkedEmailText" style="font-size: 12px; font-weight: 600; padding: 8px; background: rgba(255,255,255,0.04); border-radius: 8px; margin-bottom: 8px; word-break: break-all;"></div>
-                    <div class="verified-badge" style="font-size: 11px; padding: 8px;">VERIFIED & SECURED ✓</div>
-                    <button class="disconnect-btn" onclick="disconnectEmail()">Disconnect / Change Email</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
-
-    <!-- Header System -->
-    <div class="header">
-        <div class="user-info" onclick="toggleProfileModal(true)">
-            <div class="avatar" id="userAvatarContainer">
-                <span id="avatarLetter">D</span>
-            </div>
-            <div>
-                <div class="welcome-label">DKX TERMINAL</div>
-                <div class="username-text" id="usernameText">DkxFounder</div>
-            </div>
-        </div>
-        <div class="balance-badge">
-            <span class="platinum-dot"></span> BNB #41,920,431
-        </div>
-    </div>
-
-    <!-- Application Body Containers -->
-    <div class="content">
-
-        <!-- 1. TERMINAL TAB -->
-        <div id="tab-terminal" class="tab-pane active">
-            <div class="section-title">Institutional Market Telemetry</div>
-            <div class="card" style="padding: 10px;">
-                <div class="card-inner">
-                    <div style="font-size: 10px; color: #98989f; margin-bottom: 6px; font-weight: 700;">REAL-TIME FEED // MULTI-CHAIN DEX TERMINAL</div>
-                    <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3ABNBUSDT&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC" style="width: 100%; height: 380px; border: none; border-radius: 12px;" title="TradingView Live Chart"></iframe>
-                </div>
-            </div>
-        </div>
-
-                <!-- 2. DAKICKS TAB -->
-        <div id="tab-dakicks" class="tab-pane" style="position: relative;">
-            <div class="section-title">Institutional RWA Architecture</div>
-            
-            <div class="card"><div class="card-inner dakicks-card-flex">
-                <div class="dakicks-text-side">
-                    <span class="tag">RWA APPAREL</span>
-                    <h3 style="margin-bottom: 4px; font-size: 15px;">DAKICKS® Physical Drops</h3>
-                    <p class="desc">Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on BNB Smart Chain.</p>
-                </div>
-                <div class="dakicks-coin-side">
-                    <video autoplay loop muted playsinline><source src="bg.mp4" type="video/mp4"></video>
-                </div>
-            </div></div>
-
-            <div class="card"><div class="card-inner dakicks-card-flex">
-                <div class="dakicks-text-side">
-                    <span class="tag">TREASURY</span>
-                    <h3 style="margin-bottom: 4px; font-size: 15px;">Revenue-Share Protocol</h3>
-                    <p class="desc">50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.</p>
-                </div>
-                <div class="dakicks-coin-side">
-                    <video autoplay loop muted playsinline><source src="bg.mp4" type="video/mp4"></video>
-                </div>
-            </div></div>
-
-            <div class="card"><div class="card-inner dakicks-card-flex">
-                <div class="dakicks-text-side">
-                    <span class="tag">DEFLATIONARY</span>
-                    <h3 style="margin-bottom: 4px; font-size: 15px;">DKX Supply Standard</h3>
-                    <p class="desc">Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.</p>
-                </div>
-                <div class="dakicks-coin-side">
-                    <video autoplay loop muted playsinline><source src="bg.mp4" type="video/mp4"></video>
-                </div>
-            </div></div>
-        </div>
-
-        <!-- 3. COMMUNITY TAB (community-bg.mp4 with 3D Squirrel) -->
-        <div id="tab-community" class="tab-pane" style="position: relative;">
-            <div class="section-title">Official Communication Nodes</div>
-            
-            <a href="https://t.me/DKXOfficial" target="_blank" class="social-card">
-                <div class="social-left">
-                    <div class="social-icon-box">TG</div>
-                    <div>
-                        <h3 style="font-size: 14px; margin-bottom: 2px;">Telegram Network</h3>
-                        <p style="font-size:11px;color:var(--text-secondary);">@DKXOfficial</p>
-                    </div>
-                </div>
-                <div class="node-btn">Open Node ↗</div>
-            </a>
-
-            <a href="https://instagram.com" target="_blank" class="social-card">
-                <div class="social-left">
-                    <div class="social-icon-box">IG</div>
-                    <div>
-                        <h3 style="font-size: 14px; margin-bottom: 2px;">Instagram Hub</h3>
-                        <p style="font-size:11px;color:var(--text-secondary);">@dakicks_dkx</p>
-                    </div>
-                </div>
-                <div class="node-btn">Open Node ↗</div>
-            </a>
-
-            <a href="https://twitter.com" target="_blank" class="social-card">
-                <div class="community-squirrel">
-                    <video autoplay loop muted playsinline><source src="bg.mp4" type="video/mp4"></video>
-                </div>
-                <div class="social-left" style="padding-left: 28px;">
-                    <div class="social-icon-box">𝕏</div>
-                    <div>
-                        <h3 style="font-size: 14px; margin-bottom: 2px;">X Protocol Comms</h3>
-                        <p style="font-size:11px;color:var(--text-secondary);">@dakicks_dkx</p>
-                    </div>
-                </div>
-                <div class="node-btn">Open Node ↗</div>
-            </a>
-        </div>
-
-        <!-- 4. VAULT TAB (outlaybg.mp4 with Transparent Toast & No White Alerts) -->
-        <div id="tab-vault" class="tab-pane" style="position: relative;">
-            <div class="section-title">On-Chain Smart Contract Socket</div>
-            
-            <div class="card">
-                <div class="card-inner" style="text-align: center;">
-                    <div style="width: 50px; height: 50px; margin: 0 auto 12px auto; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
-                        <svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    </div>
-                    <div style="background: #09090b; border: 1px solid rgba(255, 255, 255, 0.12); padding: 10px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
-                        <span id="caText" style="font-size: 11px; color: var(--text-secondary); font-family: monospace;">DEPLOYING AT LAUNCH (BNB CHAIN)</span>
-                        <button onclick="copyContractAddress()" style="background: #fff; color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer;">COPY CA</button>
-                    </div>
-                    <p style="font-size: 10px; color: var(--text-secondary); line-height: 1.4; margin-top: 8px;">Official $DKX contract address will be verified and mapped here directly upon DEX liquidity provisioning on BNB Smart Chain.</p>
-                </div>
-            </div>
-
-            <!-- Trust Wallet Connect Socket -->
-            <div class="card">
-                <div class="card-inner">
-                    <button class="action-btn" onclick="connectTrustWallet()" style="background: #3375BB; color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; padding: 12px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-3z"/></svg>
-                        CONNECT TRUST WALLET
-                    </button>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-inner">
-                    <span class="tag">GENESIS LIQUIDITY ALLOCATION</span>
-                    <h3 style="font-size: 20px; margin: 8px 0;">1,250 $DKX</h3>
-                    <button class="action-btn" onclick="showTransparentToast('Smart contract synchronization pending launch')" style="padding: 10px; font-size: 13px;">Claim Allocation (+2 $DKX)</button>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-inner">
-                    <span class="tag">VERIFIED PROTOCOL</span>
-                    <h3 style="font-size: 14px; margin-bottom: 6px;">Recent On-Chain Allocations</h3>
-                    <p class="desc" style="margin-bottom: 4px; display: flex; justify-content: space-between;"><span>0x88c4...9a21</span> <b>+2 $DKX</b> <span style="color:#00ff80;">Just now</span></p>
-                    <p class="desc" style="margin-bottom: 4px; display: flex; justify-content: space-between;"><span>0x3f12...4b08</span> <b>+2 $DKX</b> <span style="color:#00ff80;">1m ago</span></p>
-                    <p class="desc" style="margin-bottom: 0; display: flex; justify-content: space-between;"><span>0x99e5...11c7</span> <b>+2 $DKX</b> <span style="color:#00ff80;">3m ago</span></p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Bottom Navigation Bar (Zero Emojis) -->
-    <div class="nav-bar">
-        <button class="nav-btn active" onclick="switchTab('terminal', this)">Terminal</button>
-        <button class="nav-btn" onclick="switchTab('dakicks', this)">Dakicks</button>
-        <button class="nav-btn" onclick="switchTab('community', this)">Community</button>
-        <button class="nav-btn" onclick="switchTab('vault', this)">Vault</button>
-    </div>
-
-    <script>
-        // Initialize EmailJS with Public Key
-        emailjs.init("UZVvtLHuf8uZWHdkg");
-
-        let activeOtp = null;
-        let otpTimer = null;
-
-        // Telegram WebApp Initialization & Local Storage Persistence
-        window.addEventListener('DOMContentLoaded', () => {
-            let savedUsername = localStorage.getItem('dakicks_username');
-            let savedDob = localStorage.getItem('dakicks_dob');
-            let savedAvatar = localStorage.getItem('dakicks_avatar');
-            let savedEmail = localStorage.getItem('dakicks_email');
-
-            if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.ready();
-                window.Telegram.WebApp.expand();
-                const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
-                if (tgUser && tgUser.first_name && !savedUsername) {
-                    savedUsername = tgUser.first_name;
-                    localStorage.setItem('dakicks_username', savedUsername);
-                }
-            }
-
-            if (!savedUsername) {
-                document.getElementById('onboardingModal').classList.add('active');
-            } else {
-                applyUserData(savedUsername, savedAvatar, savedEmail);
-            }
-        });
-
-        function applyUserData(username, avatar, email) {
-            document.getElementById('usernameText').innerText = username;
-            document.getElementById('modalUsernameDisplay').innerText = username;
-
-            if (avatar) {
-                document.getElementById('userAvatarContainer').innerHTML = `<img src="${avatar}" alt="Avatar">`;
-                document.getElementById('modalAvatarDisplay').innerHTML = `<img src="${avatar}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">`;
-            } else {
-                const initial = username.charAt(0).toUpperCase();
-                document.getElementById('userAvatarContainer').innerHTML = `<span id="avatarLetter">${initial}</span>`;
-                document.getElementById('modalAvatarDisplay').innerHTML = initial;
-            }
-
-            if (email) {
-                document.getElementById('modalEmailUnlinked').style.display = 'none';
-                document.getElementById('modalEmailVerify').style.display = 'none';
-                document.getElementById('modalEmailLinked').style.display = 'block';
-                document.getElementById('modalLinkedEmailText').innerText = email;
-            } else {
-                document.getElementById('modalEmailUnlinked').style.display = 'block';
-                document.getElementById('modalEmailVerify').style.display = 'none';
-                document.getElementById('modalEmailLinked').style.display = 'none';
-            }
-        }
-
-        // Onboarding Completion with Realistic Confetti Animation
-        function completeOnboarding() {
-            const username = document.getElementById('setupUsername').value.trim();
-            const dob = document.getElementById('setupDob').value;
-
-            if (!username) {
-                showTransparentToast('Please enter a valid username');
-                return;
-            }
-
-            localStorage.setItem('dakicks_username', username);
-            if (dob) localStorage.setItem('dakicks_dob', dob);
-
-            document.getElementById('onboardingModal').classList.remove('active');
-            applyUserData(username, null, null);
-            triggerRealisticConfetti();
-        }
-
-        // Profile Modal Control
-        function toggleProfileModal(open) {
-            const modal = document.getElementById('profileModal');
-            if (open) {
-                modal.classList.add('active');
-            } else {
-                modal.classList.remove('active');
-            }
-        }
-
-        function closeProfileModalOnBg(e) {
-            if (e.target.id === 'profileModal') {
-                toggleProfileModal(false);
-            }
-        }
-
-        // Custom Avatar Upload Trigger
-        function triggerProfileEdit() {
-            document.getElementById('avatarFileInput').click();
-        }
-
-        function handleAvatarUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const base64Img = e.target.result;
-                    localStorage.setItem('dakicks_avatar', base64Img);
-                    const username = localStorage.getItem('dakicks_username') || 'DkxFounder';
-                    applyUserData(username, base64Img, localStorage.getItem('dakicks_email'));
-                    showTransparentToast('Avatar updated successfully');
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        // EmailJS Verification Flow
-        function sendVerificationCode() {
-            const emailInput = document.getElementById('modalEmailInput').value.trim();
-            if (!emailInput || !emailInput.includes('@')) {
-                showTransparentToast('Please enter a valid Gmail');
-                return;
-            }
-
-            activeOtp = Math.floor(100000 + Math.random() * 900000).toString();
-            const username = localStorage.getItem('dakicks_username') || 'DkxFounder';
-            const verificationLink = window.location.origin + window.location.pathname + "?verify=" + activeOtp;
-
-            const templateParams = {
-                to_email: emailInput,
-                user_name: username,
-                verification_code: activeOtp,
-                verification_link: verificationLink
-            };
-
-            const btn = document.querySelector('#modalEmailUnlinked button');
-            btn.innerText = 'Dispatching Code...';
-            btn.disabled = true;
-
-            emailjs.send('service_91i0edt', 'template_6a78v2d', templateParams)
-                .then(function(response) {
-                    document.getElementById('modalEmailUnlinked').style.display = 'none';
-                    document.getElementById('modalEmailVerify').style.display = 'block';
-                    
-                    let timeLeft = 60;
-                    const statusMsg = document.getElementById('modalOtpStatus');
-                    statusMsg.innerText = `OTP code & link sent! Expires in 60s.`;
-                    
-                    if (otpTimer) clearInterval(otpTimer);
-                    otpTimer = setInterval(() => {
-                        timeLeft--;
-                        if (timeLeft > 0) {
-                            statusMsg.innerText = `Code sent! Expires in ${timeLeft}s.`;
-                        } else {
-                            clearInterval(otpTimer);
-                            statusMsg.innerText = 'OTP code expired. Please resend.';
-                            activeOtp = null;
-                        }
-                    }, 1000);
-
-                }, function(error) {
-                    showTransparentToast('Transmission failed');
-                    btn.innerText = 'Send OTP & Link';
-                    btn.disabled = false;
-                });
-        }
-
-        function confirmVerificationCode() {
-            const enteredOtp = document.getElementById('modalOtpInput').value.trim();
-            if (!activeOtp) {
-                showTransparentToast('Verification code expired');
-                resetEmailState();
-                return;
-            }
-            if (enteredOtp !== activeOtp) {
-                showTransparentToast('Invalid OTP code');
-                return;
-            }
-
-            if (otpTimer) clearInterval(otpTimer);
-            const emailInput = document.getElementById('modalEmailInput').value.trim();
-            localStorage.setItem('dakicks_email', emailInput);
-
-            document.getElementById('modalEmailVerify').style.display = 'none';
-            document.getElementById('modalEmailLinked').style.display = 'block';
-            document.getElementById('modalLinkedEmailText').innerText = emailInput;
-            showTransparentToast('Email verified successfully');
-            triggerRealisticConfetti();
-        }
-
-        function resetEmailState() {
-            if (otpTimer) clearInterval(otpTimer);
-            activeOtp = null;
-            document.getElementById('modalEmailVerify').style.display = 'none';
-            document.getElementById('modalEmailUnlinked').style.display = 'block';
-            const btn = document.querySelector('#modalEmailUnlinked button');
-            btn.innerText = 'Send OTP & Link';
-            btn.disabled = false;
-        }
-
-        function disconnectEmail() {
-            localStorage.removeItem('dakicks_email');
-            document.getElementById('modalEmailLinked').style.display = 'none';
-            document.getElementById('modalEmailUnlinked').style.display = 'block';
-            document.getElementById('modalEmailInput').value = '';
-            resetEmailState();
-            showTransparentToast('Email disconnected');
-        }
-
-        // Transparent Toast Notification Function
-        function showTransparentToast(message) {
-            const toast = document.getElementById('toastNotification');
-            toast.innerText = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 2500);
-        }
-
-        // Copy Contract Address Action with Clean Toast
-        function copyContractAddress() {
-            const caText = "DEPLOYING AT LAUNCH (BNB CHAIN)";
-            navigator.clipboard.writeText(caText).then(() => {
-                showTransparentToast('Contract status copied to clipboard');
-            });
-        }
-
-        // Trust Wallet Connection Simulation
-        function connectTrustWallet() {
-            showTransparentToast('Trust Wallet bridge initialized');
-        }
-
-        // Tab Switching Engine with Dynamic Background Switch (`bg.mp4` for Terminal/Dakicks, `community-bg.mp4` for Community, `outlaybg.mp4` for Vault)
-        function switchTab(tabName, btnElement) {
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-            btnElement.classList.add('active');
-
-            const bgVideo = document.getElementById('mainBgVideo');
-            if (tabName === 'terminal' || tabName === 'dakicks') {
-                bgVideo.src = 'bg.mp4';
-            } else if (tabName === 'community') {
-                bgVideo.src = 'community-bg.mp4';
-            } else if (tabName === 'vault') {
-                bgVideo.src = 'outlaybg.mp4';
-            }
-            bgVideo.play().catch(e => {});
-        }
-
-        // High-Performance Realistic Confetti Engine
-        function triggerRealisticConfetti() {
-            const canvas = document.getElementById('confetti-canvas');
-            canvas.style.display = 'block';
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const particles = [];
-            const colors = ['#ffffff', '#00ff80', '#3375BB', '#ff2d55', '#e5e5ea', '#ffd700'];
-
-                    for (let i = 0; i < 140; i++) {
-            particles.push({
-                x: canvas.width / 2,
-                y: canvas.height / 2 + 50,
-                vx: (Math.random() - 0.5) * 16,
-                vy: (Math.random() - 0.7) * 16 - 4,
-                size: Math.random() * 7 + 3,
-                color: colors[Math.floor(Math.random() * colors.length)],
-                rot: Math.random() * 360,
-                vrot: (Math.random() - 0.5) * 10
-            });
-        }
-
-        let animationFrame;
-        function render() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach((p, index) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.4;
-                p.rot += p.vrot;
-
-                ctx.save();
-                ctx.translate(p.x, p.y);
-                ctx.rotate((p.rot * Math.PI) / 180);
-                ctx.fillStyle = p.color;
-                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-                ctx.restore();
-
-                if (p.y > canvas.height) particles.splice(index, 1);
-            });
-
-            if (particles.length > 0) {
-                animationFrame = requestAnimationFrame(render);
-            } else {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                canvas.style.display = 'none';
-                cancelAnimationFrame(animationFrame);
-            }
-        }
-        render();
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+
+<title>DAKICKS® Terminal — RWA Intelligence</title>
+
+<meta name="theme-color" content="#050507">
+<meta name="description" content="DAKICKS® high-end cryptographic RWA terminal on BNB Smart Chain">
+
+<!-- =========================================================
+     EXTERNAL LIBRARIES
+========================================================= -->
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.min.js"></script>
+
+<style>
+/* =========================================================
+   RESET
+========================================================= */
+
+*,
+*::before,
+*::after{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    background:#050507;
+    color:#f4f7f5;
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+button,
+input{
+    font:inherit;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+:root{
+    --bg:#050507;
+    --panel:rgba(13,16,15,.78);
+    --panel2:rgba(18,22,20,.72);
+    --line:rgba(190,210,201,.16);
+    --line2:rgba(255,255,255,.09);
+
+    --white:#f4f7f5;
+    --muted:#8e9c96;
+    --muted2:#66726d;
+
+    --green:#00f59b;
+    --green2:#00c77e;
+    --green-soft:rgba(0,245,155,.12);
+
+    --danger:#ff4050;
+
+    --radius:25px;
+    --nav-height:88px;
+    --header-height:98px;
+
+    --shadow:
+        0 30px 90px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+/* =========================================================
+   APP SHELL
+========================================================= */
+
+#app{
+    position:relative;
+    width:100%;
+    height:100dvh;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 20% 10%,rgba(0,255,170,.045),transparent 28%),
+        radial-gradient(circle at 90% 70%,rgba(0,255,170,.025),transparent 30%),
+        #050507;
+}
+
+#threeCanvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:.72;
+    pointer-events:none;
+    z-index:1;
+}
+
+#grain{
+    position:absolute;
+    inset:-100%;
+    z-index:2;
+    pointer-events:none;
+    opacity:.035;
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+    animation:grain .25s steps(2) infinite;
+}
+
+@keyframes grain{
+    0%{transform:translate(0,0)}
+    25%{transform:translate(2%,-3%)}
+    50%{transform:translate(-3%,2%)}
+    75%{transform:translate(3%,3%)}
+    100%{transform:translate(-2%,-2%)}
+}
+
+/* =========================================================
+   BACKGROUND VIDEO
+========================================================= */
+
+#bgVideo{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:0;
+    opacity:.14;
+    filter:
+        saturate(.55)
+        contrast(1.2)
+        brightness(.55);
+    pointer-events:none;
+    transition:opacity .5s ease;
+}
+
+.video-vignette{
+    position:absolute;
+    inset:0;
+    z-index:3;
+    pointer-events:none;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.76) 0%,
+            rgba(0,0,0,.18) 22%,
+            rgba(0,0,0,.1) 55%,
+            rgba(0,0,0,.78) 100%
+        );
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.app-header{
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    height:var(--header-height);
+    z-index:20;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:
+        max(14px,env(safe-area-inset-top))
+        22px
+        8px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(2,3,3,.96),
+            rgba(3,4,4,.84)
+        );
+
+    border-bottom:1px solid rgba(255,255,255,.07);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+}
+
+.header-left{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.close-button,
+.menu-button,
+.header-chevron{
+    width:44px;
+    height:44px;
+    display:grid;
+    place-items:center;
+    background:transparent;
+    color:white;
+}
+
+.close-button{
+    font-size:34px;
+    font-weight:200;
+}
+
+.brand-title{
+    font-size:23px;
+    font-weight:850;
+    letter-spacing:-.6px;
+}
+
+.header-right{
+    display:flex;
+    align-items:center;
+    gap:3px;
+}
+
+.header-chevron{
+    font-size:30px;
+}
+
+.menu-button{
+    font-size:29px;
+}
+
+.profile-trigger{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:5px 8px 5px 0;
+    background:transparent;
+    color:white;
+}
+
+.avatar{
+    width:47px;
+    height:47px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid rgba(255,255,255,.55);
+    box-shadow:
+        0 0 0 1px rgba(0,245,155,.05),
+        0 0 24px rgba(0,245,155,.13);
+    background:#1c211f;
+}
+
+.profile-name{
+    font-size:17px;
+    font-weight:750;
+}
+
+.wallet-mini{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:#94a19b;
+    font-size:15px;
+}
+
+.wallet-dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 17px var(--green);
+}
+
+/* =========================================================
+   PAGE ENGINE
+========================================================= */
+
+#pages{
+    position:absolute;
+    inset:
+        var(--header-height)
+        0
+        var(--nav-height)
+        0;
+    z-index:10;
+    overflow:hidden;
+}
+
+.page{
+    position:absolute;
+    inset:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:25px 20px 55px;
+    opacity:0;
+    transform:translateX(24px) scale(.985);
+    pointer-events:none;
+    transition:
+        opacity .34s ease,
+        transform .42s cubic-bezier(.2,.8,.2,1);
+    scrollbar-width:none;
+}
+
+.page::-webkit-scrollbar{
+    display:none;
+}
+
+.page.active{
+    opacity:1;
+    transform:none;
+    pointer-events:auto;
+}
+
+/* =========================================================
+   SECTION LABEL
+========================================================= */
+
+.section-label{
+    margin:11px 14px 26px;
+    color:#93a29b;
+    font-size:13px;
+    font-weight:850;
+    letter-spacing:3px;
+}
+
+/* =========================================================
+   GLASS CARDS
+========================================================= */
+
+.glass{
+    position:relative;
+    overflow:hidden;
+
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(22,27,25,.84),
+            rgba(8,10,10,.78)
+        );
+
+    box-shadow:var(--shadow);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+}
+
+.glass::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            120deg,
+            rgba(255,255,255,.055),
+            transparent 23%,
+            transparent 70%,
+            rgba(255,255,255,.018)
+        );
+}
+
+.glow-line{
+    position:absolute;
+    left:12%;
+    right:12%;
+    top:0;
+    height:1px;
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(0,245,155,.55),
+            transparent
+        );
+    filter:blur(.5px);
+}
+
+/* =========================================================
+   TERMINAL
+========================================================= */
+
+.terminal-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+}
+
+.symbol-selector{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+}
+
+.search-icon{
+    width:25px;
+    height:25px;
+    border:3px solid #e7ece9;
+    border-radius:50%;
+    position:relative;
+}
+
+.search-icon::after{
+    content:"";
+    position:absolute;
+    width:9px;
+    height:3px;
+    background:#e7ece9;
+    transform:rotate(45deg);
+    right:-7px;
+    bottom:-4px;
+}
+
+.symbol{
+    font-weight:800;
+    font-size:18px;
+}
+
+.add-symbol{
+    width:38px;
+    height:38px;
+    border:1px solid rgba(255,255,255,.24);
+    border-radius:50%;
+    background:rgba(255,255,255,.025);
+    color:white;
+    font-size:26px;
+}
+
+.timeframes{
+    display:flex;
+    align-items:center;
+    gap:3px;
+    overflow:hidden;
+}
+
+.timeframe{
+    padding:10px 12px;
+    border-radius:11px;
+    background:transparent;
+    color:#d4d9d7;
+    font-size:14px;
+}
+
+.timeframe.active{
+    background:rgba(255,255,255,.18);
+}
+
+.chart-shell{
+    height:590px;
+    min-height:500px;
+    border-radius:25px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.1);
+    background:#060707;
+    box-shadow:
+        inset 0 0 80px rgba(0,0,0,.7),
+        0 25px 80px rgba(0,0,0,.4);
+}
+
+#tradingview_chart{
+    width:100%;
+    height:100%;
+}
+
+/* =========================================================
+   DAKICKS RWA
+========================================================= */
+
+.rwa-grid{
+    display:grid;
+    gap:17px;
+}
+
+.rwa-card{
+    min-height:206px;
+    padding:28px 28px 25px;
+    perspective:1000px;
+}
+
+.rwa-card-content{
+    position:relative;
+    z-index:3;
+    width:78%;
+}
+
+.rwa-title{
+    font-size:25px;
+    font-weight:850;
+    margin-bottom:17px;
+    letter-spacing:-.6px;
+}
+
+.rwa-description{
+    color:#a1afa8;
+    font-size:17px;
+    line-height:1.65;
+}
+
+.badge{
+    position:absolute;
+    right:25px;
+    top:28px;
+    z-index:4;
+
+    padding:8px 13px;
+
+    border:1px solid rgba(255,255,255,.17);
+    border-radius:8px;
+
+    background:rgba(255,255,255,.075);
+
+    color:#d9dfdc;
+    font-size:12px;
+    font-weight:850;
+}
+
+.rwa-coin{
+    position:absolute;
+    right:32px;
+    bottom:28px;
+    width:72px;
+    height:72px;
+    border-radius:50%;
+
+    display:grid;
+    place-items:center;
+
+    font-weight:900;
+    font-size:27px;
+
+    color:#101211;
+
+    background:
+        radial-gradient(
+            circle at 30% 28%,
+            #fff,
+            #aeb4b0 42%,
+            #555b58 70%,
+            #1a1c1b
+        );
+
+    border:2px solid #d4d9d6;
+
+    box-shadow:
+        0 12px 40px rgba(0,0,0,.7),
+        inset 5px 5px 12px rgba(255,255,255,.7),
+        inset -7px -7px 15px rgba(0,0,0,.65);
+
+    transform-style:preserve-3d;
+    animation:coinFloat 4s ease-in-out infinite;
+}
+
+.rwa-coin::after{
+    content:"D";
+    width:46px;
+    height:46px;
+    display:grid;
+    place-items:center;
+    border:1px solid rgba(0,0,0,.28);
+    border-radius:50%;
+    transform:translateZ(5px);
+}
+
+@keyframes coinFloat{
+    0%,100%{transform:translateY(0) rotateY(0deg)}
+    50%{transform:translateY(-7px) rotateY(180deg)}
+}
+
+.card-video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:.12;
+    mix-blend-mode:screen;
+    pointer-events:none;
+}
+
+/* =========================================================
+   COMMUNITY
+========================================================= */
+
+.social-stack{
+    display:grid;
+    gap:17px;
+}
+
+.social-card{
+    min-height:126px;
+    display:flex;
+    align-items:center;
+    gap:20px;
+    padding:20px 20px 20px 25px;
+}
+
+.social-icon{
+    width:64px;
+    height:64px;
+    flex:0 0 64px;
+    display:grid;
+    place-items:center;
+
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,.13);
+    background:rgba(255,255,255,.035);
+
+    font-size:29px;
+    font-weight:900;
+}
+
+.social-info{
+    min-width:0;
+    flex:1;
+}
+
+.social-title{
+    font-size:20px;
+    font-weight:850;
+    margin-bottom:4px;
+}
+
+.social-handle{
+    color:#9ba7a2;
+    font-size:17px;
+}
+
+.open-node{
+    min-width:143px;
+    height:57px;
+    padding:0 18px;
+    border-radius:17px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(255,255,255,.055);
+    color:#f3f5f4;
+    font-weight:800;
+    font-size:16px;
+}
+
+.open-node:active{
+    transform:scale(.97);
+}
+
+.x-card{
+    overflow:hidden;
+}
+
+.x-card .squirrel-video{
+    position:absolute;
+    right:20px;
+    top:8px;
+    width:92px;
+    height:92px;
+    object-fit:cover;
+    border-radius:50%;
+    opacity:.22;
+    mix-blend-mode:screen;
+    pointer-events:none;
+}
+
+/* =========================================================
+   VAULT
+========================================================= */
+
+.vault-hero{
+    padding:35px 25px 30px;
+    text-align:center;
+    margin-bottom:18px;
+}
+
+.shield{
+    width:100px;
+    height:100px;
+    margin:0 auto 28px;
+
+    display:grid;
+    place-items:center;
+
+    border-radius:31px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.12),
+            rgba(255,255,255,.025)
+        );
+
+    border:1px solid rgba(255,255,255,.18);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.7),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    font-size:47px;
+
+    transform-style:preserve-3d;
+    animation:shieldFloat 5s ease-in-out infinite;
+}
+
+@keyframes shieldFloat{
+    0%,100%{
+        transform:translateY(0) rotateX(0) rotateY(0);
     }
-    </script>
-</body>
-</html>
+    50%{
+        transform:translateY(-8px) rotateX(5deg) rotateY(-8deg);
+    }
+}
 
+.vault-title{
+    font-size:27px;
+    font-weight:900;
+    letter-spacing:-.8px;
+}
+
+.vault-sub{
+    color:#9aa8a1;
+    font-size:15px;
+    line-height:1.7;
+    margin:13px auto 0;
+    max-width:500px;
+}
+
+.ca-box{
+    margin:0 0 18px;
+    padding:19px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+
+    border-radius:22px;
+    background:rgba(0,0,0,.48);
+    border:1px solid rgba(255,255,255,.13);
+}
+
+.ca-text{
+    min-width:0;
+    overflow:hidden;
+}
+
+.ca-label{
+    color:#94a39b;
+    font-size:12px;
+    letter-spacing:1.6px;
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.ca-value{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-family:monospace;
+    color:#dbe3df;
+    font-size:14px;
+}
+
+.primary-button{
+    min-height:62px;
+    width:100%;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #cdd8e4
+        );
+
+    color:#090b0a;
+
+    font-size:16px;
+    font-weight:900;
+    letter-spacing:.7px;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.4),
+        inset 0 1px 0 white;
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.primary-button:hover{
+    box-shadow:
+        0 20px 70px rgba(0,0,0,.6),
+        0 0 30px rgba(255,255,255,.1);
+}
+
+.primary-button:active{
+    transform:scale(.985);
+}
+
+.primary-button.connected{
+    background:
+        linear-gradient(
+            135deg,
+            #00f59b,
+            #00bd7b
+        );
+}
+
+.allocation-card{
+    padding:28px 25px;
+    margin-top:18px;
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+}
+
+.card-label{
+    color:#93a29b;
+    letter-spacing:2px;
+    font-weight:850;
+    font-size:13px;
+}
+
+.online{
+    color:var(--green);
+    font-size:14px;
+    font-weight:900;
+}
+
+.amount{
+    font-size:48px;
+    font-weight:900;
+    letter-spacing:-2px;
+    margin-bottom:25px;
+}
+
+.amount span{
+    font-size:18px;
+    color:#89968f;
+    letter-spacing:0;
+}
+
+.claim-button{
+    width:100%;
+    min-height:64px;
+    border-radius:19px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #d6e0eb
+        );
+
+    color:#080a09;
+    font-size:17px;
+    font-weight:900;
+}
+
+.claim-button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.allocations{
+    margin-top:18px;
+    padding:25px;
+}
+
+.verified-badge{
+    border:1px solid rgba(0,245,155,.45);
+    background:rgba(0,245,155,.08);
+    color:var(--green);
+    padding:8px 12px;
+    border-radius:99px;
+    font-size:12px;
+    font-weight:850;
+}
+
+.allocation-row{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:15px;
+    align-items:center;
+    padding:16px 0;
+    border-bottom:1px solid rgba(255,255,255,.055);
+    font-family:monospace;
+}
+
+.allocation-row:last-child{
+    border-bottom:0;
+}
+
+.allocation-address{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    color:#bbc4c0;
+}
+
+.allocation-value{
+    color:var(--green);
+    font-weight:900;
+}
+
+.allocation-time{
+    color:#65716c;
+    font-family:inherit;
+}
+
+/* =========================================================
+   BOTTOM NAV
+========================================================= */
+
+.bottom-nav{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:var(--nav-height);
+    z-index:30;
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+
+    padding:
+        7px
+        10px
+        max(8px,env(safe-area-inset-bottom));
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(3,5,4,.87),
+            rgba(2,3,3,.98)
+        );
+
+    border-top:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+}
+
+.nav-button{
+    position:relative;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:5px;
+
+    color:#59645f;
+    background:transparent;
+
+    transition:
+        color .25s ease,
+        transform .25s ease;
+}
+
+.nav-button.active{
+    color:#f2f5f3;
+}
+
+.nav-button.active::before{
+    content:"";
+    position:absolute;
+    top:-7px;
+    width:42px;
+    height:2px;
+    border-radius:9px;
+    background:var(--green);
+    box-shadow:0 0 17px rgba(0,245,155,.75);
+}
+
+.nav-icon{
+    width:27px;
+    height:27px;
+    display:grid;
+    place-items:center;
+    font-size:23px;
+}
+
+.nav-label{
+    font-size:12px;
+    letter-spacing:1.7px;
+    font-weight:900;
+}
+
+/* =========================================================
+   PROFILE MODAL
+========================================================= */
+
+.modal-layer{
+    position:fixed;
+    inset:0;
+    z-index:100;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+
+    background:rgba(0,0,0,.72);
+
+    opacity:0;
+    visibility:hidden;
+    transition:.3s ease;
+
+    backdrop-filter:blur(12px);
+}
+
+.modal-layer.open{
+    opacity:1;
+    visibility:visible;
+}
+
+.profile-modal{
+    width:min(100%,620px);
+    max-height:92dvh;
+    overflow:auto;
+
+    padding:
+        14px
+        25px
+        max(30px,env(safe-area-inset-bottom));
+
+    border-radius:34px 34px 0 0;
+
+    border:1px solid rgba(255,255,255,.13);
+    border-bottom:0;
+
+    background:
+        linear-gradient(
+            160deg,
+            rgba(17,21,19,.98),
+            rgba(6,8,8,.99)
+        );
+
+    transform:translateY(100%);
+    transition:
+        transform .45s cubic-bezier(.2,.85,.2,1);
+
+    box-shadow:
+        0 -30px 100px rgba(0,0,0,.75);
+}
+
+.modal-layer.open .profile-modal{
+    transform:translateY(0);
+}
+
+.drag-handle{
+    width:74px;
+    height:5px;
+    border-radius:20px;
+    background:#3b4541;
+    margin:0 auto 20px;
+}
+
+.modal-top{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.modal-close{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:rgba(255,255,255,.05);
+    color:white;
+    font-size:25px;
+}
+
+.profile-center{
+    text-align:center;
+}
+
+.big-avatar-wrap{
+    position:relative;
+    width:126px;
+    height:126px;
+    margin:12px auto 20px;
+}
+
+.big-ava
