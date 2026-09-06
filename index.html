@@ -1,1 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>$DKX - Sovereign Retro Terminal</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #050b14;
+            --accent-green: #00ff88;
+            --accent-gold: #f3ba2f;
+            --card-glass: rgba(10, 20, 35, 0.75);
+            --border-neon: rgba(0, 255, 136, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #8ca0b3;
+        }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-deep); color: var(--text-main); min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column; }
+
+        /* Full Bright Background Video Layer */
+        .bg-video-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; pointer-events: none;
+        }
+        .bg-video-container video {
+            width: 100%; height: 100%; object-fit: cover; filter: brightness(1.25) contrast(1.15); /* High brightness & vivid contrast */
+        }
+        .bg-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            background: linear-gradient(180deg, rgba(5, 11, 20, 0.45) 0%, rgba(5, 11, 20, 0.85) 100%);
+        }
+
+        /* Top Sovereign Header */
+        .header {
+            display: flex; justify-content: space-between; align-items: center; padding: 14px 18px;
+            background: rgba(8, 16, 28, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-neon);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .avatar-box {
+            width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; color: #000;
+            overflow: hidden; border: 2px solid var(--accent-green); box-shadow: 0 0 12px rgba(0,255,136,0.5);
+        }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+        .user-info h4 { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .user-info span { font-size: 10px; color: var(--accent-green); font-weight: 600; text-transform: uppercase; }
+
+        .terminal-actions { display: flex; gap: 8px; position: relative; }
+        .icon-btn {
+            background: rgba(0,255,136,0.1); border: 1px solid var(--border-neon); color: var(--accent-green);
+            padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;
+        }
+        .icon-btn:active { transform: scale(0.95); background: var(--accent-green); color: #000; }
+
+        /* Main Container & Tabs */
+        .main-container { flex: 1; padding: 16px; padding-bottom: 90px; max-width: 480px; width: 100%; margin: 0 auto; }
+        .tab-pane { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Luxury Retro Arcade Banner (3D Rope & Emerald Coin with Scrolling Numbers) */
+        .arcade-banner {
+            background: linear-gradient(135deg, rgba(12, 28, 45, 0.9), rgba(5, 14, 25, 0.95));
+            border: 2px solid var(--accent-green); border-radius: 16px; padding: 20px; text-align: center;
+            position: relative; overflow: hidden; box-shadow: 0 0 25px rgba(0, 255, 136, 0.3); margin-bottom: 16px;
+        }
+        .rope-line {
+            position: absolute; top: 0; left: 50%; width: 4px; height: 35px; background: linear-gradient(to bottom, #d4af37, #8b6508);
+            transform: translateX(-50%); box-shadow: 0 0 8px rgba(212, 175, 55, 0.8);
+        }
+        .emerald-coin-3d {
+            width: 75px; height: 75px; margin: 15px auto 10px auto; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #4ade80, #065f46 70%, #022c22 100%);
+            border: 3px solid #f3ba2f; display: flex; align-items: center; justify-content: center;
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.6), 0 0 20px rgba(0, 255, 136, 0.8);
+            position: relative; animation: coinFloat 3s ease-in-out infinite;
+        }
+        @keyframes coinFloat { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-6px) rotate(3deg); } }
+        
+        .scrolling-numbers {
+            font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: var(--accent-gold);
+            letter-spacing: 4px; text-shadow: 0 0 10px rgba(243, 186, 47, 0.8); overflow: hidden; height: 30px; display: flex; justify-content: center; align-items: center;
+        }
+
+        .arcade-title { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 900; color: #fff; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
+        .arcade-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+
+        /* Glass Cards */
+        .card {
+            background: var(--card-glass); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent-green); margin-bottom: 12px; letter-spacing: 0.5px; }
+
+        /* Cipher Digit Inputs */
+        .cipher-grid { display: flex; gap: 8px; justify-content: center; margin: 12px 0; }
+        .cipher-input {
+            width: 48px; height: 55px; background: rgba(5, 11, 20, 0.9); border: 2px solid var(--border-neon);
+            border-radius: 10px; font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900; color: var(--accent-green);
+            text-align: center; outline: none; box-shadow: inset 0 0 8px rgba(0,255,136,0.2); transition: 0.2s;
+        }
+        .cipher-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 15px rgba(243,186,47,0.5); }
+
+        /* Action Buttons */
+        .action-btn {
+            width: 100%; background: linear-gradient(135deg, var(--accent-green), #00b359); color: #000;
+            border: none; padding: 13px; border-radius: 10px; font-family: 'Orbitron', sans-serif; font-size: 13px;
+            font-weight: 900; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 15px rgba(0,255,136,0.4);
+            transition: 0.2s;
+        }
+        .action-btn:active { transform: scale(0.98); }
+
+        /* Bottom Gen-Z Navigation */
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(5, 11, 20, 0.92); backdrop-filter: blur(15px);
+            border-top: 1px solid var(--border-neon); display: flex; justify-content: space-around; padding: 10px 0; z-index: 100;
+        }
+        .nav-btn {
+            background: none; border: none; color: var(--text-muted); font-size: 11px; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s;
+        }
+        .nav-btn.active { color: var(--accent-green); text-shadow: 0 0 10px rgba(0,255,136,0.6); }
+        .nav-btn span { font-size: 10px; font-family: 'Orbitron', sans-serif; }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: rgba(0, 255, 136, 0.95); color: #000; padding: 10px 20px; border-radius: 8px;
+            font-weight: 700; font-size: 12px; z-index: 1000; transition: transform 0.3s ease; box-shadow: 0 0 20px rgba(0,255,136,0.8);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+    <div class="bg-video-container">
+        <video id="mainBgVideo" autoplay muted loop playsinline>
+            <source src="bg.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="bg-overlay"></div>
+
+    <div id="toastNotification" class="toast">Action Successful</div>
+
+    <div class="header">
+        <div class="user-profile" onclick="toggleProfileModal(true)">
+            <div class="avatar-box" id="headerAvatarBox"><span>DK</span></div>
+            <div class="user-info">
+                <h4 id="headerUsername">Sovereign Player</h4>
+                <span>VIP Terminal</span>
+            </div>
+        </div>
+        <div class="terminal-actions">
+            <button class="icon-btn" onclick="toggleLinksMenu()">⚡ Links</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <div id="tab-home" class="tab-pane active">
+            <div class="arcade-banner">
+                <div class="rope-line"></div>
+                <div class="emerald-coin-3d">
+                    <span style="font-size: 26px;">💎</span>
+                </div>
+                <div class="scrolling-numbers" id="scrollingNumbersDisplay">49812</div>
+                <div class="arcade-title">GTA Vice Luxury Cipher</div>
+                <p class="arcade-desc">Tap & complete the 5-digit daily security cipher code to unlock massive $DKX asset drops.</p>
+            </div>
+
+            <div class="card">
+                <span style="font-size: 10px; color: var(--accent-gold); font-weight: 700; letter-spacing: 1px;">SECURE VAULT ACCESS</span>
+                <h3 style="font-size: 15px; margin: 4px 0 10px 0;">Enter 5-Digit Daily Cipher</h3>
+                
+                <div class="cipher-grid">
+                    <input type="number" maxlength="1" class="cipher-input" id="codeDigit1" oninput="moveToNext(this, 'codeDigit2')">
+                    <input type="number" maxlength="1" class="cipher-input" id="codeDigit2" oninput="moveToNext(this, 'codeDigit3')">
+                    <input type="number" maxlength="1" class="cipher-input" id="codeDigit3" oninput="moveToNext(this, 'codeDigit4')">
+                    <input type="number" maxlength="1" class="cipher-input" id="codeDigit4" oninput="moveToNext(this, 'codeDigit5')">
+                    <input type="number" maxlength="1" class="cipher-input" id="codeDigit5" oninput="moveToNext(this, null)">
+                </div>
+
+                <button class="action-btn" id="claimCodeBtn" onclick="claimDailyCode()" style="margin-top: 10px;">Claim +25,000 $DKX</button>
+                <p id="claimTimerText" style="text-align: center; font-size: 10px; color: var(--text-muted); margin-top: 8px;"></p>
+            </div>
+        </div>
+
+        <div id="tab-games" class="tab-pane">
+            <div class="section-title">Arcade Mini-Games</div>
+            <div class="card" style="text-align: center; padding: 20px;">
+                <span style="font-size: 32px;">🎰</span>
+                <h3 style="font-size: 16px; margin: 8px 0;">Neon Vegas Slot</h3>
+                <p class="desc" style="margin-bottom: 12px; font-size: 12px;">Spin the high-roller wheel to multiply your daily earnings instantly.</p>
+                <button class="action-btn" onclick="showToast('Spinning feature launching soon!')">Play Mini-Game</button>
+            </div>
+        </div>
+
+        <div id="tab-market" class="tab-pane">
+            <div class="section-title">Market & Live Telemetry</div>
+            <div class="card" style="text-align: center; padding: 18px;">
+                <h3 style="font-size: 15px; margin-bottom: 8px;">BNB/USDT Live Chart Feed</h3>
+                <button class="action-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=BINANCE%3ABNBUSDT', '_blank')">Open Full Chart ↗</button>
+            </div>
+        </div>
+
+        <div id="tab-referral" class="tab-pane">
+            <div class="section-title">Sovereign Referral Network</div>
+            <div class="card" style="text-align: center;">
+                <h3 style="font-size: 18px; margin: 6px 0;">Earn +50 $DKX Per Friend</h3>
+                <button class="action-btn" onclick="navigator.clipboard.writeText('https://t.me/DkxTerminalBot?start=ref_001'); showToast('Referral link copied!');">Copy Invite Link</button>
+            </div>
+        </div>
+
+        <div id="tab-wallet" class="tab-pane">
+            <div class="section-title">Web3 Wallet Integration</div>
+            <div class="card">
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button class="action-btn" style="background:#3375BB; color:#fff;" onclick="window.open('https://link.trustwallet.com/', '_blank')">🛡️ Trust Wallet</button>
+                    <button class="action-btn" style="background:#0088cc; color:#fff;" onclick="window.open('https://tonkeeper.com/', '_blank')">💎 Tonkeeper</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="nav-bar">
+        <button class="nav-btn active" onclick="switchTab('home', this)"><span>Home</span></button>
+        <button class="nav-btn" onclick="switchTab('games', this)"><span>Games</span></button>
+        <button class="nav-btn" onclick="switchTab('market', this)"><span>Market</span></button>
+        <button class="nav-btn" onclick="switchTab('referral', this)"><span>Referral</span></button>
+        <button class="nav-btn" onclick="switchTab('wallet', this)"><span>Wallet</span></button>
+    </div>
+
+    <script>
+        // High-speed scrolling numbers effect inside the 3D coin banner
+        setInterval(() => {
+            const randomNum = Math.floor(10000 + Math.random() * 90000);
+            const el = document.getElementById('scrollingNumbersDisplay');
+            if(el) el.innerText = randomNum;
+        }, 120);
+
+        function moveToNext(current, nextFieldId) {
+            if (current.value.length >= 1 && nextFieldId) {
+                document.getElementById(nextFieldId).focus();
+            }
+        }
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastNotification');
+            t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function claimDailyCode() {
+            const d1 = document.getElementById('codeDigit1').value;
+            const d2 = document.getElementById('codeDigit2').value;
+            const d3 = document.getElementById('codeDigit3').value;
+            const d4 = document.getElementById('codeDigit4').value;
+            const d5 = document.getElementById('codeDigit5').value;
+            if(!d1 || !d2 || !d3 || !d4 || !d5) {
+                showToast('Please enter all 5 digits!');
+                return;
+            }
+            if(d1+d2+d3+d4+d5 === '50546') {
+                showToast('Success! +25,000 $DKX Credited');
+            } else {
+                showToast('Incorrect Cipher Code!');
+            }
+        }
+    </script>
+</body>
+</html>
