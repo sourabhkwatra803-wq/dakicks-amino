@@ -13,13 +13,12 @@
 
   <style>
     :root {
-      --bg-dark: #070908;
-      --glass-surface: rgba(18, 22, 20, 0.76);
-      --glass-border: rgba(255, 255, 255, 0.12);
+      --bg-dark: #000000;
+      --glass-surface: rgba(18, 18, 20, 0.85);
+      --glass-border: rgba(255, 255, 255, 0.08);
       --text-pure: #ffffff;
-      --text-secondary: #9aa8a1;
-      --accent-green: #00ff88;
-      --accent-blue: #38bdf8;
+      --text-secondary: #8e8e93;
+      --accent-white: #ffffff;
     }
 
     * {
@@ -53,7 +52,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(7, 9, 8, 0.94);
+      background: rgba(0, 0, 0, 0.9);
       border-bottom: 1px solid var(--glass-border);
       z-index: 50;
       backdrop-filter: blur(20px);
@@ -67,18 +66,17 @@
     }
 
     .user-avatar-badge {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      background: #1c1c1e;
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 13px;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
-      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      font-weight: 700;
+      font-size: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
       background-size: cover;
       background-position: center;
       overflow: hidden;
@@ -86,34 +84,29 @@
 
     .user-handle-txt {
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
       max-width: 120px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      color: #ffffff;
     }
 
     .network-pill {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       font-size: 11px;
       color: var(--text-secondary);
-      font-family: 'SF Mono', Monaco, monospace;
+      font-family: -apple-system, monospace;
     }
 
     .network-pill .pulse-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--accent-green);
-      box-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
-      animation: pulseAnim 2s infinite ease-in-out;
-    }
-
-    @keyframes pulseAnim {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.25); opacity: 0.5; }
+      background: #ffffff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
     }
 
     .main-viewport {
@@ -150,14 +143,14 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.42;
-      filter: contrast(1.15) brightness(0.85);
+      opacity: 0.25;
+      filter: contrast(1.1) brightness(0.7);
     }
 
     .video-overlay-gradient {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(7, 9, 8, 0.4) 0%, rgba(7, 9, 8, 0.94) 100%);
+      background: radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.95) 100%);
       z-index: 2;
     }
 
@@ -175,7 +168,7 @@
     .section-title {
       font-size: 10.5px;
       text-transform: uppercase;
-      letter-spacing: 1.8px;
+      letter-spacing: 1.5px;
       color: var(--text-secondary);
       margin: 4px 0 14px 2px;
       font-weight: 700;
@@ -190,13 +183,11 @@
       padding: 18px;
       margin-bottom: 14px;
       backdrop-filter: blur(20px);
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
       position: relative;
       z-index: 5;
       overflow: hidden;
     }
 
-    /* 3D Video Stickers */
     .card-3d-sticker {
       position: absolute;
       right: -6px;
@@ -206,21 +197,8 @@
       pointer-events: none;
       z-index: 6;
       mix-blend-mode: screen;
-      opacity: 0.9;
+      opacity: 0.85;
       transform: rotate(-4deg);
-    }
-
-    .x-left-sticker {
-      position: absolute;
-      left: -12px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 72px;
-      height: 72px;
-      pointer-events: none;
-      z-index: 6;
-      mix-blend-mode: screen;
-      opacity: 0.95;
     }
 
     .card-head {
@@ -244,7 +222,7 @@
       padding: 3px 8px;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.08);
-      color: #e2e8f0;
+      color: #ffffff;
       border: 1px solid var(--glass-border);
     }
 
@@ -269,7 +247,6 @@
       backdrop-filter: blur(20px);
       z-index: 5;
       position: relative;
-      overflow: hidden;
     }
 
     .comm-left {
@@ -311,7 +288,7 @@
     }
 
     .btn-node {
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--glass-border);
       color: #ffffff;
       padding: 9px 16px;
@@ -324,6 +301,261 @@
       z-index: 7;
     }
 
+    /* BLUM-STYLE LUXURY REFERRAL UI (MATCHING 10873.png) */
+    .referral-container {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-bottom: 20px;
+    }
+
+    .ref-balance-card {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 24px 20px;
+      text-align: center;
+      backdrop-filter: blur(24px);
+    }
+
+    .ref-bal-title {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .ref-bal-amount {
+      font-size: 32px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .ref-bal-usd {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .btn-goto-wallet {
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .ref-banner-card {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+      backdrop-filter: blur(24px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .ref-banner-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ref-tier-badges {
+      display: flex;
+      align-items: center;
+      gap: -8px;
+    }
+
+    .tier-badge-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1c1c1e;
+      border: 2px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .ref-comm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .ref-comm-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .ref-comm-pct {
+      font-size: 22px;
+      font-weight: 900;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .ref-comm-desc {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .frens-row {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(20px);
+      cursor: pointer;
+    }
+
+    .frens-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .frens-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .frens-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .frens-count {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .btn-invite-frens-main {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+    }
+
+    /* LEADERBOARD TAB */
+    .leaderboard-wrapper {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .lb-header-card {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+    }
+
+    .lb-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .lb-subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .lb-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .lb-row {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(16px);
+    }
+
+    .lb-user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lb-rank {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-secondary);
+      width: 24px;
+      text-align: center;
+    }
+
+    .lb-rank.top-1 { color: #f59e0b; }
+    .lb-rank.top-2 { color: #94a3b8; }
+    .lb-rank.top-3 { color: #b45309; }
+
+    .lb-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .lb-score {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    /* VAULT & WALLET MODAL */
     .vault-wrapper {
       position: relative;
       z-index: 5;
@@ -376,13 +608,13 @@
     .ca-text {
       font-size: 11px;
       color: var(--text-secondary);
-      font-family: 'SF Mono', Monaco, monospace;
+      font-family: -apple-system, monospace;
       font-weight: 600;
     }
 
     .btn-copy-ca {
       background: #ffffff;
-      color: #070908;
+      color: #000000;
       border: none;
       padding: 7px 14px;
       border-radius: 7px;
@@ -407,7 +639,7 @@
       padding: 14px;
       font-size: 12.5px;
       font-weight: 800;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       cursor: pointer;
       margin-bottom: 18px;
     }
@@ -441,7 +673,10 @@
     .alloc-status {
       font-size: 9.5px;
       font-weight: 800;
-      color: #00ff88;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 8px;
+      border-radius: 6px;
     }
 
     .alloc-value {
@@ -453,9 +688,9 @@
 
     .btn-claim-ad {
       width: 100%;
-      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      background: #ffffff;
       border: none;
-      color: #070908;
+      color: #000000;
       font-size: 13px;
       font-weight: 800;
       padding: 14px;
@@ -468,147 +703,115 @@
       text-transform: uppercase;
     }
 
-    /* Proof of Payouts Ledger */
-    .ledger-box {
-      width: 100%;
-      background: rgba(14, 17, 16, 0.85);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: left;
+    /* WALLET SELECTION MODAL */
+    .wallet-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(16px);
-      margin-bottom: 14px;
+      z-index: 99990;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    .ledger-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
+    .wallet-modal-backdrop.show {
+      display: block;
+      opacity: 1;
     }
 
-    .ledger-title {
-      font-size: 10.5px;
-      font-weight: 800;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-    }
-
-    .ledger-badge {
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--accent-green);
-      background: rgba(0, 255, 136, 0.1);
-      padding: 3px 8px;
-      border-radius: 12px;
-      border: 1px solid rgba(0, 255, 136, 0.25);
-    }
-
-    .ledger-list {
+    .wallet-modal {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: -100%;
+      background: #111113;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px 28px 0 0;
+      padding: 24px 20px 42px 20px;
+      z-index: 99995;
+      transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
-      gap: 9px;
     }
 
-    .ledger-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11.5px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    .wallet-modal.show {
+      bottom: 0;
     }
 
-    .ledger-user {
-      color: #ffffff;
-      font-weight: 600;
-      font-family: 'SF Mono', monospace;
+    .wallet-modal-handle {
+      width: 38px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      margin: 0 auto 18px auto;
     }
 
-    .ledger-amt {
-      color: var(--accent-green);
-      font-weight: 700;
-    }
-
-    .ledger-time {
-      color: #64748b;
-      font-size: 10px;
-    }
-
-    /* Referral Page Styles */
-    .ref-wrapper {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      text-align: left;
-    }
-
-    .ref-hero-card {
-      background: var(--glass-surface);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
-      padding: 20px;
-      backdrop-filter: blur(20px);
-      margin-bottom: 14px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .ref-hero-title {
-      font-size: 16px;
+    .wallet-modal-title {
+      font-size: 18px;
       font-weight: 800;
       color: #ffffff;
       margin-bottom: 6px;
+      text-align: center;
     }
 
-    .ref-hero-desc {
+    .wallet-modal-subtitle {
       font-size: 12px;
       color: var(--text-secondary);
-      line-height: 1.5;
-      margin-bottom: 16px;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
-    .ref-stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .wallet-options-list {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
-      margin-bottom: 16px;
     }
 
-    .ref-stat-box {
-      background: rgba(0, 0, 0, 0.4);
+    .wallet-option-item {
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.2s;
     }
 
-    .ref-stat-label {
-      font-size: 9.5px;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-bottom: 4px;
+    .wallet-option-item:hover {
+      background: rgba(255, 255, 255, 0.09);
     }
 
-    .ref-stat-val {
-      font-size: 18px;
+    .wallet-opt-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .wallet-opt-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #ffffff;
+      color: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-weight: 900;
+      font-size: 14px;
+    }
+
+    .wallet-opt-name {
+      font-size: 14px;
+      font-weight: 700;
       color: #ffffff;
     }
 
-    .btn-invite-action {
-      width: 100%;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .wallet-opt-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
     }
 
     .bottom-nav {
@@ -617,7 +820,7 @@
       left: 0;
       right: 0;
       height: 62px;
-      background: rgba(7, 9, 8, 0.94);
+      background: rgba(0, 0, 0, 0.94);
       border-top: 1px solid var(--glass-border);
       display: flex;
       justify-content: space-around;
@@ -632,8 +835,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      color: #55625c;
+      gap: 4px;
+      color: #636366;
       cursor: pointer;
       height: 100%;
     }
@@ -650,13 +853,12 @@
 
     .nav-item.active svg {
       fill: #ffffff;
-      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
     }
 
     .nav-label {
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
@@ -665,7 +867,7 @@
       top: 68px;
       left: 50%;
       transform: translateX(-50%) translateY(-20px);
-      background: rgba(14, 18, 16, 0.95);
+      background: rgba(28, 28, 30, 0.95);
       border: 1px solid var(--glass-border);
       color: #ffffff;
       padding: 11px 22px;
@@ -698,7 +900,7 @@
     .gate-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(4, 5, 5, 0.96);
+      background: rgba(0, 0, 0, 0.96);
       backdrop-filter: blur(28px);
       z-index: 99999;
       display: flex;
@@ -710,8 +912,8 @@
     .gate-card {
       width: 100%;
       max-width: 380px;
-      background: linear-gradient(160deg, rgba(22, 28, 25, 0.9), rgba(12, 15, 14, 0.95));
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: #111113;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 24px;
       padding: 28px 22px;
       text-align: center;
@@ -721,24 +923,24 @@
       width: 64px;
       height: 64px;
       border-radius: 20px;
-      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      background: #ffffff;
+      color: #000000;
       display: flex;
       align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px auto;
-      box-shadow: 0 0 24px rgba(56, 189, 248, 0.5);
+          justify-content: center;
     }
 
     .gate-icon-box svg {
       width: 32px;
       height: 32px;
-      fill: #ffffff;
+      fill: #000000;
     }
 
     .gate-title {
       font-size: 20px;
       font-weight: 800;
       margin-bottom: 6px;
+      color: #ffffff;
     }
 
     .gate-subtitle {
@@ -792,7 +994,7 @@
       margin-top: 10px;
     }
 
-    /* Apple-Style Monochrome Profile Drawer */
+    /* Apple-Style Profile Drawer */
     .profile-drawer-backdrop {
       position: fixed;
       inset: 0;
@@ -814,8 +1016,8 @@
       left: 0;
       right: 0;
       bottom: -100%;
-      background: #0f1211;
-      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      background: #111113;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 28px 28px 0 0;
       padding: 24px 20px 42px 20px;
       z-index: 99995;
@@ -847,15 +1049,14 @@
       width: 82px;
       height: 82px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      background: #1c1c1e;
       color: #ffffff;
       font-size: 28px;
       font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 28px rgba(56, 189, 248, 0.45);
-      border: 2px solid rgba(255, 255, 255, 0.25);
+      border: 2px solid rgba(255, 255, 255, 0.2);
       background-size: cover;
       background-position: center;
       overflow: hidden;
@@ -869,7 +1070,7 @@
       height: 28px;
       border-radius: 50%;
       background: #ffffff;
-      border: 2px solid #0f1211;
+      border: 2px solid #111113;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -879,13 +1080,14 @@
     .btn-avatar-edit svg {
       width: 14px;
       height: 14px;
-      fill: #0f1211;
+      fill: #111113;
     }
 
     .drawer-name {
       font-size: 20px;
       font-weight: 800;
       margin-bottom: 4px;
+      color: #ffffff;
     }
 
     .drawer-dob-tag {
@@ -899,9 +1101,6 @@
     }
 
     .drawer-info-text {
-      font-size: 12.5px;
-      color: var(--text-secondary);
-      line-height: 1.5;    .drawer-info-text {
       font-size: 12.5px;
       color: var(--text-secondary);
       line-height: 1.5;
@@ -972,7 +1171,7 @@
     .btn-verify-otp {
       width: 100%;
       background: #ffffff;
-      color: #070908;
+      color: #000000;
       border: none;
       padding: 14px;
       border-radius: 12px;
@@ -1054,7 +1253,7 @@
     }
   </style>
 </head>
-<body>
+  <body>
 
   <div class="top-bar">
     <div class="top-left-profile" id="topLeftProfileBtn">
@@ -1125,8 +1324,8 @@
       </div>
     </div>
 
-    <!-- SQUAD / REFERRAL TAB -->
-    <div id="tab-squad" class="tab-content">
+    <!-- COMMUNITY TAB -->
+    <div id="tab-community" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
           <source src="./community-bg.mp4" type="video/mp4" />
@@ -1134,50 +1333,150 @@
         <div class="video-overlay-gradient"></div>
       </div>
 
-      <div class="section-title">Global Squad & Referral Network</div>
+      <div class="section-title">Official Communication Nodes</div>
 
-      <div class="ref-hero-card">
-        <div class="ref-hero-title">Invite Recruits & Earn Multipliers</div>
-        <div class="ref-hero-desc">
-          Build your squad globally. Earn 10% lifetime reward commission on all recruit farming cycles and boost your Season 1 allocation multiplier.
-        </div>
-
-        <div class="ref-stats-grid">
-          <div class="ref-stat-box">
-            <div class="ref-stat-label">Total Recruits</div>
-            <div class="ref-stat-val" id="refCountVal">0</div>
+      <div class="comm-row">
+        <div class="comm-left">
+          <div class="comm-logo-box">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.88.03-.24.38-.49 1.04-.75 4.09-1.78 6.82-2.95 8.19-3.52 3.9-1.63 4.71-1.91 5.24-1.92.12 0 .37.03.54.17.14.12.18.28.2.45-.01.07-.01.18-.02.24z"/></svg>
           </div>
-          <div class="ref-stat-box">
-            <div class="ref-stat-label">Squad Bonus</div>
-            <div class="ref-stat-val" id="refBonusVal">1.0x</div>
+          <div>
+            <div class="comm-name">Telegram Network</div>
+            <div class="comm-sub">@DKXOfficial</div>
           </div>
         </div>
-
-        <button class="btn-invite-action" id="btnInviteSquad">
-          Copy Invite Link ↗
-        </button>
+        <a href="https://t.me/DKXOfficial" target="_blank" class="btn-node">Open Node ↗</a>
       </div>
 
-      <div class="ledger-box">
-        <div class="ledger-head">
-          <span class="ledger-title">Squad Activity Feed</span>
-          <span class="ledger-badge">Live Sync ✓</span>
-        </div>
-        <div class="ledger-list" id="squadListContainer">
-          <div class="ledger-row">
-            <span class="ledger-user">Satoshi_Global</span>
-            <span class="ledger-amt">Joined Squad</span>
-            <span class="ledger-time">Just now</span>
+      <div class="comm-row">
+        <div class="comm-left">
+          <div class="comm-logo-box">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
           </div>
-          <div class="ledger-row">
-            <span class="ledger-user">CryptoAlpha_JP</span>
-            <span class="ledger-amt">Joined Squad</span>
-            <span class="ledger-time">4m ago</span>
+          <div>
+            <div class="comm-name">Instagram Hub</div>
+            <div class="comm-sub">@dakicks_dkx</div>
+          </div>
+        </div>
+        <a href="https://instagram.com/dakicks_dkx" target="_blank" class="btn-node">Open Node ↗</a>
+      </div>
+    </div>
+
+    <!-- BLUM-STYLE LUXURY REFERRAL TAB (Frens) -->
+    <div id="tab-frens" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="none">
+          <source src="./community-bg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="referral-container">
+        
+        <div class="ref-balance-card">
+          <div class="ref-bal-title">Your Balance</div>
+          <div class="ref-bal-amount" id="refBalDkx">1,250 $DKX</div>
+          <div class="ref-bal-usd" id="refBalUsd">~$125.00 USD</div>
+          <button class="btn-goto-wallet" id="goToWalletBtn">
+            Go to Wallet ↗
+          </button>
+        </div>
+
+        <div class="ref-banner-card">
+          <div class="ref-banner-top">
+            <div style="font-size: 15px; font-weight: 800; color: #ffffff;">Turn your frens into traders to earn $DKX!</div>
+            <div class="ref-tier-badges">
+              <div class="tier-badge-icon">👟</div>
+              <div class="tier-badge-icon">💎</div>
+            </div>
+          </div>
+
+          <div class="ref-comm-grid">
+            <div class="ref-comm-box">
+              <div class="ref-comm-pct">20%</div>
+              <div class="ref-comm-desc">of frens' trade commission</div>
+            </div>
+            <div class="ref-comm-box">
+              <div class="ref-comm-pct">2.5%</div>
+              <div class="ref-comm-desc">of their refs' trade commissions</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frens-row" onclick="openFrensList()">
+          <div class="frens-left">
+            <div class="frens-icon-wrap">👥</div>
+            <div>
+              <div class="frens-title">Frens invited</div>
+              <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">Active referral squad</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="frens-count" id="frensCountNum">0</span>
+            <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+          </div>
+        </div>
+
+        <button class="btn-invite-frens-main" id="btnInviteFrens">
+          <span>👥 Invite frens</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- LEADERBOARD TAB -->
+    <div id="tab-leaderboard" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="none">
+          <source src="./community-bg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="leaderboard-wrapper">
+        <div class="lb-header-card">
+          <div class="lb-title">Global Leaderboard</div>
+          <div class="lb-subtitle">Top traders & squad leaders ranked by Season 1 volume</div>
+        </div>
+
+        <div class="lb-list">
+          <div class="lb-row">
+            <div class="lb-user-info">
+              <div class="lb-rank top-1">1</div>
+              <div>
+                <div class="lb-name">Satoshi_Global</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">Squad Lead • Tier 1</div>
+              </div>
+            </div>
+            <div class="lb-score">48,250 $DKX</div>
+          </div>
+
+          <div class="lb-row">
+            <div class="lb-user-info">
+              <div class="lb-rank top-2">2</div>
+              <div>
+                <div class="lb-name">Anubhav_DKX</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">Founder • Genesis</div>
+              </div>
+            </div>
+            <div class="lb-score">39,100 $DKX</div>
+          </div>
+
+          <div class="lb-row">
+            <div class="lb-user-info">
+              <div class="lb-rank top-3">3</div>
+              <div>
+                <div class="lb-name">CryptoAlpha_JP</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">Squad Lead • Tier 2</div>
+              </div>
+            </div>
+            <div class="lb-score">31,450 $DKX</div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- VAULT TAB -->
     <div id="tab-vault" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
@@ -1201,70 +1500,104 @@
           Official $DKX contract address will be verified and mapped here directly upon DEX liquidity provisioning on BNB Smart Chain.
         </div>
 
-        <button class="btn-wallet-connect" id="connectWalletBtn">CONNECT WEB3 WALLET (STANDBY)</button>
+        <button class="btn-wallet-connect" id="connectWalletBtn">CONNECT WEB3 WALLET</button>
 
         <div class="allocation-box">
           <div class="alloc-head">
             <div class="alloc-title">Genesis Liquidity Allocation</div>
             <div class="alloc-status">ONLINE</div>
           </div>
-          <div class="alloc-value" id="vaultDkxBal">1,250 <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span></div>
+          <div class="alloc-value" id="vaultDkxBal">1,250 <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span></div>
           <button class="btn-claim-ad" id="claimRewardBtn">
             Claim Allocation (+2 $DKX)
           </button>
         </div>
-
-        <div class="ledger-box">
-          <div class="ledger-head">
-            <span class="ledger-title">Recent On-Chain Allocations</span>
-            <span class="ledger-badge">Verified Payouts ✓</span>
-          </div>
-          <div class="ledger-list" id="ledgerListContainer">
-            <div class="ledger-row">
-              <span class="ledger-user">0x88c4...9a21</span>
-              <span class="ledger-amt">+2 $DKX</span>
-              <span class="ledger-time">Just now</span>
-            </div>
-            <div class="ledger-row">
-              <span class="ledger-user">0x3f12...4b08</span>
-              <span class="ledger-amt">+2 $DKX</span>
-              <span class="ledger-time">1m ago</span>
-            </div>
-            <div class="ledger-row">
-              <span class="ledger-user">0x99e5...11c7</span>
-              <span class="ledger-amt">+2 $DKX</span>
-              <span class="ledger-time">3m ago</span>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
 
   </div>
 
+  <!-- BOTTOM NAVIGATION -->
   <div class="bottom-nav">
     <div class="nav-item active" onclick="navigateTab('terminal', this)">
-      <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
-      <div class="nav-label">Terminal</div>
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <div class="nav-label">Home</div>
     </div>
     <div class="nav-item" onclick="navigateTab('dakicks', this)">
-      <svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/></svg>
-      <div class="nav-label">Ecosystem</div>
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 5h2v5h-2z"/></svg>
+      <div class="nav-label">Earn</div>
     </div>
-    <div class="nav-item" onclick="navigateTab('squad', this)">
+    <div class="nav-item" onclick="navigateTab('frens', this)">
       <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-      <div class="nav-label">Squad</div>
+      <div class="nav-label">Frens</div>
+    </div>
+    <div class="nav-item" onclick="navigateTab('leaderboard', this)">
+      <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.3L22 12V6z"/></svg>
+      <div class="nav-label">Leaderboard</div>
     </div>
     <div class="nav-item" onclick="navigateTab('vault', this)">
-      <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-      <div class="nav-label">Vault</div>
+      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+      <div class="nav-label">Wallet</div>
     </div>
   </div>
 
   <div class="hud-toast" id="hudToast">
     <div class="hud-toast-indicator"></div>
     <span id="hudMsg">Notice</span>
+  </div>
+
+  <!-- WALLET SELECTION MODAL -->
+  <div class="wallet-modal-backdrop" id="walletModalBackdrop"></div>
+  <div class="wallet-modal" id="walletModal">
+    <div class="wallet-modal-handle"></div>
+    <div class="wallet-modal-title">Connect Web3 Wallet</div>
+    <div class="wallet-modal-subtitle">Select your preferred decentralized provider for BNB Chain liquidity.</div>
+
+    <div class="wallet-options-list">
+      <div class="wallet-option-item" onclick="connectSpecificWallet('MetaMask')">
+        <div class="wallet-opt-left">
+          <div class="wallet-opt-icon" style="background: #f6851b; color: #fff;">🦊</div>
+          <div>
+            <div class="wallet-opt-name">MetaMask</div>
+            <div class="wallet-opt-desc">Connect via browser extension or mobile app</div>
+          </div>
+        </div>
+        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+      </div>
+
+      <div class="wallet-option-item" onclick="connectSpecificWallet('Trust Wallet')">
+        <div class="wallet-opt-left">
+          <div class="wallet-opt-icon" style="background: #3375bb; color: #fff;">🛡️</div>
+          <div>
+            <div class="wallet-opt-name">Trust Wallet</div>
+            <div class="wallet-opt-desc">Official multi-chain Web3 wallet</div>
+          </div>
+        </div>
+        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+      </div>
+
+      <div class="wallet-option-item" onclick="connectSpecificWallet('Binance Web3 Wallet')">
+        <div class="wallet-opt-left">
+          <div class="wallet-opt-icon" style="background: #fcd535; color: #000;">🟡</div>
+          <div>
+            <div class="wallet-opt-name">Binance Web3 Wallet</div>
+            <div class="wallet-opt-desc">Seamless decentralized exchange gateway</div>
+          </div>
+        </div>
+        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+      </div>
+
+      <div class="wallet-option-item" onclick="connectSpecificWallet('WalletConnect')">
+        <div class="wallet-opt-left">
+          <div class="wallet-opt-icon" style="background: #3b99fc; color: #fff;">🔗</div>
+          <div>
+            <div class="wallet-opt-name">WalletConnect</div>
+            <div class="wallet-opt-desc">Connect 300+ mobile wallets securely</div>
+          </div>
+        </div>
+        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+      </div>
+    </div>
   </div>
 
   <div class="gate-overlay" id="firstTimeGate" style="display: none;">
@@ -1334,7 +1667,7 @@
             <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;" id="verifiedEmailText">user@mail.com</div>
             <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Identity Verified & Encrypted</div>
           </div>
-          <div style="font-size: 10px; font-weight: 800; color: #ffffff; background: rgba(255,255,255,0.08); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
+          <div style="font-size: 10px; font-weight: 800; color: #ffffff; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
             LINKED ✓
           </div>
         </div>
@@ -1362,110 +1695,4 @@
             "hide_side_toolbar": false,
             "allow_symbol_change": true,
             "save_image": false,
-            "backgroundColor": "#070908",
-            "gridColor": "rgba(255, 255, 255, 0.03)",
-            "container_id": "tv_chart_main"
-          });
-        } catch (e) {}
-      };
-      document.body.appendChild(tvScript);
-    }
-  </script>
-
-  <script>
-    // 1. INSTANT TELEGRAM EXPAND
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-      try {
-        tg.setHeaderColor('#070908');
-        tg.setBackgroundColor('#070908');
-      } catch (e) {}
-    }
-
-    // 2. VERIFIED EMAILJS KEYS
-    const EMAILJS_CONFIG = {
-      serviceId: "service_91i0edt",
-      templateId: "template_6a78v2d", 
-      publicKey: "UZVvtLHuf8uZWHdkg"
-    };
-
-    (function() {
-      try {
-        emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-      } catch (e) {}
-    })();
-
-    const TEN_MINUTES_MS = 10 * 60 * 1000;
-    let countdownInterval = null;
-
-    function triggerHaptic(type = 'light') {
-      try {
-        if (tg?.HapticFeedback) {
-          if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
-          else tg.HapticFeedback.impactOccurred(type);
-        }
-      } catch (e) {}
-    }
-
-    let toastTimer;
-    function showHUD(text) {
-      const toast = document.getElementById('hudToast');
-      document.getElementById('hudMsg').innerText = text;
-      toast.classList.add('active');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        toast.classList.remove('active');
-      }, 2600);
-    }
-
-    function completeVerification(email) {
-      localStorage.setItem('dkx_email_verified', 'true');
-      localStorage.setItem('dkx_user_email', email);
-      localStorage.removeItem('dkx_pending_otp');
-      localStorage.removeItem('dkx_pending_timestamp');
-
-      if (window.confetti) {
-        confetti({
-          particleCount: 140,
-          spread: 120,
-          origin: { y: 0.55 },
-          colors: ['#ffffff', '#00ff88', '#38bdf8']
-        });
-      }
-      triggerHaptic('success');
-      showHUD("Email Linked & Secured! ✓");
-      updateProfileUI(localStorage.getItem('dkx_user_name'), localStorage.getItem('dkx_user_dob'));
-    }
-
-    // LINK CLICK AUTO-VERIFY (10-MIN EXPIRY)
-    (function checkUrlVerification() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const startParam = tg?.initDataUnsafe?.start_param || urlParams.get('tgWebAppStartParam') || urlParams.get('startapp');
-
-      if (startParam && startParam.startsWith('verify_')) {
-        const rawPayload = decodeURIComponent(startParam.replace('verify_', ''));
-        const parts = rawPayload.split('_ts_');
-        const emailToVerify = parts[0];
-        const linkTimestamp = parseInt(parts[1], 10);
-
-        const now = Date.now();
-        if (linkTimestamp && (now - linkTimestamp > TEN_MINUTES_MS)) {
-          setTimeout(() => {
-            triggerHaptic('error');
-            showHUD("Verification link expired. Request a new one.");
-          }, 200);
-        } else {
-          setTimeout(() => {
-            completeVerification(emailToVerify);
-          }, 100);
-        }
-      } else if (startParam && startParam.startsWith('ref_')) {
-        // Handle incoming referral capture
-        const referrer = startParam.replace('ref_', '');
-        let currentRefs = parseInt(localStorage.getItem('dkx_ref_count') || '0', 10);
-        // Track unique referral logic simulation
-        if (!localStorage.getItem('dkx_has_been_referred')) {
-          localStorage.setIt
-     
+  
