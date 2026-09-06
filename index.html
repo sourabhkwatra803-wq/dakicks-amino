@@ -312,5 +312,203 @@
             if(el) el.innerText = randomNum;
         }, 100);
 
-        window.addEventListener('DOMContentLoaded', () => {
-            let user = localStorage.getItem('dakicks
+                window.addEventListener('DOMContentLoaded', () => {
+            let user = localStorage.getItem('dakicks_username');
+            let avatar = localStorage.getItem('dakicks_avatar');
+            let email = localStorage.getItem('dakicks_email');
+
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+                const tg = window.Telegram.WebApp.initDataUnsafe?.user;
+                if (tg && tg.first_name && !user) {
+                    user = tg.first_name;
+                    localStorage.setItem('dakicks_username', user);
+                }
+            }
+
+            if (!user) user = "Sovereign VIP";
+            applyUserData(user, avatar, email);
+            checkDailyCodeStatus();
+
+            // Handle One-Tap Email Verification Link (?verify=XXXXXX)
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlOtp = urlParams.get('verify');
+            if (urlOtp) {
+                const pendingEmail = localStorage.getItem('dakicks_pending_email') || 'user@gmail.com';
+                localStorage.setItem('dakicks_email', pendingEmail);
+                toggleProfileModal(true);
+                applyUserData(localStorage.getItem('dakicks_username') || 'Sovereign VIP', localStorage.getItem('dakicks_avatar'), pendingEmail);
+                showToast('Email verified successfully via One-Tap link!');
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+
+        function applyUserData(user, avatar, email) {
+            document.getElementById('headerUsername').innerText = user;
+            document.getElementById('modalUsernameDisplay').innerText = user;
+            if (avatar) {
+                document.getElementById('headerAvatarBox').innerHTML = `<img src="${avatar}" alt="Avatar">`;
+                document.getElementById('modalAvatarDisplay').innerHTML = `<img src="${avatar}" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                const initial = user.charAt(0).toUpperCase();
+                document.getElementById('headerAvatarBox').innerHTML = `<span>${initial}</span>`;
+                document.getElementById('modalAvatarDisplay').innerHTML = initial;
+            }
+
+            if (email) {
+                document.getElementById('modalEmailUnlinked').style.display = 'none';
+                document.getElementById('modalEmailVerify').style.display = 'none';
+                document.getElementById('modalEmailLinked').style.display = 'block';
+                document.getElementById('modalLinkedEmailText').innerText = email;
+            }
+        }
+
+        function toggleProfileModal(open) {
+            const m = document.getElementById('profileModal');
+            if (open) m.classList.add('active'); else m.classList.remove('active');
+        }
+
+        function toggleLinksMenu() {
+            showToast('Sovereign Social Terminal Linked');
+        }
+
+        function moveToNext(current, nextFieldId) {
+            if (current.value.length >= 1 && nextFieldId) {
+                document.getElementById(nextFieldId).focus();
+            }
+        }
+
+        function sendVerificationCode() {
+            const email = document.getElementById('modalEmailInput').value.trim();
+            if (!email || !email.includes('@')) { showToast('Enter valid Gmail'); return; }
+
+            activeOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            const username = localStorage.getItem('dakicks_username') || 'SovereignVIP';
+            const verificationLink = window.location.origin + window.location.pathname + "?verify=" + activeOtp;
+            localStorage.setItem('dakicks_pending_email', email);
+
+            const templateParams = {
+                to_email: email,
+                user_name: username,
+                verification_code: activeOtp,
+                verification_link: verificationLink
+            };
+
+            const btn = document.getElementById('sendOtpBtn');
+            btn.innerText = 'Sending OTP...';
+            btn.disabled = true;
+
+            emailjs.send('service_91i0edt', 'template_6a78v2d', templateParams)
+                .then(() => {
+                    document.getElementById('modalEmailUnlinked').style.display = 'none';
+                    document.getElementById('modalEmailVerify').style.display = 'block';
+                    startEmailCountdown(60);
+                    showToast('OTP Dispatched to Gmail');
+                }).catch(() => {
+                    showToast('Transmission failed');
+                    btn.innerText = 'Send 1-Min OTP & Link';
+                    btn.disabled = false;
+                });
+        }
+
+        function startEmailCountdown(duration) {
+            let t = duration;
+            const status = document.getElementById('modalOtpStatus');
+            const resendBtn = document.getElementById('resendOtpBtn');
+            resendBtn.disabled = true;
+
+            if (emailTimerInterval) clearInterval(emailTimerInterval);
+            emailTimerInterval = setInterval(() => {
+                t--;
+                if (t > 0) {
+                    status.innerText = `OTP sent! Expires in ${t}s.`;
+                    resendBtn.innerText = `Resend OTP (${t}s)`;
+                } else {
+                    clearInterval(emailTimerInterval);
+                    status.innerText = 'OTP expired. Request new code.';
+                    resendBtn.disabled = false;
+                    resendBtn.innerText = 'Resend OTP Code';
+                    activeOtp = null;
+                }
+            }, 1000);
+        }
+
+        function confirmVerificationCode() {
+            const entered = document.getElementById('modalOtpInput').value.trim();
+            if (!activeOtp || entered !== activeOtp) { showToast('Invalid or expired OTP'); return; }
+            if (emailTimerInterval) clearInterval(emailTimerInterval);
+            const email = localStorage.getItem('dakicks_pending_email') || 'user@gmail.com';
+            localStorage.setItem('dakicks_email', email);
+            document.getElementById('modalEmailVerify').style.display = 'none';
+            document.getElementById('modalEmailLinked').style.display = 'block';
+            document.getElementById('modalLinkedEmailText').innerText = email;
+            showToast('Email Verified Successfully');
+        }
+
+        function disconnectEmail() {
+            localStorage.removeItem('dakicks_email');
+            localStorage.removeItem('dakicks_pending_email');
+            document.getElementById('modalEmailLinked').style.display = 'none';
+            document.getElementById('modalEmailUnlinked').style.display = 'block';
+            document.getElementById('modalEmailInput').value = '';
+            showToast('Email disconnected successfully');
+        }
+
+        function checkDailyCodeStatus() {
+            const lastClaim = localStorage.getItem('dakicks_last_claim');
+            if (lastClaim) {
+                const diff = Date.now() - parseInt(lastClaim);
+                const cooldown = 24 * 60 * 60 * 1000;
+                if (diff < cooldown) {
+                    const remaining = cooldown - diff;
+                    const hours = Math.floor(remaining / (1000 * 60 * 60));
+                    const mins = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                    document.getElementById('claimCodeBtn').disabled = true;
+                    document.getElementById('claimCodeBtn').style.opacity = '0.5';
+                    document.getElementById('claimTimerText').innerText = `Next code claim available in ${hours}h ${mins}m`;
+                } else {
+                    localStorage.removeItem('dakicks_last_claim');
+                }
+            }
+        }
+
+        function claimDailyCode() {
+            const d1 = document.getElementById('codeDigit1').value.trim();
+            const d2 = document.getElementById('codeDigit2').value.trim();
+            const d3 = document.getElementById('codeDigit3').value.trim();
+            const d4 = document.getElementById('codeDigit4').value.trim();
+            const d5 = document.getElementById('codeDigit5').value.trim();
+
+            if (!d1 || !d2 || !d3 || !d4 || !d5) {
+                showToast('Please enter all 5 cipher digits!');
+                return;
+            }
+
+            if (d1+d2+d3+d4+d5 === '50546') {
+                localStorage.setItem('dakicks_last_claim', Date.now().toString());
+                showToast('Success! +25,000 $DKX Credited');
+                document.getElementById('claimCodeBtn').disabled = true;
+                document.getElementById('claimCodeBtn').style.opacity = '0.5';
+                document.getElementById('claimTimerText').innerText = 'Claimed! Next available in 24 hours.';
+            } else {
+                showToast('Incorrect Cipher Code. Try again!');
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toastNotification');
+            t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>
