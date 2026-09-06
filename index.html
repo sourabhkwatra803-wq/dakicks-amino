@@ -1523,7 +1523,7 @@
       </div>
     </div>
 
-    <!-- BLUM-STYLE LUXURY REFERRAL TAB (Frens) -->
+        <!-- FRENS TAB (Blum & Pro Reference UI) -->
     <div id="tab-frens" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
@@ -1532,58 +1532,72 @@
         <div class="video-overlay-gradient"></div>
       </div>
 
-      <div class="referral-container">
+      <div class="frens-wrapper">
         
-        <div class="ref-balance-card">
-          <div class="ref-bal-title">Your Balance</div>
-          <div class="ref-bal-amount" id="refBalDkx">1,250 $DKX</div>
-          <div class="ref-bal-usd" id="refBalUsd">~$125.00 USD</div>
-          <button class="btn-goto-wallet" id="goToWalletBtn">
-            Go to Wallet ↗
-          </button>
-        </div>
-
-        <div class="ref-banner-card">
-          <div class="ref-banner-top">
-            <div style="font-size: 15px; font-weight: 800; color: #ffffff;">Turn your frens into traders to earn $DKX!</div>
-            <div class="ref-tier-badges">
-              <div class="tier-badge-icon">👟</div>
-              <div class="tier-badge-icon">💎</div>
-            </div>
+        <!-- Unlock Banner with Brand Video -->
+        <div class="unlock-banner-card">
+          <div class="unlock-banner-media">
+            <video autoplay loop muted playsinline>
+              <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
+            </video>
           </div>
-
-          <div class="ref-comm-grid">
-            <div class="ref-comm-box">
-              <div class="ref-comm-pct">20%</div>
-              <div class="ref-comm-desc">of frens' trade commission</div>
-            </div>
-            <div class="ref-comm-box">
-              <div class="ref-comm-pct">2.5%</div>
-              <div class="ref-comm-desc">of their refs' trade commissions</div>
-            </div>
+          <div class="unlock-banner-content">
+            <div class="unlock-title">UNLOCK YOUR REWARDS</div>
+            <div class="unlock-subtitle">Invite Your Frens & Earn Up To 25% Allocation Boost.</div>
           </div>
         </div>
 
-        <div class="frens-row" onclick="openFrensList()">
-          <div class="frens-left">
-            <div class="frens-icon-wrap">👥</div>
-            <div>
-              <div class="frens-title">Frens invited</div>
-              <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">Active referral squad</div>
-            </div>
+        <!-- Referral Code & Link Strip -->
+        <div class="ref-code-card">
+          <div class="ref-code-label">Referral Code & Link</div>
+          <div class="ref-code-strip">
+            <span class="ref-code-txt" id="myRefCodeTxt">DKX-GENESIS</span>
+            <button class="btn-copy-code" id="btnCopyRefCode">Copy</button>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span class="frens-count" id="frensCountNum">0</span>
-            <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+
+          <div class="ref-share-actions">
+            <button class="btn-social-share" id="shareTelegramBtn">Telegram</button>
+            <button class="btn-social-share" id="shareTwitterBtn">X (Twitter)</button>
+            <button class="btn-social-share" id="shareWhatsAppBtn">WhatsApp</button>
           </div>
         </div>
 
-        <button class="btn-invite-frens-main" id="btnInviteFrens">
-          <span>👥 Invite frens</span>
-        </button>
+        <!-- Referral Progress -->
+        <div class="ref-progress-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="ref-code-label" style="margin:0;">Your Referral Progress</div>
+            <div style="font-size: 11px; font-weight: 700; color: #ffffff;" id="frenProgressCount">0 / 10 Frens</div>
+          </div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+          </div>
+          <div style="font-size: 11.5px; color: var(--text-secondary);" id="progressSubText">
+            You have successfully invited 0 frens. Next milestone: 5 frens for a 2x multiplier.
+          </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="recent-activity-box">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">
+            Recent Activity
+          </div>
+          <div class="ledger-list" id="frensActivityList">
+            <div class="ledger-row">
+              <span class="ledger-user">Satoshi_Global</span>
+              <span class="ledger-amt">+50 $DKX Alloc</span>
+              <span class="ledger-time">Just now</span>
+            </div>
+            <div class="ledger-row">
+              <span class="ledger-user">CryptoAlpha_JP</span>
+              <span class="ledger-amt">+50 $DKX Alloc</span>
+              <span class="ledger-time">5m ago</span>
+            </div>
+          </div>
+        </div>
 
       </div>
     </div>
+    
 
     <!-- LEADERBOARD TAB -->
     <div id="tab-leaderboard" class="tab-content">
