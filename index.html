@@ -1350,3 +1350,483 @@
         </svg>
       </div>
       <input type="file" id="avatarFileInput" 
+<div class="drawer-name" id="drawerUsername">User Handle</div>
+    <div class="drawer-dob-tag" id="drawerDobTag">DOB: Verified</div>
+
+    <p class="drawer-info-text" id="drawerInstructionText">
+      Link your personal email address. A 6-digit code valid for 10 minutes will be sent to authenticate your identity.
+    </p>
+
+    <div style="width: 100%;">
+      <div class="drawer-email-form" id="emailInputWrap">
+        <input type="email" id="drawerEmailInput" class="drawer-email-input" placeholder="Enter personal email" />
+        <button class="btn-link-action" id="btnSendVerification">Send Verification</button>
+      </div>
+
+      <div class="otp-verification-container" id="otpInputWrap">
+        <input type="text" id="otpCodeInput" class="otp-code-input" placeholder="••••••" maxlength="6" inputmode="numeric" />
+        <button class="btn-verify-otp" id="btnVerifyOtp">Verify Code</button>
+        
+        <div class="otp-sub-actions">
+          <span class="resend-timer-text" id="resendTimerLabel">Resend in 00:60</span>
+          <button class="btn-text-action" id="btnResendOtp" disabled>Resend Code</button>
+          <button class="btn-text-action" id="btnBackToEmail">Change Email</button>
+        </div>
+      </div>
+
+      <div id="emailVerifiedCard" style="display: none; width: 100%;">
+        <div class="oauth-linked-card">
+          <div>
+            <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;" id="verifiedEmailText">user@mail.com</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Identity Verified & Encrypted</div>
+          </div>
+          <div style="font-size: 10px; font-weight: 800; color: #ffffff; background: rgba(255,255,255,0.08); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
+            LINKED ✓
+          </div>
+        </div>
+        <button class="btn-change-email" id="btnChangeEmail">Change Email</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const i18n = {
+      en: {
+        secArch: "Institutional RWA Architecture",
+        rwaTitle: "DAKICKS® Physical Drops",
+        rwaDesc: "Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on BNB Smart Chain.",
+        revTitle: "Revenue-Share Protocol",
+        revDesc: "50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.",
+        supplyTitle: "DKX Supply Standard",
+        supplyDesc: "Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.",
+        frensHeroTitle: "Turn your frens into traders",
+        frensHeroSub: "Earn commissions from your network activity on BNB Chain.",
+        statComm: "Direct Commission",
+        statSubComm: "Sub-Network",
+        refCodeLabel: "Your Unique Referral Link & Code",
+        copyBtn: "Copy",
+        inviteFrensBtn: "👥 Invite Frens",
+        secComm: "Official Communication Nodes",
+        openNode: "Open Node ↗",
+        socketTitle: "On-Chain Smart Contract Socket",
+        caDeploy: "DEPLOYING AT LAUNCH (BNB CHAIN)",
+        copyCa: "COPY CA",
+        vaultDesc: "Official $DKX contract address will be verified and mapped here directly upon DEX liquidity provisioning on BNB Chain.",
+        connectWallet: "CONNECT WEB3 WALLET (STANDBY)",
+        genesisAlloc: "Genesis Liquidity Allocation",
+        claimBtn: "Claim Allocation (+2 $DKX)",
+        navTerm: "Terminal",
+        navDakicks: "Dakicks",
+        navFrens: "Frens",
+        navComm: "Community",
+        navVault: "Vault",
+        gateTitle: "Genesis Identification",
+        gateSub: "Create your identity to unlock DAKICKS Terminal and decentralized liquidity vaults.",
+        labelHandle: "Choose Handle / Username",
+        labelDob: "Date of Birth",
+        labelRefOpt: "Referral Code (Optional)",
+        btnInit: "INITIALIZE TERMINAL"
+      },
+      hi: {
+        secArch: "संस्थागत RWA आर्किटेक्चर",
+        rwaTitle: "DAKICKS® फिजिकल ड्रॉप्स",
+        rwaDesc: "क्रिप्टोग्राफिक NFC चिप्स से एम्बेडेड जेनेसिस लग्जरी जूते। BNB स्मार्ट चेन पर मैप किया गया भौतिक स्वामित्व।",
+        revTitle: "रेवेन्यू-शेयर प्रोटोकॉल",
+        revDesc: "वास्तविक दुनिया के जूते की बिक्री और कॉर्पोरेट ब्रांड प्रायोजन का 50% संस्थागत बायबैक रिजर्व वॉल्ट में जाता है।",
+        supplyTitle: "DKX सप्लाई स्टैंडर्ड",
+        supplyDesc: "100,000,000 $DKX की निश्चित हार्ड-कैप आपूर्ति। स्मार्ट अनुबंध अखंडता जांच द्वारा सत्यापित।",
+        frensHeroTitle: "अपने दोस्तों को ट्रेडर बनाएं",
+        frensHeroSub: "BNB चेन पर अपने नेटवर्क गतिविधि से कमीशन अर्जित करें।",
+        statComm: "प्रत्यक्ष कमीशन",
+        statSubComm: "सब-नेटवर्क",
+        refCodeLabel: "आपका विशिष्ट रेफरल लिंक और कोड",
+        copyBtn: "कॉपी",
+        inviteFrensBtn: "👥 दोस्तों को आमंत्रित करें",
+        secComm: "आधिकारिक संचार नोड्स",
+        openNode: "नोड खोलें ↗",
+        socketTitle: "ऑन-चेन स्मार्ट कॉन्ट्रैक्ट सॉकेट",
+        caDeploy: "लॉन्च पर तैनात (BNB चेन)",
+        copyCa: "कॉपी सीए",
+        vaultDesc: "BNB चेन पर DEX तरलता प्रावधान पर आधिकारिक $DKX अनुबंध पते को सत्यापित किया जाएगा।",
+        connectWallet: "WEB3 वॉलेट कनेक्ट करें (स्टैंडबाय)",
+        genesisAlloc: "जेनेसिस तरलता आवंटन",
+        claimBtn: "आवंटन दावा करें (+2 $DKX)",
+        navTerm: "टर्मिनल",
+        navDakicks: "डाकिक्स",
+        navFrens: "फ्रेंड्स",
+        navComm: "कम्युनिटी",
+        navVault: "वॉल्ट",
+        gateTitle: "जेनेसिस पहचान",
+        gateSub: "DAKICKS टर्मिनल और विकेंद्रीकृत तरलता वॉल्ट को अनलॉक करने के लिए अपनी पहचान बनाएं।",
+        labelHandle: "हैंडल / यूजरनेम चुनें",
+        labelDob: "जन्म तिथि",
+        labelRefOpt: "रेफरल कोड (वैकल्पिक)",
+        btnInit: "टर्मिनल शुरू करें"
+      },
+      ru: {
+        secArch: "Институциональная архитектура RWA",
+        rwaTitle: "Физические дропы DAKICKS®",
+        rwaDesc: "Роскошная обувь Genesis со встроенными NFC-чипами. Физическое владение привязано к BNB Smart Chain.",
+        revTitle: "Протокол разделения доходов",
+        revDesc: "50% от продаж обуви направляется в институциональные резервные хранилища.",
+        supplyTitle: "Стандарт поставки DKX",
+        supplyDesc: "Фиксированная жесткая крышка предложения 100 000 000 $DKX.",
+        frensHeroTitle: "Превратите друзей в трейдеров",
+        frensHeroSub: "Зарабатывайте комиссии от активности сети в BNB Chain.",
+        statComm: "Прямая комиссия",
+        statSubComm: "Суб-сеть",
+        refCodeLabel: "Ваша реферальная ссылка и код",
+        copyBtn: "Копировать",
+        inviteFrensBtn: "👥 Пригласить друзей",
+        secComm: "Официальные каналы связи",
+        openNode: "Открыть ↗",
+        socketTitle: "Сокет смарт-контракта",
+        caDeploy: "РАЗВЕРТЫВАНИЕ ПРИ ЗАПУСКЕ (BNB CHAIN)",
+        copyCa: "СКОПИРОВАТЬ CA",
+        vaultDesc: "Адрес контракта $DKX будет проверен и привязан здесь при ликвидности DEX.",
+        connectWallet: "ПОДКЛЮЧИТЬ WEB3 КОШЕЛЕК",
+        genesisAlloc: "Распределение ликвидности Genesis",
+        claimBtn: "Получить распределение (+2 $DKX)",
+        navTerm: "Терминал",
+        navDakicks: "Dakicks",
+        navFrens: "Друзья",
+        navComm: "Сообщество",
+        navVault: "Хранилище",
+        gateTitle: "Идентификация Genesis",
+        gateSub: "Создайте свой профиль для доступа к терминалу DAKICKS.",
+        labelHandle: "Выберите ник / имя",
+        labelDob: "Дата рождения",
+        labelRefOpt: "Реферальный код (Необязательно)",
+        btnInit: "ИНИЦИАЛИЗИРОВАТЬ ТЕРМИНАЛ"
+      },
+      ja: {
+        secArch: "機関投資家向け RWA アーキテクチャ",
+        rwaTitle: "DAKICKS® フィジカルドロップ",
+        rwaDesc: "NFCチップを内蔵した高級フットウェア。BNBスマートチェーン上で所有権をマッピング。",
+        revTitle: "レベニューシェアプロトコル",
+        revDesc: "実世界の売上の50%が買い戻しリザーブに還元されます。",
+        supplyTitle: "DKX サプライ基準",
+        supplyDesc: "100,000,000 $DKX のハードキャップ供給。",
+        frensHeroTitle: "友達をトレーダーにしよう",
+        frensHeroSub: "BNBチェーンでのネットワーク活動から手数料を獲得。",
+        statComm: "直接報酬",
+        statSubComm: "サブネットワーク",
+        refCodeLabel: "紹介コードとリンク",
+        copyBtn: "コピー",
+        inviteFrensBtn: "👥 友達を招待",
+        secComm: "公式コミュニケーションノード",
+        openNode: "開く ↗",
+        socketTitle: "スマートコントラクトソケット",
+        caDeploy: "ローンチ時にデプロイ (BNB CHAIN)",
+        copyCa: "CAをコピー",
+        vaultDesc: "$DKXコントラクトアドレスはBNBチェーン上で検証されます。",
+        connectWallet: "WEB3ウォレットを接続",
+        genesisAlloc: "ジェネシス流動性配分",
+        claimBtn: "配分を請求 (+2 $DKX)",
+        navTerm: "ターミナル",
+        navDakicks: "Dakicks",
+        navFrens: "フレンド",
+        navComm: "コミュニティ",
+        navVault: "ウォレット",
+        gateTitle: "ジェネシス認証",
+        gateSub: "プロフィールを作成してDAKICKSターミナルをアンロックします。",
+        labelHandle: "ハンドル名を入力",
+        labelDob: "生年月日",
+        labelRefOpt: "紹介コード (任意)",
+        btnInit: "ターミナルを初期化"
+      },
+      ko: {
+        secArch: "기관 RWA 아키텍처",
+        rwaTitle: "DAKICKS® 피지컬 드롭",
+        rwaDesc: "NFC 칩이 내장된 럭셔리 신발. BNB 스마트 체인에 매핑된 실제 소유권.",
+        revTitle: "수익 공유 프로토콜",
+        revDesc: "실제 신발 판매 수익의 50%가 바이백 볼트로 유입됩니다.",
+        supplyTitle: "DKX 공급 표준",
+        supplyDesc: "총 100,000,000 $DKX 고정 공급량.",
+        frensHeroTitle: "친구를 트레이더로 초대하세요",
+        frensHeroSub: "BNB 체인 네트워크 활동에서 수수료를 받으세요.",
+        statComm: "직접 커미션",
+        statSubComm: "서브 네트워크",
+        refCodeLabel: "나만의 추천 링크 및 코드",
+        copyBtn: "복사",
+        inviteFrensBtn: "👥 친구 초대하기",
+        secComm: "공식 커뮤니케이션 노드",
+        openNode: "노드 열기 ↗",
+        socketTitle: "스마트 계약 소켓",
+        caDeploy: "출시 시 배포 (BNB 체인)",
+        copyCa: "CA 복사",
+        vaultDesc: "$DKX 계약 주소가 BNB 체인에서 검증됩니다.",
+        connectWallet: "WEB3 지갑 연결",
+        genesisAlloc: "제네시스 유동성 할당",
+        claimBtn: "할당 청구 (+2 $DKX)",
+        navTerm: "터미널",
+        navDakicks: "Dakicks",
+        navFrens: "친구",
+        navComm: "커뮤니티",
+        navVault: "볼트",
+        gateTitle: "제네시스 식별",
+        gateSub: "프로필을 생성하여 DAKICKS 터미널을 잠금 해제하세요.",
+        labelHandle: "핸들 / 사용자 이름",
+        labelDob: "생년월일",
+        labelRefOpt: "추천 코드 (선택사항)",
+        btnInit: "터미널 초기화"
+      },
+      ar: {
+        secArch: "هندسة RWA المؤسسية",
+        rwaTitle: "إصدارات DAKICKS® الفعلية",
+        rwaDesc: "أحذية فاخرة مزودة برقائق NFC المشفرة. الملكية المادية على شبكة BNB Smart Chain.",
+        revTitle: "بروتوكول مشاركة الإيرادات",
+        revDesc: "50% من مبيعات الأحذية تُعاد توجيهها إلى خزائن احتياطي إعادة الشراء.",
+        supplyTitle: "معيار العرض DKX",
+        supplyDesc: "إجمالي عرض ثابت يبلغ 100,000,000 $DKX.",
+        frensHeroTitle: "اجعل أصدقاءك متداولين",
+        frensHeroSub: "اکسب عمولات من نشاط شبكتك على شبكة BNB.",
+        statComm: "عمولة مباشرة",
+        statSubComm: "الشبكة الفرعية",
+        refCodeLabel: "رابط الإحالة الخاص بك",
+        copyBtn: "نسخ",
+        inviteFrensBtn: "👥 دعوة الأصدقاء",
+        secComm: "عقد الاتصال الرسمية",
+        openNode: "فتح العقدة ↗",
+        socketTitle: "مقبس العقد الذكي",
+        caDeploy: "النشر عند الإطلاق (BNB CHAIN)",
+        copyCa: "نسخ CA",
+        vaultDesc: "سيتم التحقق من عنوان عقد $DKX ربطه مباشرة.",
+        connectWallet: "توصيل محفظة WEB3",
+        genesisAlloc: "تخصيص سيولة التكوين",
+        claimBtn: "المطالبة بالتخصيص (+2 $DKX)",
+        navTerm: "المحطة",
+        navDakicks: "داكيدكس",
+        navFrens: "الأصدقاء",
+        navComm: "المجتمع",
+        navVault: "الخزينة",
+        gateTitle: "هوية التكوين",
+        gateSub: "أنشئ هويتك لفتح محطة DAKICKS.",
+        labelHandle: "اختر اسم المستخدم",
+        labelDob: "تاريخ الميلاد",
+        labelRefOpt: "رمز الإحالة (اختياري)",
+        btnInit: "تهيئة المحطة"
+      },
+      ur: {
+        secArch: "ادارہ جاتی RWA آرکیটেक्चर",
+        rwaTitle: "DAKICKS® فزیکل ڈراپس",
+        rwaDesc: "این ایف سی چپس کے ساتھ لگژری جوتے۔ بی این بی سمارٹ چین پر نقشہ سازی کی گئی۔",
+        revTitle: "ریونیو شیئر پروٹوکول",
+        revDesc: "فٹویئر کی فروخت کا 50% بائ بیک ریزرو والٹس میں جاتا ہے۔",
+        supplyTitle: "DKX سپلائی معیار",
+        supplyDesc: "100,000,000 $DKX کی فکسڈ سپلائی۔",
+        frensHeroTitle: "اپنے دوستوں کو ٹریڈر بنائیں",
+        frensHeroSub: "BNB چین پر اپنے نیٹ ورک کی سرگرمی سے کمیشن حاصل کریں۔",
+        statComm: "براہ راست کمیشن",
+        statSubComm: "ذیلی نیٹ ورک",
+        refCodeLabel: "آپ کا منفرد ریفرل لنک اور کوڈ",
+        copyBtn: "کاپی",
+        inviteFrensBtn: "👥 دوستوں کو مدعو کریں",
+        secComm: "سرکاری کمیউনিকেশন نوड्स",
+        openNode: "نوڈ کھولیں ↗",
+        socketTitle: "آن چین اسمارٹ کانٹریکٹ",
+        caDeploy: "لانچ پر تعینات (BNB CHAIN)",
+        copyCa: "کاپی سی اے",
+        vaultDesc: "$DKX کا معاہدہ پتہ تصدیق کیا جائے گا۔",
+        connectWallet: "WEB3 والٹ کنیکٹ کریں",
+        genesisAlloc: "جینسس لیکুইডিটি الاٹمنٹ",
+        claimBtn: "الोटमेंट क्लेम करें (+2 $DKX)",
+        navTerm: "ٹرمینل",
+        navDakicks: "ڈاکیکس",
+        navFrens: "دوست",
+        navComm: "کمیউনিটি",
+        navVault: "والٹ",
+        gateTitle: "جینسس شناختی",
+        gateSub: "DAKICKS ٹرمینل کو غیر مقفل کرنے کے لیے اپنی شناخت بنائیں۔",
+        labelHandle: "یوزر نیم منتخب کریں",
+        labelDob: "تاریخ پیدائش",
+        labelRefOpt: "ریفرل کوڈ (اختیاری)",
+        btnInit: "ٹرمینல் शुरू करें"
+      },
+      ps: {
+        secArch: "بنټ RWA معمارۍ",
+        rwaTitle: "DAKICKS® فزیکی څاڅکي",
+        rwaDesc: "عشقی بوټان د NFC چپونو سره.",
+        revTitle: "د عاید شریکولو پروټوکول",
+        revDesc: "د بوټانو د خرڅلاو 50% بیرته اخیستلو خزانې ته ځي.",
+        supplyTitle: "DKX رسولو معیار",
+        supplyDesc: "ټولټال 100,000,000 $DKX عرضه.",
+        frensHeroTitle: "خپل ملګري سوداګر کړئ",
+        frensHeroSub: "په BNB چین کې عاید ترلاسه کړئ.",
+        statComm: "مستقیم کمیسیون",
+        statSubComm: "سب شبکه",
+        refCodeLabel: "ستاسو ځانګړی راجع کولو لینک",
+        copyBtn: "کاپی",
+        inviteFrensBtn: "👥 ملګري بلنه کړئ",
+        secComm: "رسمي ارتباطي نوډونه",
+        openNode: "خلاص کړئ ↗",
+        socketTitle: "د سمارټ قرارداد ساکټ",
+        caDeploy: "په پیل کې ځای په ځای کول (BNB CHAIN)",
+        copyCa: "CA کاپي کول",
+        vaultDesc: "د $DKX قرارداد به تایید شي.",
+        connectWallet: "WEB3 والټ وصل کړئ",
+        genesisAlloc: "د جنیسس تخصیص",
+        claimBtn: "غوښتنه (+2 $DKX)",
+        navTerm: "ټرمینل",
+        navDakicks: "Dakicks",
+        navFrens: "ملګري",
+        navComm: "س ټولنه",
+        navVault: "خزانه",
+        gateTitle: "جنیسس پیژندنه",
+        gateSub: "خپل پروفایل جوړ کړئ.",
+        labelHandle: "کارن نوم",
+        labelDob: "د زیږون نیټه",
+        labelRefOpt: "د راجع کولو کوډ (اختياري)",
+        btnInit: "پیل کول"
+      },
+      fa: {
+        secArch: "معماری نهادی RWA",
+        rwaTitle: "دراپ های فیزیکی DAKICKS®",
+        rwaDesc: "کفش های لوکس همراه با تراشه های امنیتی NFC.",
+        revTitle: "پروتکل تقسیم درآمد",
+        revDesc: "50 درصد فروش واقعی به خزانه های ذخیره بازخرید هدایت می شود.",
+        supplyTitle: "استاندارد عرضه DKX",
+        supplyDesc: "عرضه ثابت 100,000,000 $DKX.",
+        frensHeroTitle: "دوستان خود را به معامله‌گر تبدیل کنید",
+        frensHeroSub: "از فعالیت شبکه خود در BNB Chain کمیسیون کسب کنید.",
+        statComm: "کمیسیون مستقیم",
+        statSubComm: "زیر شبکه",
+        refCodeLabel: "لینک و کد معرفی اختصاصی شما",
+        copyBtn: "کپی",
+        inviteFrensBtn: "👥 دعوت از دوستان",
+        secComm: "گره های ارتباطی رسمی",
+        openNode: "باز کردن گره ↗",
+        socketTitle: "سوکت قرارداد هوشمند",
+        caDeploy: "استقرار در زمان راه اندازی (BNB CHAIN)",
+        copyCa: "کپی CA",
+        vaultDesc: "آدرس قرارداد $DKX تایید خواهد شد.",
+        connectWallet: "اتصال کیف پول WEB3",
+        genesisAlloc: "تخصیص نقدینگی جنسیس",
+        claimBtn: "دریافت تخصیص (+2 $DKX)",
+        navTerm: "ترمینال",
+        navDakicks: "داکیکس",
+        navFrens: "دوستان",
+        navComm: "انجمن",
+        navVault: "کیف پول",
+        gateTitle: "شناسایی جنسیس",
+        gateSub: "پروفایل خود را ایجاد کنید.",
+        labelHandle: "انتخاب نام کاربری",
+        labelDob: "تاریخ تولد",
+        labelRefOpt: "کد معرفی (اختیاری)",
+        btnInit: "راه‌اندازی ترمینال"
+      },
+      es: {
+        secArch: "ARQUITECTURA RWA INSTITUCIONAL",
+        rwaTitle: "Lanzamientos Físicos DAKICKS®",
+        rwaDesc: "Calzado de lujo con chips NFC criptográficos integrados. Propiedad física mapped en BNB Smart Chain.",
+        revTitle: "Protocolo de Repartición de Ingresos",
+        revDesc: "El 50% de las ventas de calzado se redirige a bóvedas institucionales de recompra.",
+        supplyTitle: "Estándar de Suministro DKX",
+        supplyDesc: "Suministro fijo de 100,000,000 $DKX con verificación de contrato.",
+        frensHeroTitle: "Convierte a tus amigos en traders",
+        frensHeroSub: "Gana comisiones por la actividad de tu red en BNB Chain.",
+        statComm: "Comisión Directa",
+        statSubComm: "Sub-Red",
+        refCodeLabel: "Tu Enlace y Código de Referencia",
+        copyBtn: "Copiar",
+        inviteFrensBtn: "👥 Invitar Amigos",
+        secComm: "Nodos de Comunicación Oficial",
+        openNode: "Abrir Nodo ↗",
+        socketTitle: "Socket de Contrato Inteligente",
+        caDeploy: "IMPLEMENTACIÓN EN EL LANZAMIENTO (BNB CHAIN)",
+        copyCa: "COPIAR CA",
+        vaultDesc: "La dirección del contrato $DKX se verificará al proveer liquidez en BNB Chain.",
+        connectWallet: "CONECTAR CARTERA WEB3",
+        genesisAlloc: "Asignación de Liquidez Genesis",
+        claimBtn: "Reclamar Asignación (+2 $DKX)",
+        navTerm: "Terminal",
+        navDakicks: "Dakicks",
+        navFrens: "Amigos",
+        navComm: "Comunidad",
+        navVault: "Bóveda",
+        gateTitle: "Identificación Genesis",
+        gateSub: "Crea tu identidad para desbloquear el Terminal DAKICKS.",
+        labelHandle: "Elige tu Handle / Usuario",
+        labelDob: "Fecha de Nacimiento",
+        labelRefOpt: "Código de Referencia (Opcional)",
+        btnInit: "INICIALIZAR TERMINAL"
+      }
+    };
+
+    function changeLanguage(lang) {
+      const dict = i18n[lang] || i18n['en'];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.innerText = dict[key];
+        }
+      });
+    }
+
+    function loadTradingView() {
+      const tvScript = document.createElement('script');
+      tvScript.src = "https://s3.tradingview.com/tv.js";
+      tvScript.onload = () => {
+        try {
+          new TradingView.widget({
+            "autosize": true,
+            "symbol": "BINANCE:BNBUSDT",
+            "interval": "15",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "enable_publishing": false,
+            "hide_top_toolbar": false,
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "save_image": false,
+            "backgroundColor": "#070908",
+            "gridColor": "rgba(255, 255, 255, 0.03)",
+            "container_id": "tv_chart_main"
+          });
+        } catch (e) {}
+      };
+      document.body.appendChild(tvScript);
+    }
+  </script>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      try {
+        tg.setHeaderColor('#070908');
+        tg.setBackgroundColor('#070908');
+      } catch (e) {}
+    }
+
+    const EMAILJS_CONFIG = {
+      serviceId: "service_91i0edt",
+      templateId: "template_6a78v2d", 
+      publicKey: "UZVvtLHuf8uZWHdkg"
+    };
+
+    (function() {
+      try {
+        emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+      } catch (e) {}
+    })();
+
+    const TEN_MINUTES_MS = 10 * 60 * 1000;
+    let countdownInterval = null;
+
+    function triggerHaptic(type = 'light') {
+      try {
+        if (tg?.HapticFeedback) {
+          if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+          else tg.HapticFeedback.impactOccurred(type);
+        }
+      } catch (e) {}
+    }
+
+    let toastTimer;
+    function showHUD(text) {
+      const toast = document.getElementById('hudToast');
+ 
