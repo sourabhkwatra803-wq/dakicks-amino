@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>$DKX - Sovereign Retro Terminal</title>
+    <title>$DKX - Sovereign Luxury Terminal</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-deep: #050b14;
             --accent-green: #00ff88;
             --accent-gold: #f3ba2f;
-            --card-glass: rgba(10, 20, 35, 0.75);
-            --border-neon: rgba(0, 255, 136, 0.4);
+            --card-glass: rgba(12, 22, 38, 0.78);
+            --border-neon: rgba(0, 255, 136, 0.35);
             --text-main: #ffffff;
             --text-muted: #8ca0b3;
         }
@@ -26,32 +26,32 @@
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; pointer-events: none;
         }
         .bg-video-container video {
-            width: 100%; height: 100%; object-fit: cover; filter: brightness(1.25) contrast(1.15); /* High brightness & vivid contrast */
+            width: 100%; height: 100%; object-fit: cover; filter: brightness(1.3) contrast(1.15);
         }
         .bg-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
-            background: linear-gradient(180deg, rgba(5, 11, 20, 0.45) 0%, rgba(5, 11, 20, 0.85) 100%);
+            background: linear-gradient(180deg, rgba(5, 11, 20, 0.35) 0%, rgba(5, 11, 20, 0.82) 100%);
         }
 
-        /* Top Sovereign Header */
+        /* Top Luxury Header */
         .header {
             display: flex; justify-content: space-between; align-items: center; padding: 14px 18px;
-            background: rgba(8, 16, 28, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-neon);
+            background: rgba(8, 16, 28, 0.88); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border-neon);
             position: sticky; top: 0; z-index: 100;
         }
         .user-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .avatar-box {
-            width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
             display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; color: #000;
-            overflow: hidden; border: 2px solid var(--accent-green); box-shadow: 0 0 12px rgba(0,255,136,0.5);
+            overflow: hidden; border: 2px solid var(--accent-green); box-shadow: 0 0 14px rgba(0,255,136,0.5);
         }
         .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
         .user-info h4 { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-main); }
         .user-info span { font-size: 10px; color: var(--accent-green); font-weight: 600; text-transform: uppercase; }
 
-        .terminal-actions { display: flex; gap: 8px; position: relative; }
+        .terminal-actions { display: flex; gap: 8px; }
         .icon-btn {
-            background: rgba(0,255,136,0.1); border: 1px solid var(--border-neon); color: var(--accent-green);
+            background: rgba(0,255,136,0.12); border: 1px solid var(--border-neon); color: var(--accent-green);
             padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;
         }
         .icon-btn:active { transform: scale(0.95); background: var(--accent-green); color: #000; }
@@ -62,11 +62,11 @@
         .tab-pane.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Luxury Retro Arcade Banner (3D Rope & Emerald Coin with Scrolling Numbers) */
+        /* Luxury Arcade Banner (3D Rope & Emerald Coin) */
         .arcade-banner {
-            background: linear-gradient(135deg, rgba(12, 28, 45, 0.9), rgba(5, 14, 25, 0.95));
+            background: linear-gradient(135deg, rgba(12, 28, 45, 0.92), rgba(5, 14, 25, 0.96));
             border: 2px solid var(--accent-green); border-radius: 16px; padding: 20px; text-align: center;
-            position: relative; overflow: hidden; box-shadow: 0 0 25px rgba(0, 255, 136, 0.3); margin-bottom: 16px;
+            position: relative; overflow: hidden; box-shadow: 0 0 28px rgba(0, 255, 136, 0.28); margin-bottom: 16px;
         }
         .rope-line {
             position: absolute; top: 0; left: 50%; width: 4px; height: 35px; background: linear-gradient(to bottom, #d4af37, #8b6508);
@@ -83,18 +83,19 @@
         
         .scrolling-numbers {
             font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900; color: var(--accent-gold);
-            letter-spacing: 4px; text-shadow: 0 0 10px rgba(243, 186, 47, 0.8); overflow: hidden; height: 30px; display: flex; justify-content: center; align-items: center;
+            letter-spacing: 4px; text-shadow: 0 0 10px rgba(243, 186, 47, 0.8); height: 30px; display: flex; justify-content: center; align-items: center;
         }
-
         .arcade-title { font-family: 'Orbitron', sans-serif; font-size: 15px; font-weight: 900; color: #fff; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
         .arcade-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
 
-        /* Glass Cards */
+        /* Glass Cards & Typography */
         .card {
-            background: var(--card-glass); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
         }
         .section-title { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent-green); margin-bottom: 12px; letter-spacing: 0.5px; }
+        .tag { font-size: 9px; font-weight: 800; color: var(--accent-gold); letter-spacing: 1px; text-transform: uppercase; display: inline-block; margin-bottom: 6px; }
+        .desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
         /* Cipher Digit Inputs */
         .cipher-grid { display: flex; gap: 8px; justify-content: center; margin: 12px 0; }
@@ -114,9 +115,26 @@
         }
         .action-btn:active { transform: scale(0.98); }
 
-        /* Bottom Gen-Z Navigation */
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: #0a1424; border: 2px solid var(--accent-green); border-radius: 18px; padding: 24px;
+            width: 100%; max-width: 380px; box-shadow: 0 0 35px rgba(0,255,136,0.4); position: relative;
+        }
+
+        /* Inputs inside modal */
+        .modal-input {
+            width: 100%; background: rgba(5,11,20,0.9); border: 1px solid var(--border-neon); border-radius: 8px;
+            padding: 12px; color: #fff; font-size: 13px; margin: 10px 0; outline: none; font-family: 'Inter', sans-serif;
+        }
+
+        /* Gen-Z Bottom Navigation */
         .nav-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(5, 11, 20, 0.92); backdrop-filter: blur(15px);
+            position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(5, 11, 20, 0.94); backdrop-filter: blur(15px);
             border-top: 1px solid var(--border-neon); display: flex; justify-content: space-around; padding: 10px 0; z-index: 100;
         }
         .nav-btn {
@@ -130,7 +148,7 @@
         .toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
             background: rgba(0, 255, 136, 0.95); color: #000; padding: 10px 20px; border-radius: 8px;
-            font-weight: 700; font-size: 12px; z-index: 1000; transition: transform 0.3s ease; box-shadow: 0 0 20px rgba(0,255,136,0.8);
+            font-weight: 700; font-size: 12px; z-index: 2000; transition: transform 0.3s ease; box-shadow: 0 0 20px rgba(0,255,136,0.8);
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
     </style>
@@ -164,17 +182,15 @@
         <div id="tab-home" class="tab-pane active">
             <div class="arcade-banner">
                 <div class="rope-line"></div>
-                <div class="emerald-coin-3d">
-                    <span style="font-size: 26px;">💎</span>
-                </div>
-                <div class="scrolling-numbers" id="scrollingNumbersDisplay">49812</div>
+                <div class="emerald-coin-3d"><span style="font-size: 26px;">💎</span></div>
+                <div class="scrolling-numbers" id="scrollingNumbersDisplay">50546</div>
                 <div class="arcade-title">GTA Vice Luxury Cipher</div>
                 <p class="arcade-desc">Tap & complete the 5-digit daily security cipher code to unlock massive $DKX asset drops.</p>
             </div>
 
             <div class="card">
-                <span style="font-size: 10px; color: var(--accent-gold); font-weight: 700; letter-spacing: 1px;">SECURE VAULT ACCESS</span>
-                <h3 style="font-size: 15px; margin: 4px 0 10px 0;">Enter 5-Digit Daily Cipher</h3>
+                <span class="tag">SECURE VAULT ACCESS</span>
+                <h3 style="font-size: 15px; margin: 2px 0 10px 0;">Enter 5-Digit Daily Cipher</h3>
                 
                 <div class="cipher-grid">
                     <input type="number" maxlength="1" class="cipher-input" id="codeDigit1" oninput="moveToNext(this, 'codeDigit2')">
@@ -189,96 +205,112 @@
             </div>
         </div>
 
-        <div id="tab-games" class="tab-pane">
-            <div class="section-title">Arcade Mini-Games</div>
-            <div class="card" style="text-align: center; padding: 20px;">
-                <span style="font-size: 32px;">🎰</span>
-                <h3 style="font-size: 16px; margin: 8px 0;">Neon Vegas Slot</h3>
-                <p class="desc" style="margin-bottom: 12px; font-size: 12px;">Spin the high-roller wheel to multiply your daily earnings instantly.</p>
-                <button class="action-btn" onclick="showToast('Spinning feature launching soon!')">Play Mini-Game</button>
-            </div>
-        </div>
-
         <div id="tab-market" class="tab-pane">
             <div class="section-title">Market & Live Telemetry</div>
             <div class="card" style="text-align: center; padding: 18px;">
                 <h3 style="font-size: 15px; margin-bottom: 8px;">BNB/USDT Live Chart Feed</h3>
-                <button class="action-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=BINANCE%3ABNBUSDT', '_blank')">Open Full Chart ↗</button>
+                <p class="desc" style="margin-bottom: 12px;">Access full-screen institutional TradingView analysis.</p>
+                <button class="action-btn" onclick="window.open('https://www.tradingview.com/chart/?symbol=BINANCE%3ABNBUSDT', '_blank')">Open Full Page Trading Chart ↗</button>
+            </div>
+            <div class="card">
+                <span class="tag">TOP CRYPTO TOKENS</span>
+                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; font-weight:700;"><span>BNB / USDT</span> <span style="color:var(--accent-green);">+4.82%</span></div>
+                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; font-weight:700;"><span>TON / USDT</span> <span style="color:var(--accent-green);">+7.14%</span></div>
+                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; font-weight:700;"><span>$DKX / USDT</span> <span style="color:var(--accent-green);">+32.50% (Genesis)</span></div>
             </div>
         </div>
 
         <div id="tab-referral" class="tab-pane">
             <div class="section-title">Sovereign Referral Network</div>
             <div class="card" style="text-align: center;">
+                <span class="tag">INVITE & EARN</span>
                 <h3 style="font-size: 18px; margin: 6px 0;">Earn +50 $DKX Per Friend</h3>
-                <button class="action-btn" onclick="navigator.clipboard.writeText('https://t.me/DkxTerminalBot?start=ref_001'); showToast('Referral link copied!');">Copy Invite Link</button>
+                <p class="desc" style="margin-bottom: 14px;">Share your exclusive referral link across global networks.</p>
+                <button class="action-btn" onclick="navigator.clipboard.writeText('https://t.me/DkxTerminalBot?start=ref_001'); showToast('Referral link copied to clipboard!');">Copy Invite Link</button>
+            </div>
+
+            <div class="card">
+                <span class="tag">MONTHLY LEADERBOARD</span>
+                <h3 style="font-size: 14px; margin-bottom: 8px;">Top Referrers (Global)</h3>
+                <p class="desc" style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>1. @CryptoKing_99</span> <b>14,250 $DKX</b></p>
+                <p class="desc" style="display:flex; justify-content:space-between; margin-bottom:4px;"><span>2. @SovereignWhale</span> <b>11,100 $DKX</b></p>
+                <p class="desc" style="display:flex; justify-content:space-between;"><span>3. @Anubhav_DKX</span> <b>9,850 $DKX</b></p>
             </div>
         </div>
 
         <div id="tab-wallet" class="tab-pane">
             <div class="section-title">Web3 Wallet Integration</div>
             <div class="card">
+                <h3 style="font-size: 16px; margin-bottom: 6px;">Connect Web3 Socket</h3>
+                <p class="desc" style="margin-bottom: 14px;">Select your preferred institutional gateway for asset withdrawal & liquidity drops.</p>
+                
                 <div style="display:flex; flex-direction:column; gap:10px;">
-                    <button class="action-btn" style="background:#3375BB; color:#fff;" onclick="window.open('https://link.trustwallet.com/', '_blank')">🛡️ Trust Wallet</button>
-                    <button class="action-btn" style="background:#0088cc; color:#fff;" onclick="window.open('https://tonkeeper.com/', '_blank')">💎 Tonkeeper</button>
+                    <button class="action-btn" style="background:#3375BB; color:#fff;" onclick="window.open('https://link.trustwallet.com/', '_blank')">🛡️ Connect Trust Wallet</button>
+                    <button class="action-btn" style="background:#0088cc; color:#fff;" onclick="window.open('https://tonkeeper.com/', '_blank')">💎 Connect Tonkeeper</button>
+                    <button class="action-btn" style="background:#E6007A; color:#fff;" onclick="window.open('https://pancakeswap.finance/', '_blank')">🥞 Connect PancakeSwap</button>
+                    <button class="action-btn" style="background:#F6851B; color:#fff;" onclick="window.open('https://metamask.io/', '_blank')">🦊 Connect MetaMask</button>
                 </div>
             </div>
         </div>
 
     </div>
 
+    <div id="profileModal" class="modal-overlay">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h3 style="font-family:'Orbitron',sans-serif; font-size:16px;">Sovereign Profile</h3>
+                <button onclick="toggleProfileModal(false)" style="background:none; border:none; color:#fff; font-size:18px; cursor:pointer;">✕</button>
+            </div>
+            
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                <div class="avatar-box" id="modalAvatarDisplay" style="width:50px; height:50px; font-size:20px;">DK</div>
+                <div>
+                    <h4 id="modalUsernameDisplay" style="font-family:'Orbitron',sans-serif; font-size:14px;">User</h4>
+                    <span style="font-size:10px; color:var(--accent-green);">Verified VIP Node</span>
+                </div>
+            </div>
+
+            <div id="modalEmailUnlinked">
+                <span class="tag">GMAIL VERIFICATION</span>
+                <p class="desc" style="font-size:11px; margin-bottom:6px;">Link your Gmail to receive instant security alerts & code drops.</p>
+                <input type="email" id="modalEmailInput" class="modal-input" placeholder="Enter your Gmail address">
+                <button class="action-btn" id="sendOtpBtn" onclick="sendVerificationCode()" style="font-size:11px; padding:10px;">Send 1-Min OTP & Link</button>
+            </div>
+
+            <div id="modalEmailVerify" style="display:none;">
+                <span class="tag">ENTER OTP CODE</span>
+                <p class="desc" id="modalOtpStatus" style="font-size:11px; margin-bottom:6px;">OTP sent! Check your inbox.</p>
+                <input type="text" id="modalOtpInput" class="modal-input" placeholder="Enter 6-digit OTP code" maxlength="6">
+                <button class="action-btn" onclick="confirmVerificationCode()" style="font-size:11px; padding:10px; margin-bottom:8px;">Verify OTP</button>
+                <button class="action-btn" id="resendOtpBtn" onclick="sendVerificationCode()" style="font-size:10px; padding:8px; background:rgba(255,255,255,0.1); color:#fff;" disabled>Resend OTP Code</button>
+            </div>
+
+            <div id="modalEmailLinked" style="display:none; text-align:center; padding:10px 0;">
+                <span style="color:var(--accent-green); font-weight:700; font-size:12px;">✓ Gmail Linked Successfully</span>
+                <p id="modalLinkedEmailText" class="desc" style="font-size:11px; margin:4px 0 10px 0;"></p>
+                <button class="action-btn" onclick="disconnectEmail()" style="font-size:10px; background:rgba(255,0,0,0.2); color:#ff4d4d; padding:8px;">Disconnect Email</button>
+            </div>
+        </div>
+    </div>
+
     <div class="nav-bar">
         <button class="nav-btn active" onclick="switchTab('home', this)"><span>Home</span></button>
-        <button class="nav-btn" onclick="switchTab('games', this)"><span>Games</span></button>
         <button class="nav-btn" onclick="switchTab('market', this)"><span>Market</span></button>
         <button class="nav-btn" onclick="switchTab('referral', this)"><span>Referral</span></button>
         <button class="nav-btn" onclick="switchTab('wallet', this)"><span>Wallet</span></button>
     </div>
 
     <script>
-        // High-speed scrolling numbers effect inside the 3D coin banner
+        emailjs.init("UZVvtLHuf8uZWHdkg");
+        let activeOtp = null;
+        let emailTimerInterval = null;
+
+        // High-speed scrolling numbers effect for the 3D coin banner
         setInterval(() => {
             const randomNum = Math.floor(10000 + Math.random() * 90000);
             const el = document.getElementById('scrollingNumbersDisplay');
             if(el) el.innerText = randomNum;
-        }, 120);
+        }, 100);
 
-        function moveToNext(current, nextFieldId) {
-            if (current.value.length >= 1 && nextFieldId) {
-                document.getElementById(nextFieldId).focus();
-            }
-        }
-
-        function switchTab(name, btn) {
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + name).classList.add('active');
-            btn.classList.add('active');
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toastNotification');
-            t.innerText = msg;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2500);
-        }
-
-        function claimDailyCode() {
-            const d1 = document.getElementById('codeDigit1').value;
-            const d2 = document.getElementById('codeDigit2').value;
-            const d3 = document.getElementById('codeDigit3').value;
-            const d4 = document.getElementById('codeDigit4').value;
-            const d5 = document.getElementById('codeDigit5').value;
-            if(!d1 || !d2 || !d3 || !d4 || !d5) {
-                showToast('Please enter all 5 digits!');
-                return;
-            }
-            if(d1+d2+d3+d4+d5 === '50546') {
-                showToast('Success! +25,000 $DKX Credited');
-            } else {
-                showToast('Incorrect Cipher Code!');
-            }
-        }
-    </script>
-</body>
-</html>
+        window.addEventListener('DOMContentLoaded', () => {
+            let user = localStorage.getItem('dakicks
