@@ -901,4 +901,452 @@
     }
 
     .drawer-dob-tag {
-      font-size: 
+      font-size: 11px;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      margin-bottom: 18px;
+    }
+
+    .drawer-info-text {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      max-width: 310px;
+    }
+
+    .drawer-email-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drawer-email-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .drawer-email-input:focus {
+      border-color: #ffffff;
+    }
+
+    .btn-link-action {
+      width: 100%;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .otp-verification-container {
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .otp-code-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 8px;
+      text-align: center;
+      font-family: -apple-system, monospace;
+    }
+
+    .btn-verify-otp {
+      width: 100%;
+      background: #ffffff;
+      color: #070908;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .otp-sub-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 6px;
+    }
+
+    .resend-timer-text {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .btn-text-action {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .oauth-linked-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .btn-change-email {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+      width: 100%;
+    }
+
+    .drawer-close-btn {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      color: #ffffff;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="top-left-profile" id="topLeftProfileBtn">
+      <div class="user-avatar-badge" id="topAvatarBadge">DK</div>
+      <div class="user-handle-txt" id="topHandleText">Loading...</div>
+    </div>
+    <div class="lang-selector-wrap">
+      <select id="langDropdown" onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="hi">हिंदी</option>
+        <option value="ru">Русский</option>
+        <option value="ja">日本語</option>
+        <option value="ko">한국어</option>
+        <option value="ar">العربية</option>
+        <option value="ur">اردو</option>
+        <option value="ps">پښتو</option>
+        <option value="fa">فارسی</option>
+        <option value="es">Español</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="main-viewport">
+    
+    <div id="tab-terminal" class="tab-content active">
+      <div class="chart-box">
+        <div id="tv_chart_main" style="height:100%;width:100%"></div>
+      </div>
+    </div>
+
+    <div id="tab-dakicks" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="none">
+          <source src="./dakicks-bg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="section-title" data-i18n="secArch">Institutional RWA Architecture</div>
+
+      <div class="glass-card">
+        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
+          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
+        </video>
+        <div class="card-head">
+          <div class="card-title" data-i18n="rwaTitle">DAKICKS® Physical Drops</div>
+          <div class="card-tag">RWA APPAREL</div>
+        </div>
+        <div class="card-desc" data-i18n="rwaDesc">
+          Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on BNB Smart Chain.
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
+          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
+        </video>
+        <div class="card-head">
+          <div class="card-title" data-i18n="revTitle">Revenue-Share Protocol</div>
+          <div class="card-tag">TREASURY</div>
+        </div>
+        <div class="card-desc" data-i18n="revDesc">
+          50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
+          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
+        </video>
+        <div class="card-head">
+          <div class="card-title" data-i18n="supplyTitle">DKX Supply Standard</div>
+          <div class="card-tag">DEFLATIONARY</div>
+        </div>
+        <div class="card-desc" data-i18n="supplyDesc">
+          Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.
+        </div>
+      </div>
+    </div>
+
+    <!-- FRENS TAB -->
+    <div id="tab-frens" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="none">
+          <source src="./community-bg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="frens-wrapper">
+        <div class="frens-hero-card">
+          <div class="frens-hero-title" data-i18n="frensHeroTitle">Turn your frens into traders</div>
+          <div style="font-size: 12px; color: var(--text-secondary);" data-i18n="frensHeroSub">Earn commissions from your network activity on BNB Chain.</div>
+          
+          <div class="frens-stats-row">
+            <div class="frens-stat-box">
+              <div class="frens-stat-lbl" data-i18n="statComm">Direct Commission</div>
+              <div class="frens-stat-val">20%</div>
+            </div>
+            <div class="frens-stat-box">
+              <div class="frens-stat-lbl" data-i18n="statSubComm">Sub-Network</div>
+              <div class="frens-stat-val">2.5%</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ref-code-card">
+          <div class="ref-code-label" data-i18n="refCodeLabel">Your Unique Referral Link & Code</div>
+          <div class="ref-code-strip">
+            <span class="ref-code-txt" id="myRefCodeTxt">DKX-GENESIS</span>
+            <button class="btn-copy-code" id="btnCopyRefCode" data-i18n="copyBtn">Copy</button>
+          </div>
+
+          <div class="ref-share-actions">
+            <button class="btn-social-share" id="shareTelegramBtn">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.26-2.06-.48-.83-.27-1.49-.42-1.43-.88.03-.24.37-.49 1.02-.75 3.98-1.73 6.64-2.87 7.98-3.44 3.8-1.62 4.59-1.9 5.1-1.91.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.13-.04.22z"/></svg>
+              Telegram
+            </button>
+            <button class="btn-social-share" id="shareTwitterBtn">
+              <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              X
+            </button>
+            <button class="btn-social-share" id="shareWhatsAppBtn">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.15-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.371l-.361-.214-3.732.982 9.982-2.583.235.148a8.212 8.212 0 0 0 4.413 1.29c4.538 0 8.232-3.694 8.232-8.232 0-4.538-3.694-8.233-8.232-8.233s-8.232 3.695-8.232 8.233c0 1.45.379 2.85 1.103 4.088l.241.408-1.571 4.73 4.881-1.282.38.223a9.837 9.837 0 0 1 4.965 1.341z"/></svg>
+              WhatsApp
+            </button>
+          </div>
+        </div>
+
+        <button class="btn-invite-frens" id="mainInviteBtn" data-i18n="inviteFrensBtn">
+          👥 Invite Frens
+        </button>
+      </div>
+    </div>
+
+    <div id="tab-community" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="none">
+          <source src="./community-bg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="section-title" data-i18n="secComm">Official Communication Nodes</div>
+
+      <div class="comm-row">
+        <div class="comm-left">
+          <div class="comm-logo-box">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.06-.49-.83-.27-1.49-.42-1.43-.88.03-.24.38-.49 1.04-.75 4.09-1.78 6.82-2.95 8.19-3.52 3.9-1.63 4.71-1.91 5.24-1.92.12 0 .37.03.54.17.14.12.18.28.2.45-.01.07-.01.18-.02.24z"/></svg>
+          </div>
+          <div>
+            <div class="comm-name">Telegram Network</div>
+            <div class="comm-sub">@DKXOfficial</div>
+          </div>
+        </div>
+        <a href="https://t.me/DKXOfficial" target="_blank" class="btn-node" data-i18n="openNode">Open Node ↗</a>
+      </div>
+
+      <div class="comm-row">
+        <div class="comm-left">
+          <div class="comm-logo-box">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </div>
+          <div>
+            <div class="comm-name">Instagram Hub</div>
+            <div class="comm-sub">@dakicks_dkx</div>
+          </div>
+        </div>
+        <a href="https://instagram.com/dakicks_dkx" target="_blank" class="btn-node" data-i18n="openNode">Open Node ↗</a>
+      </div>
+
+      <div class="comm-row" style="padding-left: 56px;">
+        <video class="x-left-sticker" autoplay loop muted playsinline preload="auto">
+          <source src="./outlaybg.mp4" type="video/mp4" />
+        </video>
+        <div class="comm-left">
+          <div class="comm-logo-box">
+            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </div>
+          <div>
+            <div class="comm-name">X Protocol Comms</div>
+            <div class="comm-sub">@dakicks_dkx</div>
+          </div>
+        </div>
+        <a href="https://x.com/dakicks_dkx" target="_blank" class="btn-node" data-i18n="openNode">Open Node ↗</a>
+      </div>
+    </div>
+
+    <div id="tab-vault" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="none">
+          <source src="./bg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="vault-wrapper">
+        <div class="vault-glyph">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        </div>
+        <div class="vault-title" data-i18n="socketTitle">On-Chain Smart Contract Socket</div>
+
+        <div class="ca-strip">
+          <span class="ca-text" data-i18n="caDeploy">DEPLOYING AT LAUNCH (BNB CHAIN)</span>
+          <button class="btn-copy-ca" id="copyCaBtn" data-i18n="copyCa">COPY CA</button>
+        </div>
+
+        <div class="vault-desc" data-i18n="vaultDesc">
+          Official $DKX contract address will be verified and mapped here directly upon DEX liquidity provisioning on BNB Chain.
+        </div>
+
+        <button class="btn-wallet-connect" id="connectWalletBtn" data-i18n="connectWallet">CONNECT WEB3 WALLET (STANDBY)</button>
+
+        <div class="allocation-box">
+          <div class="alloc-head">
+            <div class="alloc-title" data-i18n="genesisAlloc">Genesis Liquidity Allocation</div>
+            <div class="alloc-status">ONLINE</div>
+          </div>
+          <div class="alloc-value" id="vaultDkxBal">1,250 <span style="font-size:13px; color:#8e9b94; font-weight:600;">$DKX</span></div>
+          <button class="btn-claim-ad" id="claimRewardBtn" data-i18n="claimBtn">
+            Claim Allocation (+2 $DKX)
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="navigateTab('terminal', this)">
+      <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+      <div class="nav-label" data-i18n="navTerm">Terminal</div>
+    </div>
+    <div class="nav-item" onclick="navigateTab('dakicks', this)">
+      <svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/></svg>
+      <div class="nav-label" data-i18n="navDakicks">Dakicks</div>
+    </div>
+    <div class="nav-item" onclick="navigateTab('frens', this)">
+      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      <div class="nav-label" data-i18n="navFrens">Frens</div>
+    </div>
+    <div class="nav-item" onclick="navigateTab('community', this)">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      <div class="nav-label" data-i18n="navComm">Community</div>
+    </div>
+    <div class="nav-item" onclick="navigateTab('vault', this)">
+      <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+      <div class="nav-label" data-i18n="navVault">Vault</div>
+    </div>
+  </div>
+
+  <div class="hud-toast" id="hudToast">
+    <div class="hud-toast-indicator"></div>
+    <span id="hudMsg">Notice</span>
+  </div>
+
+  <div class="gate-overlay" id="firstTimeGate" style="display: none;">
+    <div class="gate-card">
+      <div class="gate-icon-box">
+        <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 12c-4.42 0-8 2.24-8 5v3h16v-3c0-2.76-3.58-5-8-5z"/></svg>
+      </div>
+      <h2 class="gate-title" data-i18n="gateTitle">Genesis Identification</h2>
+      <p class="gate-subtitle" data-i18n="gateSub">Create your identity to unlock DAKICKS Terminal and decentralized liquidity vaults.</p>
+
+      <div class="gate-input-wrap">
+        <label class="gate-label" data-i18n="labelHandle">Choose Handle / Username</label>
+        <input type="text" id="inputUsername" class="gate-input" placeholder="e.g. Satoshi_DKX" maxlength="20" />
+      </div>
+
+      <div class="gate-input-wrap">
+        <label class="gate-label" data-i18n="labelDob">Date of Birth</label>
+        <input type="date" id="inputDob" class="gate-input" />
+      </div>
+
+      <div class="gate-input-wrap">
+        <label class="gate-label" data-i18n="labelRefOpt">Referral Code (Optional)</label>
+        <input type="text" id="inputReferralCode" class="gate-input" placeholder="e.g. DKX-ABC-123" />
+      </div>
+
+      <button class="btn-gate-submit" id="submitGateBtn" data-i18n="btnInit">INITIALIZE TERMINAL</button>
+    </div>
+  </div>
+
+  <div class="profile-drawer-backdrop" id="profileBackdrop"></div>
+  <div class="profile-drawer" id="profileDrawer">
+    <div class="drawer-handle-bar"></div>
+    <button class="drawer-close-btn" id="drawerCloseBtn">✕</button>
+
+    <div class="drawer-avatar-wrapper">
+      <div class="drawer-avatar" id="drawerAvatarBadge">DK</div>
+      <div class="btn-avatar-edit" id="btnPencilTrigger" title="Change Profile Photo">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+        </svg>
+      </div>
+      <input type="file" id="avatarFileInput" 
