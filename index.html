@@ -1,1 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DAKICKS Terminal - Institutional RWA & Telemetry</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        :root {
+            --bg-deep: #050507;
+            --surface-glass: rgba(20, 20, 23, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text-primary: #f1f1f3;
+            --text-secondary: #8e8e93;
+            --accent-glow: rgba(255, 255, 255, 0.15);
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 90px;
+        }
+
+        /* 3D Video Background Engine */
+        .bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.25;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        .section-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.18;
+            pointer-events: none;
+            border-radius: 18px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 7, 0.82);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Header Architecture */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(12, 12, 14, 0.92);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--border-glass);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c2c30, #161618);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 12px rgba(255,255,255,0.1);
+        }
+
+        .welcome-label {
+            font-size: 9px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            letter-spacing: 1.2px;
+        }
+
+        .username-text {
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+        }
+
+        .balance-badge {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-glass);
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #e5e5ea;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            backdrop-filter: blur(10px);
+        }
+
+        .platinum-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #00ff80;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff80;
+        }
+
+        /* Content Panes */
+        .content {
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            font-weight: 800;
+        }
+
+        /* High-End Glass Cards */
+        .card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            transition: border-color 0.2s ease;
+        }
+
+        .card:active {
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .card-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #d1d1d6;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .input {
+            width: 100%;
+            background: #09090b;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 14px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .input:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .action-btn {
+            width: 100%;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            transition: transform 0.1s ease, background 0.2s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .verified-badge {
+            background: rgba(0, 255, 128, 0.1);
+            border: 1px solid rgba(0, 255, 128, 0.3);
+            color: #00ff80;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Social Hub Cards */
+        .social-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 14px;
+            text-decoration: none;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .arrow {
+            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Bottom Navigation Bar */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(12, 12, 14, 0.95);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-top: 1px solid var(--border-glass);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #72727a;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 10px 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            transition: color 0.2s;
+        }
+
+        .nav-btn.active {
+            color: #ffffff;
+            font-weight: 800;
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Primary Background Video Engine (bg.mp4 - Squirrel) -->
+    <video autoplay loop muted playsinline class="bg-video">
+        <source src="bg.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <!-- Header System -->
+    <div class="header">
+        <div class="user-info">
+            <div class="avatar" id="userAvatar">D</div>
+            <div>
+                <div class="welcome-label">DKX TERMINAL</div>
+                <div class="username-text" id="usernameText">DkxFounder</div>
+            </div>
+        </div>
+        <div class="balance-badge">
+            <span class="platinum-dot"></span> BNB #41,920,431
+        </div>
+    </div>
+
+    <!-- Application Body Containers -->
+    <div class="content">
+
+        <!-- 1. TERMINAL TAB -->
+        <div id="tab-terminal" class="tab-pane active">
+            <div class="section-title">Institutional Market Telemetry</div>
+            <div class="card">
+                <div class="card-inner">
+                    <div style="font-size: 10px; color: #98989f; margin-bottom: 10px; font-weight: 700; letter-spacing: 0.5px;">REAL-TIME FEED // BINANCE:BNBUSDT</div>
+                    <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3ABNBUSDT&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC" style="width: 100%; height: 240px; border: none; border-radius: 12px;" title="TradingView Live Chart"></iframe>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-inner">
+                    <span class="tag">SECURE PROTOCOL</span>
+                    <h3 style="margin-bottom: 6px; font-size: 16px;">Identity Verification Link</h3>
+                    <p class="desc">Link your institutional Gmail via secure cryptographic node with instant EmailJS dispatch.</p>
+                    <div id="emailSection">
+                        <input type="email" id="userEmail" class="input" placeholder="Enter your institutional Gmail...">
+                        <button class="action-btn" onclick="verifyEmail()">Link & Verify</button>
+                    </div>
+                    <div id="verifiedSection" style="display: none;" class="verified-badge">LINKED & ENCRYPTED ✓</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. DAKICKS TAB (dakicks-bg.mp4) -->
+        <div id="tab-dakicks" class="tab-pane" style="position: relative;">
+            <video autoplay loop muted playsinline class="section-video">
+                <source src="dakicks-bg.mp4" type="video/mp4">
+            </video>
+            <div class="section-title">Institutional RWA Architecture</div>
+            <div class="card"><div class="card-inner">
+                <span class="tag">RWA APPAREL</span>
+                <h3 style="margin-bottom: 6px; font-size: 16px;">DAKICKS® Physical Drops</h3>
+                <p class="desc" style="margin-bottom:0;">Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on BNB Smart Chain.</p>
+            </div></div>
+            <div class="card"><div class="card-inner">
+                <span class="tag">TREASURY</span>
+                <h3 style="margin-bottom: 6px; font-size: 16px;">Revenue-Share Protocol</h3>
+                <p class="desc" style="margin-bottom:0;">50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.</p>
+            </div></div>
+            <div class="card"><div class="card-inner">
+                <span class="tag">DEFLATIONARY</span>
+                <h3 style="margin-bottom: 6px; font-size: 16px;">DKX Supply Standard</h3>
+                <p class="desc" style="margin-bottom:0;">Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.</p>
+            </div></div>
+        </div>
+
+        <!-- 3. COMMUNITY TAB (community-bg.mp4) -->
+        <div id="tab-community" class="tab-pane" style="position: relative;">
+            <video autoplay loop muted playsinline class="section-video">
+                <source src="community-bg.mp4" type="video/mp4">
+            </video>
+            <div class="section-title">Official Communication Nodes</div>
+            <a href="https://t.me/DKXOfficial" target="_blank" class="social-card">
+                <div class="card-inner" style="z-index:2;position:relative;">
+                    <h3 style="font-size: 16px; margin-bottom: 4px;">Telegram Network</h3>
+                    <p style="font-size:13px;color:var(--text-secondary);">@DKXOfficial - Global announcements and community governance.</p>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://instagram.com" target="_blank" class="social-card">
+                <div class="card-inner" style="z-index:2;position:relative;">
+                    <h3 style="font-size: 16px; margin-bottom: 4px;">Instagram Hub</h3>
+                    <p style="font-size:13px;color:var(--text-secondary);">@dakicks_dkx - Visual luxury showcase and drops.</p>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+            <a href="https://twitter.com" target="_blank" class="social-card">
+                <div class="card-inner" style="z-index:2;position:relative;">
+                    <h3 style="font-size: 16px; margin-bottom: 4px;">X Protocol Comms</h3>
+                    <p style="font-size:13px;color:var(--text-secondary);">@dakicks_dkx - Real-time metrics and updates.</p>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+        </div>
+
+        <!-- 4. VAULT TAB (outlaybg.mp4) -->
+        <div id="tab-vault" class="tab-pane" style="position: relative;">
+            <video autoplay loop muted playsinline class="section-video">
+                <source src="outlaybg.mp4" type="video/mp4">
+            </video>
+            <div class="section-title">On-Chain Smart Contract Socket</div>
+            <div class="card">
+                <div class="card-inner">
+                    <span class="tag">GENESIS LIQUIDITY ALLOCATION</span>
+                    <h3 style="font-size: 24px; margin: 10px 0;">1,250 $DKX</h3>
+                    <button class="action-btn" onclick="alert('Smart contract deployment synchronization pending launch sequence!')">Claim Allocation (+2 $DKX)</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-inner">
+                    <span class="tag">VERIFIED PROTOCOL</span>
+                    <h3 style="font-size: 16px; margin-bottom: 6px;">Recent On-Chain Allocations</h3>
+                    <p class="desc" style="margin-bottom: 6px;">0x88c4...9a21 &nbsp;&nbsp; <b>+2 $DKX</b> &nbsp;&nbsp; <span style="color:#00ff80;">Just now</span></p>
+                    <p class="desc" style="margin-bottom: 6px;">0x3f12...4b08 &nbsp;&nbsp; <b>+2 $DKX</b> &nbsp;&nbsp; <span style="color:#00ff80;">1m ago</span></p>
+                    <p class="desc" style="margin-bottom: 0;">0x99e5...11c7 &nbsp;&nbsp; <b>+2 $DKX</b> &nbsp;&nbsp; <span style="color:#00ff80;">3m ago</span></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="nav-bar">
+        <button class="nav-btn active" onclick="switchTab('terminal', this)">Terminal</button>
+        <button class="nav-btn" onclick="switchTab('dakicks', this)">Dakicks</button>
+        <button class="nav-btn" onclick="switchTab('community', this)">Community</button>
+        <button class="nav-btn" onclick="switchTab('vault', this)">Vault</button>
+    </div>
+
+    <script>
+        // Telegram WebApp Integration Setup
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+            const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
+            if (tgUser && tgUser.first_name) {
+                document.getElementById('usernameText').innerText = tgUser.first_name;
+                document.getElementById('userAvatar').innerText = tgUser.first_name.charAt(0).toUpperCase();
+            }
+        }
+
+        // Tab Switching Engine with Zero Lag
+        function switchTab(tabName, btnElement) {
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // EmailJS Execution System
+        emailjs.init("UZVvtLHuf8uZWHdkg");
+
+        function verifyEmail() {
+            const emailVal = document.getElementById('userEmail').value;
+            if (!emailVal || !emailVal.includes('@')) {
+                alert('Please enter a valid institutional Gmail address.');
+                return;
+            }
+
+            const btn = document.querySelector('#emailSection button');
+            btn.innerText = 'Dispatching Node...';
+            btn.disabled = true;
+
+            const templateParams = {
+                to_email: emailVal,
+                user_name: document.getElementById('usernameText').innerText,
+                verification_code: Math.floor(100000 + Math.random() * 900000)
+            };
+
+            emailjs.send('service_91i0edt', 'template_6a78v2d', templateParams)
+                .then(function(response) {
+                    document.getElementById('emailSection').style.display = 'none';
+                    document.getElementById('verifiedSection').style.display = 'block';
+                }, function(error) {
+                    alert('Transmission failed. Check network parameters.');
+                    btn.innerText = 'Link & Verify';
+                    btn.disabled = false;
+                });
+        }
+    </script>
+</body>
+  </html>
+  
