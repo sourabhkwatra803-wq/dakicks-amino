@@ -2963,4 +2963,1041 @@ a{
 
     <canvas
         id="confettiCanvas"
-        class="c
+        onfetti-canvas"></canvas>
+
+<!-- =========================================================
+     DAKICKS TERMINAL — JAVASCRIPT ENGINE
+     ========================================================= -->
+<script>
+(() => {
+  "use strict";
+
+  /* =========================================================
+     CORE STATE
+     ========================================================= */
+  const state = {
+    currentTab: "terminal",
+    user: null,
+    profile: {
+      username: "",
+      dob: "",
+      email: "",
+      avatar: ""
+    },
+    verified: false,
+    otp: null,
+    otpExpires: 0,
+    toastTimer: null,
+    confettiRunning: false,
+    walletConnected: false,
+    claimed: false
+  };
+
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+  /* =========================================================
+     SAFE STORAGE
+     ========================================================= */
+  const storage = {
+    get(key, fallback = null) {
+      try {
+        const value = localStorage.getItem(key);
+        return value === null ? fallback : value;
+      } catch {
+        return fallback;
+      }
+    },
+
+    set(key, value) {
+      try {
+        localStorage.setItem(key, value);
+      } catch {}
+    },
+
+    remove(key) {
+      try {
+        localStorage.removeItem(key);
+      } catch {}
+    }
+  };
+
+  /* =========================================================
+     TELEGRAM WEBAPP
+     ========================================================= */
+  const telegram = window.Telegram?.WebApp;
+
+  if (telegram) {
+    try {
+      telegram.ready();
+      telegram.expand();
+
+      if (telegram.setHeaderColor) {
+        telegram.setHeaderColor("#050507");
+      }
+
+      if (telegram.setBackgroundColor) {
+        telegram.setBackgroundColor("#050507");
+      }
+
+      const tgUser = telegram.initDataUnsafe?.user;
+
+      if (tgUser) {
+        state.user = tgUser;
+
+        state.profile.username =
+          tgUser.username ||
+          [tgUser.first_name, tgUser.last_name]
+            .filter(Boolean)
+            .join(" ") ||
+          "";
+
+        const storedProfile =
+          storage.get("dakicks_profile", null);
+
+        if (storedProfile) {
+          try {
+            state.profile = {
+              ...state.profile,
+              ...JSON.parse(storedProfile)
+            };
+          } catch {}
+        }
+      }
+    } catch (error) {
+      console.warn("Telegram WebApp initialization failed", error);
+    }
+  }
+
+  /* =========================================================
+     PROFILE STORAGE
+     ========================================================= */
+  function saveProfile() {
+    storage.set(
+      "dakicks_profile",
+      JSON.stringify(state.profile)
+    );
+  }
+
+  function loadProfile() {
+    const saved = storage.get("dakicks_profile");
+
+    if (saved) {
+      try {
+        state.profile = {
+          ...state.profile,
+          ...JSON.parse(saved)
+        };
+      } catch {}
+    }
+
+    updateProfileUI();
+  }
+
+  function updateProfileUI() {
+    const username =
+      state.profile.username || "DKX Founder";
+
+    const usernameEls = $$(
+      "[data-profile-username], #profileUsername, .profile-name"
+    );
+
+    usernameEls.forEach(el => {
+      el.textContent = username;
+    });
+
+    const dobEls = $$(
+      "[data-profile-dob], #profileDob"
+    );
+
+    dobEls.forEach(el => {
+      el.textContent =
+        state.profile.dob
+          ? `DOB: ${state.profile.dob}`
+          : "DOB: —";
+    });
+
+    const emailEls = $$(
+      "[data-profile-email], #profileEmail"
+    );
+
+    emailEls.forEach(el => {
+      el.textContent =
+        state.profile.email || "No email linked";
+    });
+
+    if (state.profile.avatar) {
+      $$(
+        "[data-profile-avatar], #profileAvatar, .profile-avatar"
+      ).forEach(img => {
+        if (img.tagName === "IMG") {
+          img.src = state.profile.avatar;
+        } else {
+          img.style.backgroundImage =
+            `url("${state.profile.avatar}")`;
+          img.textContent = "";
+        }
+      });
+    }
+  }
+
+  /* =========================================================
+     TOAST ENGINE
+     ========================================================= */
+  function showToast(
+    message = "Action completed",
+    type = "success"
+  ) {
+    const toast = $("#toast");
+    const icon = $("#toastIcon");
+    const text = $("#toastMessage");
+
+    if (!toast) return;
+
+    if (icon) {
+      icon.textContent =
+        type === "error"
+          ? "!"
+          : type === "warning"
+          ? "!"
+          : "✓";
+    }
+
+    if (text) {
+      text.textContent = message;
+    }
+
+    toast.classList.remove(
+      "show",
+      "success",
+      "error",
+      "warning"
+    );
+
+    toast.classList.add(
+      "show",
+      type
+    );
+
+    clearTimeout(state.toastTimer);
+
+    state.toastTimer = setTimeout(() => {
+      toast.classList.remove("show");
+    }, 3200);
+  }
+
+  /* =========================================================
+     CONFETTI CANVAS
+     ========================================================= */
+  const canvas = $("#confettiCanvas");
+  const ctx = canvas?.getContext("2d");
+
+  let particles = [];
+
+  function resizeConfetti() {
+    if (!canvas) return;
+
+    const dpr = Math.max(
+      1,
+      Math.min(window.devicePixelRatio || 1, 2)
+    );
+
+    canvas.width =
+      Math.floor(window.innerWidth * dpr);
+
+    canvas.height =
+      Math.floor(window.innerHeight * dpr);
+
+    canvas.style.width =
+      `${window.innerWidth}px`;
+
+    canvas.style.height =
+      `${window.innerHeight}px`;
+
+    ctx?.setTransform(
+      dpr,
+      0,
+      0,
+      dpr,
+      0,
+      0
+    );
+  }
+
+  resizeConfetti();
+  window.addEventListener(
+    "resize",
+    resizeConfetti
+  );
+
+  function createConfetti(count = 100) {
+    if (!canvas || !ctx) return;
+
+    particles = [];
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: window.innerWidth / 2,
+        y: window.innerHeight * 0.42,
+
+        vx:
+          (Math.random() - 0.5) *
+          (5 + Math.random() * 9),
+
+        vy:
+          -(5 + Math.random() * 10),
+
+        gravity:
+          0.15 + Math.random() * 0.12,
+
+        drag:
+          0.985,
+
+        rotation:
+          Math.random() * Math.PI * 2,
+
+        rotationSpeed:
+          (Math.random() - 0.5) * 0.25,
+
+        width:
+          4 + Math.random() * 7,
+
+        height:
+          6 + Math.random() * 12,
+
+        life:
+          1,
+
+        decay:
+          0.007 + Math.random() * 0.012,
+
+        hue:
+          Math.floor(Math.random() * 360)
+      });
+    }
+
+    state.confettiRunning = true;
+    requestAnimationFrame(animateConfetti);
+  }
+
+  function animateConfetti() {
+    if (!canvas || !ctx) return;
+
+    ctx.clearRect(
+      0,
+      0,
+      window.innerWidth,
+      window.innerHeight
+    );
+
+    particles.forEach(p => {
+      p.vx *= p.drag;
+      p.vy += p.gravity;
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      p.rotation += p.rotationSpeed;
+      p.life -= p.decay;
+
+      ctx.save();
+
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+
+      ctx.globalAlpha =
+        Math.max(0, p.life);
+
+      ctx.fillStyle =
+        `hsl(${p.hue}, 85%, 65%)`;
+
+      ctx.fillRect(
+        -p.width / 2,
+        -p.height / 2,
+        p.width,
+        p.height
+      );
+
+      ctx.restore();
+    });
+
+    particles =
+      particles.filter(p =>
+        p.life > 0 &&
+        p.y < window.innerHeight + 100
+      );
+
+    if (particles.length > 0) {
+      requestAnimationFrame(animateConfetti);
+    } else {
+      state.confettiRunning = false;
+      ctx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+      );
+    }
+  }
+
+  /* =========================================================
+     TAB / PAGE ENGINE
+     ========================================================= */
+  const tabs = {
+    terminal: {
+      video: "bg.mp4"
+    },
+
+    dakicks: {
+      video: "bg.mp4"
+    },
+
+    community: {
+      video: "community-bg.mp4"
+    },
+
+    vault: {
+      video: "outlaybg.mp4"
+    }
+  };
+
+  function switchTab(tabName) {
+    if (!tabs[tabName]) return;
+
+    state.currentTab = tabName;
+
+    $$(".nav-item, [data-tab]").forEach(item => {
+      const target =
+        item.dataset.tab ||
+        item.dataset.nav;
+
+      item.classList.toggle(
+        "active",
+        target === tabName
+      );
+    });
+
+    $$(".page, [data-page]").forEach(page => {
+      const target =
+        page.dataset.page ||
+        page.id?.replace("page-", "");
+
+      page.classList.toggle(
+        "active",
+        target === tabName
+      );
+    });
+
+    updateBackgroundVideo(
+      tabs[tabName].video
+    );
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+  function updateBackgroundVideo(source) {
+    const video =
+      $("#backgroundVideo") ||
+      $(".background-video") ||
+      $("video[data-background]");
+
+    if (!video) return;
+
+    const current =
+      video.dataset.currentSource;
+
+    if (current === source) return;
+
+    video.dataset.currentSource =
+      source;
+
+    const sourceEl =
+      video.querySelector("source");
+
+    if (sourceEl) {
+      sourceEl.src = source;
+    } else {
+      video.src = source;
+    }
+
+    try {
+      video.load();
+      video.play().catch(() => {});
+    } catch {}
+  }
+
+  /* =========================================================
+     NAV EVENTS
+     ========================================================= */
+  $$("[data-tab]").forEach(item => {
+    item.addEventListener(
+      "click",
+      () => {
+        switchTab(item.dataset.tab);
+      }
+    );
+  });
+
+  $$(".nav-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const tab =
+        item.dataset.tab ||
+        item.dataset.nav;
+
+      if (tab) switchTab(tab);
+    });
+  });
+
+  /* =========================================================
+     PROFILE MODAL
+     ========================================================= */
+  const profileModal =
+    $("#profileModal") ||
+    $(".profile-modal");
+
+  function openProfile() {
+    if (!profileModal) return;
+
+    profileModal.classList.add("open");
+    profileModal.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    document.body.classList.add(
+      "modal-open"
+    );
+
+    updateProfileUI();
+  }
+
+  function closeProfile() {
+    if (!profileModal) return;
+
+    profileModal.classList.remove("open");
+    profileModal.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    document.body.classList.remove(
+      "modal-open"
+    );
+  }
+
+  $$(
+    "[data-open-profile], #profileButton, .profile-trigger"
+  ).forEach(btn => {
+    btn.addEventListener(
+      "click",
+      openProfile
+    );
+  });
+
+  $$(
+    "[data-close-profile], #profileClose, .modal-close"
+  ).forEach(btn => {
+    btn.addEventListener(
+      "click",
+      closeProfile
+    );
+  });
+
+  if (profileModal) {
+    profileModal.addEventListener(
+      "click",
+      event => {
+        if (event.target === profileModal) {
+          closeProfile();
+        }
+      }
+    );
+  }
+
+  /* =========================================================
+     PROFILE ONBOARDING
+     ========================================================= */
+  const onboarding =
+    $("#onboardingModal") ||
+    $(".onboarding-modal");
+
+  function needsOnboarding() {
+    return (
+      !state.profile.username ||
+      !state.profile.dob
+    );
+  }
+
+  function openOnboarding() {
+    if (!onboarding) return;
+
+    onboarding.classList.add("open");
+    onboarding.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+  }
+
+  function closeOnboarding() {
+    if (!onboarding) return;
+
+    onboarding.classList.remove("open");
+    onboarding.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+  }
+
+  const onboardingForm =
+    $("#onboardingForm");
+
+  if (onboardingForm) {
+    onboardingForm.addEventListener(
+      "submit",
+      event => {
+        event.preventDefault();
+
+        const username =
+          $("#onboardingUsername")?.value
+            ?.trim() || "";
+
+        const dob =
+          $("#onboardingDob")?.value
+            ?.trim() || "";
+
+        if (!username || !dob) {
+          showToast(
+            "Complete your profile first",
+            "warning"
+          );
+          return;
+        }
+
+        state.profile.username =
+          username;
+
+        state.profile.dob =
+          dob;
+
+        saveProfile();
+        updateProfileUI();
+        closeOnboarding();
+
+        createConfetti(90);
+
+        showToast(
+          "Profile secured successfully"
+        );
+      }
+    );
+  }
+
+  /* =========================================================
+     AVATAR UPLOADER
+     ========================================================= */
+  const avatarInput =
+    $("#avatarInput") ||
+    $("input[type=file][accept*='image']");
+
+  if (avatarInput) {
+    avatarInput.addEventListener(
+      "change",
+      event => {
+        const file =
+          event.target.files?.[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+          showToast(
+            "Please select an image",
+            "error"
+          );
+          return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          showToast(
+            "Image must be under 5MB",
+            "warning"
+          );
+          return;
+        }
+
+        const reader =
+          new FileReader();
+
+        reader.onload = e => {
+          state.profile.avatar =
+            e.target.result;
+
+          saveProfile();
+          updateProfileUI();
+
+          createConfetti(65);
+
+          showToast(
+            "Profile photo updated"
+          );
+        };
+
+        reader.onerror = () => {
+          showToast(
+            "Could not read image",
+            "error"
+          );
+        };
+
+        reader.readAsDataURL(file);
+      }
+    );
+  }
+
+  /* =========================================================
+     EMAIL OTP ENGINE
+     ========================================================= */
+  const EMAILJS_PUBLIC_KEY =
+    "UZVvtLHuf8uZWHdkg";
+
+  const EMAILJS_SERVICE_ID =
+    "service_91i0edt";
+
+  const EMAILJS_TEMPLATE_ID =
+    "template_6a78v2d";
+
+  function generateOTP() {
+    return String(
+      Math.floor(
+        100000 +
+        Math.random() * 900000
+      )
+    );
+  }
+
+  function generateVerifyLink(otp) {
+    return (
+      `${window.location.origin}` +
+      `${window.location.pathname}` +
+      `#verify=${encodeURIComponent(otp)}`
+    );
+  }
+
+  function initializeEmailJS() {
+    if (!window.emailjs) return false;
+
+    try {
+      emailjs.init({
+        publicKey:
+          EMAILJS_PUBLIC_KEY
+      });
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function sendOTP(email) {
+    email =
+      String(email || "").trim();
+
+    if (!email) {
+      showToast(
+        "Enter your email address",
+        "warning"
+      );
+      return false;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showToast(
+        "Enter a valid email",
+        "warning"
+      );
+      return false;
+    }
+
+    const otp =
+      generateOTP();
+
+    state.otp = otp;
+    state.otpExpires =
+      Date.now() + 60 * 1000;
+
+    state.profile.email =
+      email;
+
+    saveProfile();
+
+    const verifyLink =
+      generateVerifyLink(otp);
+
+    const emailReady =
+      initializeEmailJS();
+
+    if (!emailReady) {
+      showToast(
+        "Email service is loading",
+        "warning"
+      );
+      return false;
+    }
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          to_email: email,
+          email: email,
+          otp: otp,
+          verification_code: otp,
+          verify_link: verifyLink,
+          expires_in: "1 minute"
+        }
+      );
+
+      showToast(
+        "Verification code sent"
+      );
+
+      return true;
+    } catch (error) {
+      console.error(
+        "EmailJS error:",
+        error
+      );
+
+      showToast(
+        "Could not send verification email",
+        "error"
+      );
+
+      return false;
+    }
+  }
+
+  function verifyOTP(code) {
+    code =
+      String(code || "").trim();
+
+    if (!state.otp) {
+      showToast(
+        "Request a verification code first",
+        "warning"
+      );
+      return false;
+    }
+
+    if (
+      Date.now() >
+      state.otpExpires
+    ) {
+      state.otp = null;
+
+      showToast(
+        "Verification code expired",
+        "error"
+      );
+
+      return false;
+    }
+
+    if (code !== state.otp) {
+      showToast(
+        "Incorrect verification code",
+        "error"
+      );
+
+      return false;
+    }
+
+    markEmailVerified();
+
+    return true;
+  }
+
+  function markEmailVerified() {
+    state.verified = true;
+    state.otp = null;
+
+    storage.set(
+      "dakicks_email_verified",
+      "true"
+    );
+
+    saveProfile();
+
+    $$(".verified-badge, [data-verified-badge]").forEach(
+      badge => {
+        badge.classList.add("visible");
+        badge.textContent =
+          "VERIFIED ✓";
+      }
+    );
+
+    $$(".email-status").forEach(el => {
+      el.textContent =
+        "Identity Verified & Encrypted";
+    });
+
+    createConfetti(120);
+
+    showToast(
+      "Email identity verified"
+    );
+  }
+
+  /* =========================================================
+     EMAIL UI BINDINGS
+     ========================================================= */
+  const emailInput =
+    $("#emailInput") ||
+    $("input[type=email]");
+
+  const sendOtpButton =
+    $("#sendOtpButton") ||
+    $("[data-send-otp]");
+
+  const verifyOtpButton =
+    $("#verifyOtpButton") ||
+    $("[data-verify-otp]");
+
+  const otpInput =
+    $("#otpInput") ||
+    $("[data-otp-input]");
+
+  if (sendOtpButton) {
+    sendOtpButton.addEventListener(
+      "click",
+      async () => {
+        await sendOTP(
+          emailInput?.value
+        );
+      }
+    );
+  }
+
+  if (verifyOtpButton) {
+    verifyOtpButton.addEventListener(
+      "click",
+      () => {
+        verifyOTP(
+          otpInput?.value
+        );
+      }
+    );
+  }
+
+  /* =========================================================
+     ONE TAP HASH VERIFICATION
+     ========================================================= */
+  function checkVerificationHash() {
+    const hash =
+      window.location.hash || "";
+
+    if (
+      !hash.startsWith("#verify=")
+    ) {
+      return;
+    }
+
+    const code =
+      decodeURIComponent(
+        hash.substring(8)
+      );
+
+    if (
+      code &&
+      state.otp &&
+      Date.now() < state.otpExpires
+    ) {
+      verifyOTP(code);
+    } else {
+      showToast(
+        "Verification link expired",
+        "error"
+      );
+    }
+
+    history.replaceState(
+      null,
+      "",
+      window.location.pathname +
+      window.location.search
+    );
+  }
+
+  window.addEventListener(
+    "hashchange",
+    checkVerificationHash
+  );
+
+  /* =========================================================
+     COPY CONTRACT ADDRESS
+     ========================================================= */
+  const CONTRACT_ADDRESS =
+    window.DKX_CONTRACT_ADDRESS ||
+    "";
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(
+        text
+      );
+
+      return true;
+    } catch {
+      try {
+        const textarea =
+          document.createElement("textarea");
+
+        textarea.value = text;
+
+        textarea.style.position =
+          "fixed";
+
+        textarea.style.opacity =
+          "0";
+
+        document.body.appendChild(
+          textarea
+        );
+
+        textarea.select();
+
+        const success =
+          document.execCommand(
+            "copy"
+          );
+
+        textarea.remove();
+
+        return success;
+      } catch {
+        return false;
+      }
+    }
+  }
+
+  function getContractAddress() {
+    const el =
+      $(
+        "#contractAddress"
+      ) ||
+      $(
+        "[data-contract-address]"
+      );
+
+    return (
+      el?.dataset?.contractAddress ||
+      el?.textContent?.trim() ||
+      CONTRACT_ADDRESS
+    );
+  }
+
+  $$(
+    "#copyContract, [d
