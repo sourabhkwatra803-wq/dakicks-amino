@@ -11,7 +11,7 @@
     <style>
         :root {
             --bg-deep: #050507;
-            --surface-glass: rgba(20, 20, 23, 0.85);
+            --surface-glass: rgba(18, 18, 22, 0.88);
             --border-glass: rgba(255, 255, 255, 0.08);
             --text-primary: #f1f1f3;
             --text-secondary: #8e8e93;
@@ -31,10 +31,10 @@
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
-            padding-bottom: 90px;
+            padding-bottom: 95px;
         }
 
-        /* 3D Video Background Engine */
+        /* 3D High-Performance Video Background Engine */
         .bg-video {
             position: fixed;
             top: 0;
@@ -43,7 +43,7 @@
             height: 100vh;
             object-fit: cover;
             z-index: 0;
-            opacity: 0.25;
+            opacity: 0.28;
             pointer-events: none;
             will-change: transform;
         }
@@ -56,9 +56,9 @@
             height: 100%;
             object-fit: cover;
             z-index: 0;
-            opacity: 0.18;
+            opacity: 0.20;
             pointer-events: none;
-            border-radius: 18px;
+            border-radius: 20px;
         }
 
         .overlay {
@@ -67,7 +67,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(5, 5, 7, 0.82);
+            background: rgba(5, 5, 7, 0.80);
             pointer-events: none;
             z-index: 1;
         }
@@ -91,6 +91,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            cursor: pointer;
         }
 
         .avatar {
@@ -103,8 +104,16 @@
             justify-content: center;
             font-weight: 700;
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 12px rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 15px rgba(255,255,255,0.15);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .welcome-label {
@@ -151,7 +160,7 @@
 
         .tab-pane {
             display: none;
-            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .tab-pane.active {
@@ -159,7 +168,7 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -175,20 +184,15 @@
         /* High-End Glass Cards */
         .card {
             background: var(--surface-glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border: 1px solid var(--border-glass);
-            border-radius: 18px;
+            border-radius: 20px;
             padding: 20px;
             margin-bottom: 16px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            transition: border-color 0.2s ease;
-        }
-
-        .card:active {
-            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
         }
 
         .card-inner {
@@ -250,6 +254,24 @@
             transform: scale(0.98);
         }
 
+        /* Pink / Modern Disconnect Button Style */
+        .disconnect-btn {
+            background: transparent;
+            color: #ff2d55;
+            border: 1px solid rgba(255, 45, 85, 0.4);
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 13px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+        .disconnect-btn:active {
+            background: rgba(255, 45, 85, 0.1);
+        }
+
         .verified-badge {
             background: rgba(0, 255, 128, 0.1);
             border: 1px solid rgba(0, 255, 128, 0.3);
@@ -262,30 +284,194 @@
             letter-spacing: 0.5px;
         }
 
-        /* Social Hub Cards */
+        /* Dakicks Right-Side 3D Coin Embedded Layout */
+        .dakicks-card-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        .dakicks-text-side {
+            flex: 1;
+        }
+        .dakicks-coin-side {
+            width: 64px;
+            height: 64px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        .dakicks-coin-side video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Community Social Hub Cards */
         .social-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--surface-glass);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(18px);
             border: 1px solid var(--border-glass);
-            border-radius: 18px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 18px 20px;
             margin-bottom: 14px;
             text-decoration: none;
             color: #fff;
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            overflow: visible;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
         }
 
-        .arrow {
-            font-size: 18px;
-            color: var(--text-secondary);
-            font-weight: bold;
+        .social-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
             position: relative;
-            z-index: 2;
+            z-index: 3;
+        }
+
+        .social-icon-box {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* 3D Bouncing Squirrel Animation Container */
+        .squirrel-container {
+            position: absolute;
+            left: -35px;
+            bottom: -22px;
+            width: 65px;
+            height: 65px;
+            z-index: 10;
+            pointer-events: none;
+            animation: squirrelBounce 3.2s ease-in-out infinite;
+        }
+        .squirrel-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.7));
+        }
+
+        @keyframes squirrelBounce {
+            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+            50% { transform: translateY(-28px) scale(1.1) rotate(-6deg); }
+        }
+
+        .node-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            position: relative;
+            z-index: 3;
+        }
+
+        /* Vault Page Elements */
+        .vault-shield {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px auto;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 25px rgba(255,255,255,0.08);
+        }
+
+        .ca-box {
+            background: #09090b;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 12px 16px;
+            border-radius: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 12px 0;
+        }
+
+        .copy-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .copy-btn:active { transform: scale(0.95); }
+
+        /* Onboarding Modal Popup Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(3, 3, 5, 0.92);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #121216;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 28px 22px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        /* Realistic High-Performance Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 2000;
+            display: none;
         }
 
         /* Bottom Navigation Bar */
@@ -294,8 +480,8 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 70px;
-            background: rgba(12, 12, 14, 0.95);
+            height: 75px;
+            background: rgba(12, 12, 14, 0.96);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border-top: 1px solid var(--border-glass);
@@ -327,16 +513,40 @@
 </head>
 <body>
 
-    <!-- Primary Background Video Engine (bg.mp4 - Squirrel) -->
+    <!-- Primary Background Video Engine (bg.mp4 - Squirrel / General) -->
     <video autoplay loop muted playsinline class="bg-video">
         <source src="bg.mp4" type="video/mp4">
     </video>
     <div class="overlay"></div>
 
+    <!-- Realistic Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Onboarding Setup Modal (Username & DOB) -->
+    <div id="onboardingModal" class="modal-overlay">
+        <div class="modal-card">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;">Initialize Terminal</h2>
+                <p style="font-size: 13px; color: var(--text-secondary);">Configure your sovereign institutional credentials.</p>
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">Username</label>
+                <input type="text" id="setupUsername" class="input" placeholder="Enter username...">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">Date of Birth (DOB)</label>
+                <input type="date" id="setupDob" class="input">
+            </div>
+            <button class="action-btn" onclick="completeOnboarding()">Authorize & Launch</button>
+        </div>
+    </div>
+
     <!-- Header System -->
     <div class="header">
-        <div class="user-info">
-            <div class="avatar" id="userAvatar">D</div>
+        <div class="user-info" onclick="triggerProfileEdit()">
+            <div class="avatar" id="userAvatarContainer">
+                <span id="avatarLetter">D</span>
+            </div>
             <div>
                 <div class="welcome-label">DKX TERMINAL</div>
                 <div class="username-text" id="usernameText">DkxFounder</div>
@@ -347,6 +557,9 @@
         </div>
     </div>
 
+    <!-- Hidden file input for custom avatar/logo upload -->
+    <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+
     <!-- Application Body Containers -->
     <div class="content">
 
@@ -355,162 +568,42 @@
             <div class="section-title">Institutional Market Telemetry</div>
             <div class="card">
                 <div class="card-inner">
-                    <div style="font-size: 10px; color: #98989f; margin-bottom: 10px; font-weight: 700; letter-spacing: 0.5px;">REAL-TIME FEED // BINANCE:BNBUSDT</div>
-                    <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3ABNBUSDT&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC" style="width: 100%; height: 240px; border: none; border-radius: 12px;" title="TradingView Live Chart"></iframe>
+                    <div style="font-size: 10px; color: #98989f; margin-bottom: 10px; font-weight: 700; letter-spacing: 0.5px;">REAL-TIME FEED // MULTI-CHAIN DEX TERMINAL</div>
+                    <iframe src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3ABNBUSDT&interval=D&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=[]&theme=dark&style=1&timezone=Etc%2FUTC" style="width: 100%; height: 260px; border: none; border-radius: 14px;" title="TradingView Live Chart"></iframe>
                 </div>
             </div>
 
+            <!-- EmailJS Identity Verification Section -->
             <div class="card">
                 <div class="card-inner">
                     <span class="tag">SECURE PROTOCOL</span>
-                    <h3 style="margin-bottom: 6px; font-size: 16px;">Identity Verification Link</h3>
-                    <p class="desc">Link your institutional Gmail via secure cryptographic node with instant EmailJS dispatch.</p>
-                    <div id="emailSection">
-                        <input type="email" id="userEmail" class="input" placeholder="Enter your institutional Gmail...">
-                        <button class="action-btn" onclick="verifyEmail()">Link & Verify</button>
+                    <h3 style="margin-bottom: 6px; font-size: 16px;">Institutional Gmail Link</h3>
+                    <p class="desc">Link your Gmail to secure your sovereign telemetry profile with timed verification codes.</p>
+                    
+                    <!-- Unlinked State -->
+                    <div id="emailUnlinkedSection">
+                        <input type="email" id="userEmailInput" class="input" placeholder="Enter your Gmail...">
+                        <button class="action-btn" onclick="sendVerificationCode()">Dispatch Verification Code</button>
                     </div>
-                    <div id="verifiedSection" style="display: none;" class="verified-badge">LINKED & ENCRYPTED ✓</div>
+
+                    <!-- OTP Verification Input State (Initially Hidden) -->
+                    <div id="emailVerifySection" style="display: none;">
+                        <p style="font-size: 12px; color: #00ff80; margin-bottom: 8px;" id="otpStatusMsg">Code sent! Valid for 60 seconds.</p>
+                        <input type="text" id="otpCodeInput" class="input" placeholder="Enter 6-digit verification code...">
+                        <button class="action-btn" onclick="confirmVerificationCode()">Verify Code & Link</button>
+                        <button class="disconnect-btn" onclick="resetEmailState()">Cancel</button>
+                    </div>
+
+                    <!-- Linked & Verified State -->
+                    <div id="emailLinkedSection" style="display: none;">
+                        <div id="linkedEmailDisplay" style="font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 10px; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px;"></div>
+                        <div class="verified-badge">IDENTITY VERIFIED & ENCRYPTED ✓</div>
+                        <button class="disconnect-btn" onclick="disconnectEmail()">Disconnect / Remove Email</button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- 2. DAKICKS TAB (dakicks-bg.mp4) -->
         <div id="tab-dakicks" class="tab-pane" style="position: relative;">
-            <video autoplay loop muted playsinline class="section-video">
-                <source src="dakicks-bg.mp4" type="video/mp4">
-            </video>
-            <div class="section-title">Institutional RWA Architecture</div>
-            <div class="card"><div class="card-inner">
-                <span class="tag">RWA APPAREL</span>
-                <h3 style="margin-bottom: 6px; font-size: 16px;">DAKICKS® Physical Drops</h3>
-                <p class="desc" style="margin-bottom:0;">Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on BNB Smart Chain.</p>
-            </div></div>
-            <div class="card"><div class="card-inner">
-                <span class="tag">TREASURY</span>
-                <h3 style="margin-bottom: 6px; font-size: 16px;">Revenue-Share Protocol</h3>
-                <p class="desc" style="margin-bottom:0;">50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.</p>
-            </div></div>
-            <div class="card"><div class="card-inner">
-                <span class="tag">DEFLATIONARY</span>
-                <h3 style="margin-bottom: 6px; font-size: 16px;">DKX Supply Standard</h3>
-                <p class="desc" style="margin-bottom:0;">Fixed hard-cap supply of 100,000,000 $DKX. Non-inflationary allocation verified by smart contract integrity checks.</p>
-            </div></div>
-        </div>
-
-        <!-- 3. COMMUNITY TAB (community-bg.mp4) -->
-        <div id="tab-community" class="tab-pane" style="position: relative;">
-            <video autoplay loop muted playsinline class="section-video">
-                <source src="community-bg.mp4" type="video/mp4">
-            </video>
-            <div class="section-title">Official Communication Nodes</div>
-            <a href="https://t.me/DKXOfficial" target="_blank" class="social-card">
-                <div class="card-inner" style="z-index:2;position:relative;">
-                    <h3 style="font-size: 16px; margin-bottom: 4px;">Telegram Network</h3>
-                    <p style="font-size:13px;color:var(--text-secondary);">@DKXOfficial - Global announcements and community governance.</p>
-                </div>
-                <span class="arrow">→</span>
-            </a>
-            <a href="https://instagram.com" target="_blank" class="social-card">
-                <div class="card-inner" style="z-index:2;position:relative;">
-                    <h3 style="font-size: 16px; margin-bottom: 4px;">Instagram Hub</h3>
-                    <p style="font-size:13px;color:var(--text-secondary);">@dakicks_dkx - Visual luxury showcase and drops.</p>
-                </div>
-                <span class="arrow">→</span>
-            </a>
-            <a href="https://twitter.com" target="_blank" class="social-card">
-                <div class="card-inner" style="z-index:2;position:relative;">
-                    <h3 style="font-size: 16px; margin-bottom: 4px;">X Protocol Comms</h3>
-                    <p style="font-size:13px;color:var(--text-secondary);">@dakicks_dkx - Real-time metrics and updates.</p>
-                </div>
-                <span class="arrow">→</span>
-            </a>
-        </div>
-
-        <!-- 4. VAULT TAB (outlaybg.mp4) -->
-        <div id="tab-vault" class="tab-pane" style="position: relative;">
-            <video autoplay loop muted playsinline class="section-video">
-                <source src="outlaybg.mp4" type="video/mp4">
-            </video>
-            <div class="section-title">On-Chain Smart Contract Socket</div>
-            <div class="card">
-                <div class="card-inner">
-                    <span class="tag">GENESIS LIQUIDITY ALLOCATION</span>
-                    <h3 style="font-size: 24px; margin: 10px 0;">1,250 $DKX</h3>
-                    <button class="action-btn" onclick="alert('Smart contract deployment synchronization pending launch sequence!')">Claim Allocation (+2 $DKX)</button>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-inner">
-                    <span class="tag">VERIFIED PROTOCOL</span>
-                    <h3 style="font-size: 16px; margin-bottom: 6px;">Recent On-Chain Allocations</h3>
-                    <p class="desc" style="margin-bottom: 6px;">0x88c4...9a21 &nbsp;&nbsp; <b>+2 $DKX</b> &nbsp;&nbsp; <span style="color:#00ff80;">Just now</span></p>
-                    <p class="desc" style="margin-bottom: 6px;">0x3f12...4b08 &nbsp;&nbsp; <b>+2 $DKX</b> &nbsp;&nbsp; <span style="color:#00ff80;">1m ago</span></p>
-                    <p class="desc" style="margin-bottom: 0;">0x99e5...11c7 &nbsp;&nbsp; <b>+2 $DKX</b> &nbsp;&nbsp; <span style="color:#00ff80;">3m ago</span></p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Bottom Navigation Bar -->
-    <div class="nav-bar">
-        <button class="nav-btn active" onclick="switchTab('terminal', this)">Terminal</button>
-        <button class="nav-btn" onclick="switchTab('dakicks', this)">Dakicks</button>
-        <button class="nav-btn" onclick="switchTab('community', this)">Community</button>
-        <button class="nav-btn" onclick="switchTab('vault', this)">Vault</button>
-    </div>
-
-    <script>
-        // Telegram WebApp Integration Setup
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-            const tgUser = window.Telegram.WebApp.initDataUnsafe?.user;
-            if (tgUser && tgUser.first_name) {
-                document.getElementById('usernameText').innerText = tgUser.first_name;
-                document.getElementById('userAvatar').innerText = tgUser.first_name.charAt(0).toUpperCase();
-            }
-        }
-
-        // Tab Switching Engine with Zero Lag
-        function switchTab(tabName, btnElement) {
-            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-            btnElement.classList.add('active');
-        }
-
-        // EmailJS Execution System
-        emailjs.init("UZVvtLHuf8uZWHdkg");
-
-        function verifyEmail() {
-            const emailVal = document.getElementById('userEmail').value;
-            if (!emailVal || !emailVal.includes('@')) {
-                alert('Please enter a valid institutional Gmail address.');
-                return;
-            }
-
-            const btn = document.querySelector('#emailSection button');
-            btn.innerText = 'Dispatching Node...';
-            btn.disabled = true;
-
-            const templateParams = {
-                to_email: emailVal,
-                user_name: document.getElementById('usernameText').innerText,
-                verification_code: Math.floor(100000 + Math.random() * 900000)
-            };
-
-            emailjs.send('service_91i0edt', 'template_6a78v2d', templateParams)
-                .then(function(response) {
-                    document.getElementById('emailSection').style.display = 'none';
-                    document.getElementById('verifiedSection').style.display = 'block';
-                }, function(error) {
-                    alert('Transmission failed. Check network parameters.');
-                    btn.innerText = 'Link & Verify';
-                    btn.disabled = false;
-                });
-        }
-    </script>
-</body>
-  </html>
-  
+            <video autoplay loop m
