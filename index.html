@@ -5140,5 +5140,956 @@ a{
 
         } else {
 
+                      showToast("Invalid or expired verification code.", "error");
+          }
+        }
+      );
+    }
+
+    /* =========================================================
+       ONE-TAP EMAIL VERIFICATION
+       ========================================================= */
+
+    function handleVerificationHash() {
+      const hash = window.location.hash || "";
+
+      if (!hash.startsWith("#verify=")) return;
+
+      const code = hash
+        .replace("#verify=", "")
+        .trim()
+        .replace(/[^0-9]/g, "");
+
+      if (!code) return;
+
+      const verified = verifyOTP(code);
+
+      if (verified) {
+        markEmailVerified();
+
+        showToast(
+          "Email verified successfully.",
+          "success"
+        );
+
+        launchConfetti();
+
+        history.replaceState(
+          null,
+          "",
+          window.location.pathname +
+          window.location.search
+        );
+      } else {
+        showToast(
+          "Verification link is invalid or expired.",
+          "error"
+        );
+      }
+    }
+
+    /* =========================================================
+       EMAIL VERIFIED STATE
+       ========================================================= */
+
+    function markEmailVerified() {
+      localStorage.setItem(
+        "dakicks_email_verified",
+        "true"
+      );
+
+      const badge = document.querySelector(
+        "#emailVerifiedBadge"
+      );
+
+      if (badge) {
+        badge.classList.add("active");
+        badge.textContent = "VERIFIED ✓";
+      }
+
+      const status = document.querySelector(
+        "#emailSecurityStatus"
+      );
+
+      if (status) {
+        status.textContent =
+          "Identity Verified & Encrypted";
+      }
+
+      const emailBox = document.querySelector(
+        "#emailSecurityBox"
+      );
+
+      if (emailBox) {
+        emailBox.classList.add("verified");
+      }
+
+      const otpArea = document.querySelector(
+        "#otpArea"
+      );
+
+      if (otpArea) {
+        otpArea.style.display = "none";
+      }
+    }
+
+    function isEmailVerified() {
+      return (
+        localStorage.getItem(
+          "dakicks_email_verified"
+        ) === "true"
+      );
+    }
+
+    /* =========================================================
+       EMAIL SECURITY UI
+       ========================================================= */
+
+    function updateEmailSecurityUI() {
+      if (!isEmailVerified()) return;
+
+      const badge = document.querySelector(
+        "#emailVerifiedBadge"
+      );
+
+      if (badge) {
+        badge.classList.add("active");
+        badge.textContent = "VERIFIED ✓";
+      }
+
+      const status = document.querySelector(
+        "#emailSecurityStatus"
+      );
+
+      if (status) {
+        status.textContent =
+          "Identity Verified & Encrypted";
+      }
+    }
+
+    /* =========================================================
+       PROFILE MODAL
+       ========================================================= */
+
+    const avatarTrigger =
+      document.querySelector(
+        "#profileAvatar, .profile-avatar, .avatar"
+      );
+
+    const profileModal =
+      document.querySelector(
+        "#profileModal"
+      );
+
+    const profileClose =
+      document.querySelector(
+        "#profileModalClose, .modal-close"
+      );
+
+    function openProfileModal() {
+      if (!profileModal) return;
+
+      profileModal.classList.add("open");
+      document.body.classList.add("modal-open");
+    }
+
+    function closeProfileModal() {
+      if (!profileModal) return;
+
+      profileModal.classList.remove("open");
+      document.body.classList.remove("modal-open");
+    }
+
+    if (avatarTrigger) {
+      avatarTrigger.addEventListener(
+        "click",
+        openProfileModal
+      );
+    }
+
+    if (profileClose) {
+      profileClose.addEventListener(
+        "click",
+        closeProfileModal
+      );
+    }
+
+    if (profileModal) {
+      profileModal.addEventListener(
+        "click",
+        function (event) {
+          if (
+            event.target === profileModal
+          ) {
+            closeProfileModal();
+          }
+        }
+      );
+    }
+
+    document.addEventListener(
+      "keydown",
+      function (event) {
+        if (
+          event.key === "Escape" &&
+          profileModal &&
+          profileModal.classList.contains("open")
+        ) {
+          closeProfileModal();
+        }
+      }
+    );
+
+    /* =========================================================
+       PROFILE PHOTO UPLOADER
+       ========================================================= */
+
+    const photoInput =
+      document.querySelector(
+        "#profilePhotoInput"
+      );
+
+    const profileImages =
+      document.querySelectorAll(
+        "#profileImage, .profile-image"
+      );
+
+    if (photoInput) {
+      photoInput.addEventListener(
+        "change",
+        function (event) {
+          const file =
+            event.target.files &&
+            event.target.files[0];
+
+          if (!file) return;
+
+          if (
+            !file.type ||
+            !file.type.startsWith("image/")
+          ) {
+            showToast(
+              "Please select an image file.",
+              "error"
+            );
+            return;
+          }
+
+          if (
+            file.size >
+            5 * 1024 * 1024
+          ) {
+            showToast(
+              "Image must be smaller than 5 MB.",
+              "error"
+            );
+            return;
+          }
+
+          const reader =
+            new FileReader();
+
+          reader.onload = function () {
+            const imageData =
+              reader.result;
+
+            localStorage.setItem(
+              "dakicks_profile_photo",
+              imageData
+            );
+
+            profileImages.forEach(
+              function (image) {
+                image.src = imageData;
+              }
+            );
+
+            showToast(
+              "Profile photo updated.",
+              "success"
+            );
+
+            launchConfetti();
+          };
+
+          reader.onerror = function () {
+            showToast(
+              "Unable to read image.",
+              "error"
+            );
+          };
+
+          reader.readAsDataURL(file);
+        }
+      );
+    }
+
+    function restoreProfilePhoto() {
+      const savedPhoto =
+        localStorage.getItem(
+          "dakicks_profile_photo"
+        );
+
+      if (!savedPhoto) return;
+
+      profileImages.forEach(
+        function (image) {
+          image.src = savedPhoto;
+        }
+      );
+    }
+
+    /* =========================================================
+       TELEGRAM WEBAPP
+       ========================================================= */
+
+    function getTelegramUser() {
+      try {
+        if (
+          window.Telegram &&
+          window.Telegram.WebApp
+        ) {
+          const user =
+            window.Telegram.WebApp
+              .initDataUnsafe &&
+            window.Telegram.WebApp
+              .initDataUnsafe.user;
+
+          return user || null;
+        }
+      } catch (error) {
+        console.warn(
+          "Telegram user unavailable",
+          error
+        );
+      }
+
+      return null;
+    }
+
+    function syncTelegramProfile() {
+      const user =
+        getTelegramUser();
+
+      if (!user) return;
+
+      const username =
+        user.username
+          ? "@" + user.username
+          : user.first_name || "DAKICKS USER";
+
+      const nameElements =
+        document.querySelectorAll(
+          "#profileUsername, .profile-username, .username"
+        );
+
+      nameElements.forEach(
+        function (element) {
+          element.textContent =
+            username;
+        }
+      );
+
+      if (user.photo_url) {
+        const telegramImages =
+          document.querySelectorAll(
+            "#profileImage, .profile-image"
+          );
+
+        telegramImages.forEach(
+          function (image) {
+            if (
+              !localStorage.getItem(
+                "dakicks_profile_photo"
+              )
+            ) {
+              image.src =
+                user.photo_url;
+            }
+          }
+        );
+      }
+
+      localStorage.setItem(
+        "dakicks_telegram_username",
+        username
+      );
+    }
+
+    /* =========================================================
+       FALLBACK ONBOARDING
+       ========================================================= */
+
+    function needsOnboarding() {
+      const username =
+        localStorage.getItem(
+          "dakicks_username"
+        );
+
+      const dob =
+        localStorage.getItem(
+          "dakicks_dob"
+        );
+
+      return !username || !dob;
+    }
+
+    function saveOnboardingData(
+      username,
+      dob
+    ) {
+      if (!username || !dob) {
+        return false;
+      }
+
+      localStorage.setItem(
+        "dakicks_username",
+        username
+      );
+
+      localStorage.setItem(
+        "dakicks_dob",
+        dob
+      );
+
+      return true;
+    }
+
+    function initializeOnboarding() {
+      const onboarding =
+        document.querySelector(
+          "#onboardingModal"
+        );
+
+      if (!onboarding) return;
+
+      const telegramUser =
+        getTelegramUser();
+
+      if (telegramUser) {
+        return;
+      }
+
+      if (needsOnboarding()) {
+        onboarding.classList.add(
+          "open"
+        );
+      }
+    }
+
+    const onboardingForm =
+      document.querySelector(
+        "#onboardingForm"
+      );
+
+    if (onboardingForm) {
+      onboardingForm.addEventListener(
+        "submit",
+        function (event) {
+          event.preventDefault();
+
+          const usernameInput =
+            onboardingForm.querySelector(
+              "[name='username']"
+            );
+
+          const dobInput =
+            onboardingForm.querySelector(
+              "[name='dob']"
+            );
+
+          const username =
+            usernameInput
+              ? usernameInput.value.trim()
+              : "";
+
+          const dob =
+            dobInput
+              ? dobInput.value
+              : "";
+
+          if (!username || !dob) {
+            showToast(
+              "Complete all profile fields.",
+              "error"
+            );
+            return;
+          }
+
+          saveOnboardingData(
+            username,
+            dob
+          );
+
+          const onboarding =
+            document.querySelector(
+              "#onboardingModal"
+            );
+
+          if (onboarding) {
+            onboarding.classList.remove(
+              "open"
+            );
+          }
+
           showToast(
-            "Invalid or 
+            "Profile initialized.",
+            "success"
+          );
+
+          launchConfetti();
+        }
+      );
+    }
+
+    /* =========================================================
+       NAVIGATION
+       ========================================================= */
+
+    const navItems =
+      document.querySelectorAll(
+        "[data-tab]"
+      );
+
+    const pages =
+      document.querySelectorAll(
+        "[data-page]"
+      );
+
+    function switchTab(
+      target
+    ) {
+      if (!target) return;
+
+      navItems.forEach(
+        function (item) {
+          item.classList.toggle(
+            "active",
+            item.dataset.tab === target
+          );
+        }
+      );
+
+      pages.forEach(
+        function (page) {
+          const active =
+            page.dataset.page === target;
+
+          page.classList.toggle(
+            "active",
+            active
+          );
+
+          page.setAttribute(
+            "aria-hidden",
+            active
+              ? "false"
+              : "true"
+          );
+        }
+      );
+
+      document.body.dataset.activeTab =
+        target;
+
+      updateBackgroundVideo(
+        target
+      );
+    }
+
+    navItems.forEach(
+      function (item) {
+        item.addEventListener(
+          "click",
+          function () {
+            switchTab(
+              item.dataset.tab
+            );
+          }
+        );
+      }
+    );
+
+    /* =========================================================
+       DYNAMIC BACKGROUND VIDEO
+       ========================================================= */
+
+    function updateBackgroundVideo(
+      tab
+    ) {
+      const video =
+        document.querySelector(
+          "#backgroundVideo"
+        );
+
+      if (!video) return;
+
+      let source = "bg.mp4";
+
+      if (
+        tab === "community"
+      ) {
+        source =
+          "community-bg.mp4";
+      }
+
+      if (
+        tab === "vault"
+      ) {
+        source =
+          "outlaybg.mp4";
+      }
+
+      const current =
+        video.dataset.source;
+
+      if (current === source) {
+        return;
+      }
+
+      video.dataset.source =
+        source;
+
+      video.pause();
+
+      video.src = source;
+
+      video.load();
+
+      const playPromise =
+        video.play();
+
+      if (
+        playPromise &&
+        typeof playPromise.catch ===
+          "function"
+      ) {
+        playPromise.catch(
+          function () {}
+        );
+      }
+    }
+
+    /* =========================================================
+       COPY CONTRACT ADDRESS
+       ========================================================= */
+
+    async function copyContractAddress() {
+      const address =
+        getContractAddress();
+
+      if (!address) {
+        showToast(
+          "Contract address unavailable.",
+          "error"
+        );
+        return;
+      }
+
+      let copied = false;
+
+      try {
+        if (
+          navigator.clipboard &&
+          window.isSecureContext
+        ) {
+          await navigator.clipboard.writeText(
+            address
+          );
+
+          copied = true;
+        }
+      } catch (error) {
+        copied = false;
+      }
+
+      if (!copied) {
+        copied =
+          legacyCopyText(address);
+      }
+
+      if (copied) {
+        showToast(
+          "Contract address copied.",
+          "success"
+        );
+
+        launchConfetti();
+      } else {
+        showToast(
+          "Copy failed. Please copy manually.",
+          "error"
+        );
+      }
+    }
+
+    const copyButton =
+      document.querySelector(
+        "#copyContract, #copyAddress, [data-copy-contract]"
+      );
+
+    if (copyButton) {
+      copyButton.addEventListener(
+        "click",
+        copyContractAddress
+      );
+    }
+
+    /* =========================================================
+       TRUST WALLET / WEB3 CONNECT
+       ========================================================= */
+
+    async function connectWallet() {
+      if (
+        !window.ethereum
+      ) {
+        showToast(
+          "Open this app inside a Web3 wallet browser.",
+          "error"
+        );
+        return;
+      }
+
+      try {
+        const accounts =
+          await window.ethereum.request({
+            method:
+              "eth_requestAccounts"
+          });
+
+        if (
+          accounts &&
+          accounts.length
+        ) {
+          const address =
+            accounts[0];
+
+          const walletAddress =
+            document.querySelector(
+              "#walletAddress"
+            );
+
+          if (walletAddress) {
+            walletAddress.textContent =
+              address.slice(0, 6) +
+              "..." +
+              address.slice(-4);
+          }
+
+          showToast(
+            "Wallet connected.",
+            "success"
+          );
+
+          launchConfetti();
+        }
+      } catch (error) {
+        if (
+          error &&
+          error.code === 4001
+        ) {
+          showToast(
+            "Wallet connection rejected.",
+            "error"
+          );
+        } else {
+          showToast(
+            "Wallet connection failed.",
+            "error"
+          );
+        }
+      }
+    }
+
+    const walletButton =
+      document.querySelector(
+        "#connectWallet, [data-connect-wallet]"
+      );
+
+    if (walletButton) {
+      walletButton.addEventListener(
+        "click",
+        connectWallet
+      );
+    }
+
+    /* =========================================================
+       ALLOCATION CLAIM
+       ========================================================= */
+
+    const claimButton =
+      document.querySelector(
+        "#claimAllocation, [data-claim]"
+      );
+
+    if (claimButton) {
+      claimButton.addEventListener(
+        "click",
+        function () {
+          const claimed =
+            localStorage.getItem(
+              "dakicks_claimed"
+            ) === "true";
+
+          if (claimed) {
+            showToast(
+              "Allocation already claimed.",
+              "info"
+            );
+            return;
+          }
+
+          /*
+           * IMPORTANT:
+           * This UI action does NOT perform an
+           * on-chain token transfer by itself.
+           * Connect a deployed contract + ABI
+           * before enabling real claims.
+           */
+
+          showToast(
+            "Claim interface ready. Contract deployment required.",
+            "info"
+          );
+        }
+      );
+    }
+
+    /* =========================================================
+       3D CARD TILT EFFECT
+       ========================================================= */
+
+    const tiltCards =
+      document.querySelectorAll(
+        ".rwa-card, .glass-card, .tilt-card"
+      );
+
+    tiltCards.forEach(
+      function (card) {
+        card.addEventListener(
+          "pointermove",
+          function (event) {
+            const rect =
+              card.getBoundingClientRect();
+
+            const x =
+              event.clientX -
+              rect.left;
+
+            const y =
+              event.clientY -
+              rect.top;
+
+            const rotateY =
+              ((x / rect.width) -
+                0.5) *
+              8;
+
+            const rotateX =
+              ((y / rect.height) -
+                0.5) *
+              -8;
+
+            card.style.transform =
+              "perspective(900px) " +
+              "rotateX(" +
+              rotateX +
+              "deg) " +
+              "rotateY(" +
+              rotateY +
+              "deg) " +
+              "translateZ(8px)";
+          }
+        );
+
+        card.addEventListener(
+          "pointerleave",
+          function () {
+            card.style.transform =
+              "";
+          }
+        );
+      }
+    );
+
+    /* =========================================================
+       INITIALIZE EVERYTHING
+       ========================================================= */
+
+    function initializeDAKICKS() {
+      try {
+        if (
+          window.Telegram &&
+          window.Telegram.WebApp
+        ) {
+          window.Telegram.WebApp.ready();
+
+          if (
+            typeof window.Telegram.WebApp.expand ===
+            "function"
+          ) {
+            window.Telegram.WebApp.expand();
+          }
+        }
+      } catch (error) {
+        console.warn(
+          "Telegram WebApp initialization failed.",
+          error
+        );
+      }
+
+      restoreProfilePhoto();
+
+      syncTelegramProfile();
+
+      updateEmailSecurityUI();
+
+      handleVerificationHash();
+
+      initializeOnboarding();
+
+      const defaultTab =
+        document.querySelector(
+          "[data-tab].active"
+        );
+
+      if (defaultTab) {
+        switchTab(
+          defaultTab.dataset.tab
+        );
+      } else {
+        switchTab("terminal");
+      }
+
+      const bg =
+        document.querySelector(
+          "#backgroundVideo"
+        );
+
+      if (bg) {
+        bg.muted = true;
+        bg.loop = true;
+        bg.playsInline = true;
+
+        const promise =
+          bg.play();
+
+        if (
+          promise &&
+          typeof promise.catch ===
+            "function"
+        ) {
+          promise.catch(
+            function () {}
+          );
+        }
+      }
+    }
+
+    initializeDAKICKS();
+
+  });
+</script>
+
+</body>
+</html>
