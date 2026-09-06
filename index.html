@@ -1250,7 +1250,168 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+    }     /* BLUM & PRO-STYLE FRENS / REFERRAL UI */
+    .frens-wrapper {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-bottom: 30px;
     }
+
+    .unlock-banner-card {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      overflow: hidden;
+      backdrop-filter: blur(24px);
+      text-align: center;
+      position: relative;
+    }
+
+    .unlock-banner-media {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      background: #0f1211;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .unlock-banner-media video, .unlock-banner-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+    }
+
+    .unlock-banner-content {
+      padding: 18px 16px;
+    }
+
+    .unlock-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .unlock-subtitle {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .ref-code-card {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 18px;
+      backdrop-filter: blur(24px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ref-code-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .ref-code-strip {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ref-code-txt {
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: -apple-system, monospace;
+      letter-spacing: 1px;
+    }
+
+    .btn-copy-code {
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .ref-share-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: space-between;
+    }
+
+    .btn-social-share {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      padding: 10px;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .ref-progress-card {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 18px;
+      backdrop-filter: blur(24px);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .progress-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      width: 30%;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 4px;
+    }
+
+    .recent-activity-box {
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 16px;
+      backdrop-filter: blur(24px);
+    }
+    
   </style>
 </head>
   <body>
