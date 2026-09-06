@@ -956,10 +956,49 @@
             const particles = [];
             const colors = ['#ffffff', '#00ff80', '#3375BB', '#ff2d55', '#e5e5ea', '#ffd700'];
 
-            for (let i = 0; i < 140; i++) {
-                particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2 + 50,
-                    vx: (Math.random() - 0.5) * 16,
-                    vy: (Math.random() - 0.7) * 16 - 4,
-                    size: Math.random() 
+                    for (let i = 0; i < 140; i++) {
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 2 + 50,
+                vx: (Math.random() - 0.5) * 16,
+                vy: (Math.random() - 0.7) * 16 - 4,
+                size: Math.random() * 7 + 3,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rot: Math.random() * 360,
+                vrot: (Math.random() - 0.5) * 10
+            });
+        }
+
+        let animationFrame;
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.4;
+                p.rot += p.vrot;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rot * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+
+                if (p.y > canvas.height) particles.splice(index, 1);
+            });
+
+            if (particles.length > 0) {
+                animationFrame = requestAnimationFrame(render);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                canvas.style.display = 'none';
+                cancelAnimationFrame(animationFrame);
+            }
+        }
+        render();
+    }
+    </script>
+</body>
+</html>
+
