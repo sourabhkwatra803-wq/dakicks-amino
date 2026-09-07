@@ -1531,3 +1531,510 @@
     </div>
     <div class="nav-item" onclick="navigateTab('vault', this)">
       
+<div class="nav-item" onclick="navigateTab('vault', this)">
+      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+      <div class="nav-label">Wallet</div>
+    </div>
+  </div>
+
+  <div class="hud-toast" id="hudToast">
+  <div class="hud-toast-indicator"></div>
+    <span id="hudMsg">Notice</span>
+  </div>
+
+  <!-- WALLET SELECTION MODAL -->
+  <div class="wallet-modal-backdrop" id="walletModalBackdrop"></div>
+  <div class="wallet-modal" id="walletModal">
+    <div class="wallet-modal-handle"></div>
+    <div class="wallet-modal-title">Connect TON Wallet</div>
+    <div class="wallet-modal-subtitle">Select your preferred TON ecosystem provider for liquidity & Jetton allocation.</div>
+
+    <div class="wallet-options-list">
+      <div class="wallet-option-item" onclick="connectSpecificWallet('Tonkeeper')">
+        <div class="wallet-opt-left">
+          <div class="wallet-opt-icon" style="background: #0098EA; color: #fff;">💎</div>
+          <div>
+            <div class="wallet-opt-name">Tonkeeper</div>
+            <div class="wallet-opt-desc">The most popular wallet for TON</div>
+          </div>
+        </div>
+        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+      </div>
+
+      <div class="wallet-option-item" onclick="connectSpecificWallet('Telegram Wallet')">
+        <div class="wallet-opt-left">
+          <div class="wallet-opt-icon" style="background: #2481cc; color: #fff;">✈️</div>
+          <div>
+            <div class="wallet-opt-name">Telegram Wallet (TON Space)</div>
+            <div class="wallet-opt-desc">Built-in custodian wallet in Telegram</div>
+          </div>
+        </div>
+        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+      </div>
+
+      <div class="wallet-option-item" onclick="connectSpecificWallet('OpenMask')">
+        <div class="wallet-opt-left">
+          <div class="wallet-opt-icon" style="background: #14355c; color: #fff;">🛡️</div>
+          <div>
+            <div class="wallet-opt-name">OpenMask</div>
+            <div class="wallet-opt-desc">Secure browser extension for TON</div>
+          </div>
+        </div>
+        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="gate-overlay" id="firstTimeGate" style="display: none;">
+    <div class="gate-card">
+      <div class="gate-icon-box">
+        <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 12c-4.42 0-8 2.24-8 5v3h16v-3c0-2.76-3.58-5-8-5z"/></svg>
+      </div>
+      <h2 class="gate-title">Genesis Identification</h2>
+      <p class="gate-subtitle">Create your identity to unlock DAKICKS Terminal and decentralized liquidity vaults.</p>
+
+      <div class="gate-input-wrap">
+        <label class="gate-label">Choose Handle / Username</label>
+        <input type="text" id="inputUsername" class="gate-input" placeholder="e.g. Satoshi_DKX" maxlength="20" />
+      </div>
+
+      <div class="gate-input-wrap">
+        <label class="gate-label">Date of Birth</label>
+        <input type="date" id="inputDob" class="gate-input" />
+      </div>
+
+      <button class="btn-gate-submit" id="submitGateBtn">INITIALIZE TERMINAL</button>
+    </div>
+  </div>
+
+  <div class="profile-drawer-backdrop" id="profileBackdrop"></div>
+  <div class="profile-drawer" id="profileDrawer">
+    <div class="drawer-handle-bar"></div>
+    <button class="drawer-close-btn" id="drawerCloseBtn">✕</button>
+
+    <div class="drawer-avatar-wrapper">
+      <div class="drawer-avatar" id="drawerAvatarBadge">DK</div>
+      <div class="btn-avatar-edit" id="btnPencilTrigger" title="Change Profile Photo">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+        </svg>
+      </div>
+      <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" />
+    </div>
+
+    <div class="drawer-name" id="drawerUsername">User Handle</div>
+    <div class="drawer-dob-tag" id="drawerDobTag">DOB: Verified</div>
+
+    <p class="drawer-info-text" id="drawerInstructionText">
+      Link your personal email address. A 6-digit code valid for 10 minutes will be sent to authenticate your identity.
+    </p>
+
+    <div style="width: 100%;">
+      <div class="drawer-email-form" id="emailInputWrap">
+        <input type="email" id="drawerEmailInput" class="drawer-email-input" placeholder="Enter personal email" />
+        <button class="btn-link-action" id="btnSendVerification">Send Verification</button>
+      </div>
+
+      <div class="otp-verification-container" id="otpInputWrap">
+        <input type="text" id="otpCodeInput" class="otp-code-input" placeholder="••••••" maxlength="6" inputmode="numeric" />
+        <button class="btn-verify-otp" id="btnVerifyOtp">Verify Code</button>
+        
+        <div class="otp-sub-actions">
+          <span class="resend-timer-text" id="resendTimerLabel">Resend in 00:60</span>
+          <button class="btn-text-action" id="btnResendOtp" disabled>Resend Code</button>
+          <button class="btn-text-action" id="btnBackToEmail">Change Email</button>
+        </div>
+      </div>
+
+      <div id="emailVerifiedCard" style="display: none; width: 100%;">
+        <div class="oauth-linked-card">
+          <div>
+            <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;" id="verifiedEmailText">user@mail.com</div>
+            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Identity Verified & Encrypted</div>
+          </div>
+          <div style="font-size: 10px; font-weight: 800; color: #ffffff; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
+            LINKED ✓
+          </div>
+        </div>
+        <button class="btn-change-email" id="btnChangeEmail">Change Email</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function loadTradingView() {
+      const tvScript = document.createElement('script');
+      tvScript.src = "https://s3.tradingview.com/tv.js";
+      tvScript.onload = () => {
+        try {
+          new TradingView.widget({
+            "autosize": true,
+            "symbol": "BINANCE:TONUSDT",
+            "interval": "15",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "enable_publishing": false,
+            "hide_top_toolbar": false,
+            "hide_side_toolbar": false,
+            "allow_symbol_change": true,
+            "save_image": false,
+            "backgroundColor": "#000000",
+            "gridColor": "rgba(255, 255, 255, 0.03)",
+            "container_id": "tv_chart_main"
+          });
+        } catch (e) {}
+      };
+      document.body.appendChild(tvScript);
+    }
+  </script>
+
+  <script>
+    // Supabase Configuration
+    const SUPABASE_URL = "https://bjfibvojdojveprrsbxo.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_8HICxyKnXYEq-hRw-sFj3w_EgkQOV4q";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      try {
+        tg.setHeaderColor('#000000');
+        tg.setBackgroundColor('#000000');
+      } catch (e) {}
+    }
+
+    let userId = "guest_user_123";
+    let telegramUsername = "Satoshi";
+
+    if (tg && tg.initDataUnsafe?.user) {
+      userId = String(tg.initDataUnsafe.user.id);
+      telegramUsername = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "Satoshi";
+    }
+
+    const EMAILJS_CONFIG = {
+      serviceId: "service_91i0edt",
+      templateId: "template_6a78v2d", 
+      publicKey: "UZVvtLHuf8uZWHdkg"
+    };
+
+    (function() {
+      try {
+        emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+      } catch (e) {}
+    })();
+
+    const TEN_MINUTES_MS = 10 * 60 * 1000;
+    let countdownInterval = null;
+
+    function triggerHaptic(type = 'light') {
+      try {
+        if (tg?.HapticFeedback) {
+          if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+          else tg.HapticFeedback.impactOccurred(type);
+        }
+      } catch (e) {}
+    }
+
+    let toastTimer;
+    function showHUD(text) {
+      const toast = document.getElementById('hudToast');
+      document.getElementById('hudMsg').innerText = text;
+      toast.classList.add('active');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('active');
+      }, 2600);
+    }
+
+    let currentAlloc = 1250;
+    const allocDisplay = document.getElementById('vaultDkxBal');
+
+    async function initCloudUser() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('profiles')
+          .select('balance, username')
+          .eq('id', userId)
+          .single();
+
+        if (data) {
+          currentAlloc = data.balance;
+          allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span>`;
+          document.getElementById('refBalDkx').innerText = `${currentAlloc.toLocaleString()} $DKX`;
+        } else {
+          await supabaseClient.from('profiles').insert([
+            { id: userId, username: telegramUsername, balance: 1250 }
+          ]);
+        }
+      } catch (err) {
+        console.error("Cloud init error:", err);
+      }
+    }
+
+    initCloudUser();
+
+    function completeVerification(email) {
+      localStorage.setItem('dkx_email_verified', 'true');
+      localStorage.setItem('dkx_user_email', email);
+      localStorage.removeItem('dkx_pending_otp');
+      localStorage.removeItem('dkx_pending_timestamp');
+
+      if (window.confetti) {
+        confetti({
+          particleCount: 140,
+          spread: 120,
+          origin: { y: 0.55 },
+          colors: ['#ffffff', '#8e8e93', '#38bdf8']
+        });
+      }
+      triggerHaptic('success');
+      showHUD("Email Linked & Secured! ✓");
+      updateProfileUI(localStorage.getItem('dkx_user_name'), localStorage.getItem('dkx_user_dob'));
+    }
+
+    (function checkUrlVerification() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const startParam = tg?.initDataUnsafe?.start_param || urlParams.get('tgWebAppStartParam') || urlParams.get('startapp');
+
+      if (startParam && startParam.startsWith('verify_')) {
+        const rawPayload = decodeURIComponent(startParam.replace('verify_', ''));
+        const parts = rawPayload.split('_ts_');
+        const emailToVerify = parts[0];
+        const linkTimestamp = parseInt(parts[1], 10);
+
+        const now = Date.now();
+        if (linkTimestamp && (now - linkTimestamp > TEN_MINUTES_MS)) {
+          setTimeout(() => {
+            triggerHaptic('error');
+            showHUD("Verification link expired. Request a new one.");
+          }, 200);
+        } else {
+          setTimeout(() => {
+            completeVerification(emailToVerify);
+          }, 100);
+        }
+      } else if (startParam && startParam.startsWith('ref_')) {
+        let currentRefs = parseInt(localStorage.getItem('dkx_ref_count') || '0', 10);
+        if (!localStorage.getItem('dkx_has_been_referred')) {
+          localStorage.setItem('dkx_has_been_referred', 'true');
+          currentRefs += 1;
+          localStorage.setItem('dkx_ref_count', currentRefs.toString());
+        }
+      }
+    })();
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(loadTradingView, 200);
+      initReferralSystem();
+    });
+
+    function navigateTab(name, elem) {
+      triggerHaptic('light');
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      document.getElementById(`tab-${name}`).classList.add('active');
+      elem.classList.add('active');
+    }
+
+    function initReferralSystem() {
+      let refCount = parseInt(localStorage.getItem('dkx_ref_count') || '0', 10);
+      document.getElementById('frensCountNum').innerText = refCount;
+    }
+
+    function handleInviteAction() {
+      triggerHaptic('success');
+      const botUsername = "DakicksAmino_bot";
+      const myHandle = localStorage.getItem('dkx_user_name') || 'Satoshi';
+      const refLink = `https://t.me/${botUsername}/app?startapp=ref_${encodeURIComponent(myHandle)}`;
+      
+      navigator.clipboard.writeText(refLink).then(() => {
+        showHUD("Invite Link Copied! 🚀");
+      }).catch(() => {
+        showHUD("Link ready to share!");
+      });
+    }
+
+    document.getElementById('btnInviteFrens').addEventListener('click', handleInviteAction);
+
+    function openFrensList() {
+      triggerHaptic('light');
+      showHUD("Squad members loaded successfully");
+    }
+
+    const walletModal = document.getElementById('walletModal');
+    const walletModalBackdrop = document.getElementById('walletModalBackdrop');
+
+    function openWalletModal() {
+      triggerHaptic('medium');
+      walletModalBackdrop.classList.add('show');
+      walletModal.classList.add('show');
+    }
+
+    function closeWalletModal() {
+      walletModal.classList.remove('show');
+      walletModalBackdrop.classList.remove('show');
+    }
+
+    document.getElementById('goToWalletBtn').addEventListener('click', openWalletModal);
+    document.getElementById('connectWalletBtn').addEventListener('click', openWalletModal);
+    walletModalBackdrop.addEventListener('click', closeWalletModal);
+
+    function connectSpecificWallet(walletName) {
+      triggerHaptic('success');
+      closeWalletModal();
+      showHUD(`Connected to ${walletName} ✓`);
+      document.getElementById('connectWalletBtn').innerText = `${walletName} Connected`;
+    }
+
+    document.getElementById('copyCaBtn').addEventListener('click', () => {
+      triggerHaptic('success');
+      navigator.clipboard.writeText("TON JETTON: DEPLOYING AT LAUNCH");
+      showHUD("TON Contract: Deploying at Launch");
+    });
+
+    const storedUsername = localStorage.getItem('dkx_user_name');
+    const storedDob = localStorage.getItem('dkx_user_dob');
+
+    function getInitials(name) {
+      if (!name) return 'DK';
+      const clean = name.replace(/[^a-zA-Z0-9]/g, '');
+      return clean.slice(0, 2).toUpperCase() || 'DK';
+    }
+
+    function applyAvatar(avatarData, initials) {
+      const topBadge = document.getElementById('topAvatarBadge');
+      const drawerBadge = document.getElementById('drawerAvatarBadge');
+
+      if (avatarData) {
+        topBadge.style.backgroundImage = `url(${avatarData})`;
+        topBadge.innerText = '';
+        drawerBadge.style.backgroundImage = `url(${avatarData})`;
+        drawerBadge.innerText = '';
+      } else {
+        topBadge.style.backgroundImage = 'none';
+        topBadge.innerText = initials;
+        drawerBadge.style.backgroundImage = 'none';
+        drawerBadge.innerText = initials;
+      }
+    }
+
+    function updateProfileUI(name, dob) {
+      const initials = getInitials(name);
+      document.getElementById('topHandleText').innerText = name || 'Anonymous';
+      document.getElementById('drawerUsername').innerText = name || 'Anonymous';
+      document.getElementById('drawerDobTag').innerText = dob ? `DOB: ${dob}` : 'DOB: Verified';
+      applyAvatar(localStorage.getItem('dkx_user_avatar'), initials);
+
+      const isVerified = localStorage.getItem('dkx_email_verified') === 'true';
+      const savedEmail = localStorage.getItem('dkx_user_email');
+
+      if (isVerified && savedEmail) {
+        document.getElementById('emailInputWrap').style.display = 'none';
+        document.getElementById('otpInputWrap').style.display = 'none';
+        document.getElementById('emailVerifiedCard').style.display = 'block';
+        document.getElementById('verifiedEmailText').innerText = savedEmail;
+        document.getElementById('drawerInstructionText').innerText = "Your DAKICKS profile is linked and cryptographically secured.";
+      } else {
+        document.getElementById('emailVerifiedCard').style.display = 'none';
+        const pendingOtp = localStorage.getItem('dkx_pending_otp');
+        const pendingTs = parseInt(localStorage.getItem('dkx_pending_timestamp') || '0', 10);
+        
+        if (pendingOtp && (Date.now() - pendingTs <= TEN_MINUTES_MS)) {
+          document.getElementById('emailInputWrap').style.display = 'none';
+          document.getElementById('otpInputWrap').style.display = 'flex';
+          const pendingEmail = localStorage.getItem('dkx_pending_email') || 'your email';
+          document.getElementById('drawerInstructionText').innerText = `Verification code sent to ${pendingEmail}. Enter 6-digit code or tap email link.`;
+        } else {
+          localStorage.removeItem('dkx_pending_otp');
+          localStorage.removeItem('dkx_pending_timestamp');
+          document.getElementById('emailInputWrap').style.display = 'flex';
+          document.getElementById('otpInputWrap').style.display = 'none';
+          document.getElementById('drawerInstructionText').innerText = "Enter your email address to begin authentication.";
+        }
+      }
+    }
+
+    if (!storedUsername || !storedDob) {
+      document.getElementById('firstTimeGate').style.display = 'flex';
+    } else {
+      updateProfileUI(storedUsername, storedDob);
+    }
+
+    document.getElementById('submitGateBtn').addEventListener('click', () => {
+      const uVal = document.getElementById('inputUsername').value.trim();
+      const dVal = document.getElementById('inputDob').value;
+
+      if (!uVal || uVal.length < 3) {
+        triggerHaptic('error');
+        showHUD("Handle must be at least 3 chars");
+        return;
+      }
+      if (!dVal) {
+        triggerHaptic('error');
+        showHUD("Please enter your Date of Birth");
+        return;
+      }
+
+      localStorage.setItem('dkx_user_name', uVal);
+      localStorage.setItem('dkx_user_dob', dVal);
+      updateProfileUI(uVal, dVal);
+
+      triggerHaptic('success');
+      document.getElementById('firstTimeGate').style.display = 'none';
+      showHUD(`Welcome to DAKICKS, ${uVal}`);
+    });
+
+    const profileBackdrop = document.getElementById('profileBackdrop');
+    const profileDrawer = document.getElementById('profileDrawer');
+
+    function openProfileDrawer() {
+      triggerHaptic('medium');
+      profileBackdrop.classList.add('show');
+      profileDrawer.classList.add('show');
+    }
+
+    function closeProfileDrawer() {
+      profileDrawer.classList.remove('show');
+      profileBackdrop.classList.remove('show');
+    }
+
+    document.getElementById('topLeftProfileBtn').addEventListener('click', openProfileDrawer);
+    document.getElementById('drawerCloseBtn').addEventListener('click', closeProfileDrawer);
+    profileBackdrop.addEventListener('click', closeProfileDrawer);
+
+    const pencilBtn = document.getElementById('btnPencilTrigger');
+    const avatarFileInput = document.getElementById('avatarFileInput');
+
+    pencilBtn.addEventListener('click', () => {
+      triggerHaptic('light');
+      avatarFileInput.click();
+    });
+
+    avatarFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      if (file.size > 2 * 1024 * 1024) {
+        showHUD("Image must be under 2MB");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Data = event.target.result;
+        localStorage.setItem('dkx_user_avatar', base64Data);
+        applyAvatar(base64Data, getInitials(localStorage.getItem('dkx_user_name')));
+        triggerHaptic('success');
+        showHUD("Profile Photo Updated!");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function startResendCountdown() {
+      clearInterval(countdownInterval);
+      let secRemaining = 60;
+      
