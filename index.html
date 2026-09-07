@@ -1922,8 +1922,9 @@
       }
     }
 
-    function updateProfileUI(name, dob) {
-      const initials = getInitials(name);
+          localStorage.setItem('dkx_email_verified', 'true');
+      localStorage.setItem('dkx_user_email', 'user@dakicks.io');
+    
       document.getElementById('topHandleText').innerText = name || 'Anonymous';
       document.getElementById('drawerUsername').innerText = name || 'Anonymous';
       document.getElementById('drawerDobTag').innerText = dob ? `DOB: ${dob}` : 'DOB: Verified';
