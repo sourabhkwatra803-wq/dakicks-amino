@@ -2043,4 +2043,160 @@
       const resendBtn = document.getElementById('btnResendOtp');
       resendBtn.disabled = true;
 
-      
+      const timerLabel = document.getElementById('resendTimerLabel');
+      const resendBtn = document.getElementById('btnResendOtp');
+      resendBtn.disabled = true;
+
+      countdownInterval = setInterval(() => {
+        secRemaining--;
+        const formatted = secRemaining < 10 ? `0${secRemaining}` : secRemaining;
+        timerLabel.innerText = `Resend in 00:${formatted}`;
+        if (secRemaining <= 0) {
+          clearInterval(countdownInterval);
+          timerLabel.innerText = "Code ready to resend";
+          resendBtn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    function dispatchEmail() {
+      const emailInput = document.getElementById('drawerEmailInput');
+      const emailVal = emailInput.value.trim();
+
+      if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
+        triggerHaptic('error');
+        showHUD("Please provide a valid email");
+        return;
+      }
+
+      triggerHaptic('medium');
+      showHUD("Sending verification...");
+
+      const btn = document.getElementById('btnSendVerification');
+      btn.innerText = "Sending...";
+      btn.disabled = true;
+
+      const randomOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      const currentTimestamp = Date.now();
+
+      localStorage.setItem('dkx_pending_otp', randomOtp);
+      localStorage.setItem('dkx_pending_email', emailVal);
+      localStorage.setItem('dkx_pending_timestamp', currentTimestamp.toString());
+
+      const verifyLink = `https://t.me/DakicksAmino_bot/app?startapp=verify_${encodeURIComponent(emailVal)}_ts_${currentTimestamp}`;
+
+      emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, {
+        to_email: emailVal,
+        verify_link: verifyLink,
+        passcode: randomOtp,
+        code: randomOtp
+      }, EMAILJS_CONFIG.publicKey).then(() => {
+        btn.innerText = "Send Verification";
+        btn.disabled = false;
+        triggerHaptic('success');
+
+        document.getElementById('emailInputWrap').style.display = 'none';
+        document.getElementById('otpInputBox').style.display = 'flex';
+        document.getElementById('drawerInstructionText').innerText = `Verification code sent to ${emailVal}. Enter 6-digit code or tap email link.`;
+        
+        startResendCountdown();
+        showHUD("Code Transmitted Successfully");
+      }).catch((err) => {
+        btn.innerText = "Send Verification";
+        btn.disabled = false;
+        triggerHaptic('error');
+        alert("EmailJS Error: " + (err.text || JSON.stringify(err)));
+      });
+    }
+
+    document.getElementById('btnSendVerification').addEventListener('click', dispatchEmail);
+    document.getElementById('btnResendOtp').addEventListener('click', dispatchEmail);
+
+    document.getElementById('btnVerifyOtp').addEventListener('click', () => {
+      const enteredOtp = document.getElementById('otpCodeInput').value.trim();
+      const savedOtp = localStorage.getItem('dkx_pending_otp');
+      const pendingEmail = localStorage.getItem('dkx_pending_email');
+      const pendingTs = parseInt(localStorage.getItem('dkx_pending_timestamp') || '0', 10);
+
+      if (!savedOtp || (Date.now() - pendingTs > TEN_MINUTES_MS)) {
+        triggerHaptic('error');
+        showHUD("Verification code expired (10m). Request a new one.");
+        localStorage.removeItem('dkx_pending_otp');
+        localStorage.removeItem('dkx_pending_timestamp');
+        updateProfileUI(localStorage.getItem('dkx_user_name'), localStorage.getItem('dkx_user_dob'));
+        return;
+      }
+
+      if (enteredOtp && enteredOtp === savedOtp) {
+        completeVerification(pendingEmail);
+      } else {
+        triggerHaptic('error');
+        showHUD("Incorrect 6-digit code");
+      }
+    });
+
+    function returnToEmailInput() {
+      triggerHaptic('light');
+      clearInterval(countdownInterval);
+      localStorage.removeItem('dkx_pending_otp');
+      localStorage.removeItem('dkx_pending_timestamp');
+      localStorage.removeItem('dkx_email_verified');
+      document.getElementById('drawerEmailInput').value = '';
+      document.getElementById('otpCodeInput').value = '';
+      updateProfileUI(localStorage.getItem('dkx_user_name'), localStorage.getItem('dkx_user_dob'));
+      showHUD("Enter your email address");
+    }
+
+    document.getElementById('btnBackToEmail').addEventListener('click', returnToEmailInput);
+    document.getElementById('btnChangeEmail').addEventListener('click', returnToEmailInput);
+
+    setInterval(() => {
+      document.querySelectorAll('div, dialog').forEach(el => {
+        if (el.innerText && el.innerText.includes('AdsgramError')) {
+          el.remove();
+        }
+      });
+    }, 50);
+
+    let adHandler = null;
+    try {
+      if (window.Adsgram) {
+        adHandler = window.Adsgram.init({ blockId: "46202", debug: false });
+      }
+    } catch (e) {}
+
+    document.getElementById('claimRewardBtn').addEventListener('click', async () => {
+      triggerHaptic('medium');
+      if (adHandler) {
+        adHandler.show().then(async () => {
+          currentAlloc += 2;
+          allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span>`;
+          document.getElementById('refBalDkx').innerText = `${currentAlloc.toLocaleString()} $DKX`;
+          
+          await supabaseClient.from('profiles').update({ balance: currentAlloc }).eq('id', userId);
+
+          triggerHaptic('success');
+          showHUD("Transmission Verified: +2 $DKX Granted");
+        }).catch((err) => {
+          document.querySelectorAll('div, dialog').forEach(el => {
+            if (el.innerText && el.innerText.includes('AdsgramError')) {
+              el.remove();
+            }
+          });
+          showHUD("Transmissions Unavailable: High Network Load");
+        });
+      } else {
+        currentAlloc += 2;
+        allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span>`;
+        document.getElementById('refBalDkx').innerText = `${currentAlloc.toLocaleString()} $DKX`;
+        
+        await supabaseClient.from('profiles').update({ balance: currentAlloc }).eq('id', userId);
+
+        triggerHaptic('success');
+        showHUD("+2 $DKX Granted");
+      }
+    });
+  </script>
+</body>
+</html>
+        
