@@ -1897,7 +1897,9 @@
 
     const storedUsername = localStorage.getItem('dkx_user_name');
     const storedDob = localStorage.getItem('dkx_user_dob');
-
+      localStorage.setItem('dkx_email_verified', 'true');
+      localStorage.setItem('dkx_user_email', 'user@dakicks.io');
+    
     function getInitials(name) {
       if (!name) return 'DK';
       const clean = name.replace(/[^a-zA-Z0-9]/g, '');
