@@ -155,8 +155,11 @@
     }
 
     #tab-terminal {
-      padding: 0;
-      overflow: hidden;
+      padding: 0 0 118px 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      touch-action: pan-y;
     }
 
     .chart-box {
@@ -1253,7 +1256,18 @@
     }
   
     /* ===== TRUST / DASHBOARD POLISH ===== */
-    .scroll-tab { overflow-y: auto; padding: 18px 14px 110px; -webkit-overflow-scrolling: touch; }
+    .scroll-tab {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      padding: 18px 14px 124px !important;
+      -webkit-overflow-scrolling: touch !important;
+      overscroll-behavior-y: contain;
+      touch-action: pan-y;
+      scrollbar-width: none;
+    }
+    .scroll-tab::-webkit-scrollbar { width: 0; height: 0; }
     .home-wrap { max-width: 760px; margin: 0 auto; }
     .hero-card { background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(18,18,20,.9)); border: 1px solid rgba(255,255,255,.12); border-radius: 22px; padding: 22px; margin-bottom: 14px; box-shadow: 0 18px 60px rgba(0,0,0,.28); }
     .eyebrow { font-size: 10px; letter-spacing: 1.8px; color: #8e8e93; font-weight: 800; margin-bottom: 10px; }
@@ -1311,7 +1325,643 @@
     .age-consent input { width:17px; height:17px; accent-color:#fff; flex:0 0 auto; }
     @media (max-width:420px){ .hero-title{font-size:25px}.stats-grid{gap:7px}.stat-card{padding:12px}.hero-actions{flex-direction:column}.primary-mini,.secondary-mini{width:100%} }
 
-  </style>
+  
+/* =========================================================
+   DKX V3 — PREMIUM MOBILE TERMINAL / 3D DEPTH SYSTEM
+   ========================================================= */
+:root{
+  --bg-dark:#070708;
+  --bg-2:#0c0d0f;
+  --surface:#111216;
+  --surface-2:#15171b;
+  --surface-3:#1b1d22;
+  --line:rgba(255,255,255,.085);
+  --line-strong:rgba(255,255,255,.14);
+  --text-pure:#f7f7f5;
+  --text-secondary:#92959d;
+  --muted:#62656d;
+  --accent:#d9ff4a;
+  --accent-2:#8dffcf;
+  --accent-ink:#0b0d08;
+  --shadow:0 22px 60px rgba(0,0,0,.46);
+}
+
+html{
+  background:#070708;
+  height:100%;
+  overflow:hidden;
+}
+
+body{
+  background:
+    radial-gradient(900px 520px at 50% -180px, rgba(217,255,74,.075), transparent 58%),
+    radial-gradient(700px 500px at 100% 55%, rgba(141,255,207,.035), transparent 62%),
+    #070708 !important;
+  height:100dvh !important;
+  min-height:100dvh !important;
+  overflow:hidden !important;
+  overscroll-behavior:none;
+}
+
+*{
+  scrollbar-width:none;
+}
+*::-webkit-scrollbar{width:0;height:0}
+
+.top-bar{
+  height:58px !important;
+  min-height:58px !important;
+  padding:0 16px !important;
+  background:rgba(7,7,8,.78) !important;
+  border-bottom:1px solid rgba(255,255,255,.065) !important;
+  backdrop-filter:blur(26px) saturate(140%) !important;
+  -webkit-backdrop-filter:blur(26px) saturate(140%) !important;
+}
+
+.network-pill{
+  font-size:9px !important;
+  letter-spacing:1.15px !important;
+  text-transform:uppercase;
+  color:#777a82 !important;
+}
+.network-pill .pulse-dot{
+  background:var(--accent) !important;
+  box-shadow:0 0 12px rgba(217,255,74,.65) !important;
+}
+
+.main-viewport{
+  position:relative !important;
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  height:calc(100dvh - 58px) !important;
+  overflow:hidden !important;
+  isolation:isolate;
+}
+
+/* Every page owns its own scroll. This fixes the "can't scroll down" bug. */
+.tab-content{
+  position:absolute !important;
+  inset:0 !important;
+  height:100% !important;
+  min-height:0 !important;
+  display:none;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  overscroll-behavior-y:contain;
+  touch-action:pan-y;
+  padding:18px 14px 126px !important;
+  z-index:10;
+}
+
+.tab-content.active{display:flex !important}
+
+/* Home needs the same scroll behaviour. */
+#tab-terminal{
+  padding:0 0 126px !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch !important;
+  touch-action:pan-y;
+}
+
+/* Subtle 3D stage behind every scroll page */
+.tab-content::before{
+  content:"";
+  position:absolute;
+  left:-25%;
+  top:8%;
+  width:150%;
+  height:52%;
+  pointer-events:none;
+  z-index:0;
+  opacity:.8;
+  background:
+    radial-gradient(ellipse at center, rgba(217,255,74,.055), transparent 52%),
+    radial-gradient(ellipse at 30% 80%, rgba(141,255,207,.035), transparent 42%);
+  transform:perspective(900px) rotateX(58deg) translateZ(-30px) scale(1.15);
+  filter:blur(1px);
+}
+
+.tab-content > *:not(.video-bg-container){
+  position:relative;
+  z-index:3;
+}
+
+/* 3D background media is now a depth layer, not a flat full-screen video */
+.video-bg-container{
+  position:fixed !important;
+  inset:58px 0 62px !important;
+  height:auto !important;
+  z-index:0 !important;
+  opacity:.5;
+  transform:translateZ(0);
+  pointer-events:none !important;
+}
+.video-bg-container video{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  opacity:.18 !important;
+  filter:contrast(1.25) brightness(.45) saturate(.75) !important;
+  transform:scale(1.07);
+}
+.video-overlay-gradient{
+  background:
+    radial-gradient(ellipse at 50% 15%, rgba(217,255,74,.075), transparent 34%),
+    linear-gradient(180deg, rgba(7,7,8,.2), rgba(7,7,8,.93) 78%) !important;
+}
+
+/* Premium cards: less "AI glass", more luxury hardware */
+.glass-card,
+.feature-card,
+.stat-card,
+.chart-card,
+.trust-strip,
+.ref-balance-card,
+.ref-banner-card,
+.frens-row,
+.lb-header-card,
+.lb-list,
+.verification-card,
+.wallet-connect-box{
+  background:linear-gradient(145deg, rgba(25,26,30,.94), rgba(13,14,17,.94)) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.045),
+    0 16px 38px rgba(0,0,0,.28) !important;
+  backdrop-filter:blur(18px) saturate(120%) !important;
+  -webkit-backdrop-filter:blur(18px) saturate(120%) !important;
+  border-radius:22px !important;
+}
+
+.glass-card,
+.feature-card{
+  transform:translateZ(0);
+  transition:transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.glass-card:active,
+.feature-card:active{
+  transform:scale(.985);
+  border-color:rgba(217,255,74,.18) !important;
+}
+
+.section-title{
+  color:#74777f !important;
+  font-size:9px !important;
+  letter-spacing:2.2px !important;
+  font-weight:800 !important;
+  margin:5px 0 12px 3px !important;
+}
+
+.hero-card{
+  position:relative;
+  overflow:hidden;
+  margin:14px 14px 12px !important;
+  padding:25px 21px 22px !important;
+  border-radius:28px !important;
+  border:1px solid rgba(255,255,255,.09) !important;
+  background:
+    radial-gradient(circle at 88% 0%, rgba(217,255,74,.14), transparent 34%),
+    linear-gradient(145deg,#17191d,#0b0c0e 75%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.07),
+    0 28px 70px rgba(0,0,0,.48) !important;
+}
+.hero-card::after{
+  content:"DKX";
+  position:absolute;
+  right:-25px;
+  bottom:-48px;
+  font-size:118px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-8px;
+  color:rgba(255,255,255,.018);
+  transform:rotate(-8deg) translateZ(-1px);
+  pointer-events:none;
+}
+.eyebrow{
+  color:var(--accent) !important;
+  letter-spacing:2.6px !important;
+  font-size:9px !important;
+  font-weight:900 !important;
+}
+.hero-title{
+  font-size:34px !important;
+  line-height:.98 !important;
+  letter-spacing:-1.8px !important;
+  font-weight:900 !important;
+  margin:13px 0 13px !important;
+}
+.hero-title span{
+  color:#8e9299 !important;
+}
+.hero-sub{
+  max-width:330px;
+  color:#8d9098 !important;
+  line-height:1.55 !important;
+  font-size:12px !important;
+}
+
+.hero-actions{
+  margin-top:21px !important;
+  gap:9px !important;
+}
+.primary-mini,
+.secondary-mini,
+.full-action,
+.btn-goto-wallet,
+.btn-invite-frens-main,
+.btn-wallet-connect{
+  border-radius:15px !important;
+  min-height:48px !important;
+  font-weight:850 !important;
+  letter-spacing:-.15px !important;
+}
+.primary-mini{
+  background:var(--accent) !important;
+  color:var(--accent-ink) !important;
+  box-shadow:0 9px 28px rgba(217,255,74,.13) !important;
+}
+.secondary-mini{
+  background:#1a1b1f !important;
+  border:1px solid rgba(255,255,255,.08) !important;
+  color:#e8e8e6 !important;
+}
+
+.stats-grid{
+  padding:0 14px !important;
+  gap:8px !important;
+}
+.stat-card{
+  padding:14px !important;
+  border-radius:18px !important;
+}
+.stat-label{
+  color:#676a72 !important;
+  font-size:8px !important;
+  letter-spacing:1.4px !important;
+}
+.stat-value{
+  margin-top:7px !important;
+  font-size:13px !important;
+  letter-spacing:-.25px !important;
+}
+.stat-note{
+  margin-top:5px !important;
+  color:#6e7179 !important;
+  font-size:9px !important;
+  line-height:1.35 !important;
+}
+
+.chart-card{
+  margin:0 14px 12px !important;
+  padding:13px !important;
+  border-radius:22px !important;
+}
+.chart-card-head{
+  padding:1px 2px 10px !important;
+}
+.chart-card-title{
+  font-size:13px !important;
+  font-weight:850 !important;
+}
+.chart-card-note{
+  font-size:9px !important;
+  color:#666971 !important;
+}
+.live-badge{
+  color:var(--accent) !important;
+  border-color:rgba(217,255,74,.16) !important;
+  background:rgba(217,255,74,.05) !important;
+}
+.chart-box{
+  height:48vh !important;
+  min-height:320px !important;
+  border-radius:15px;
+  overflow:hidden;
+  background:#090a0b;
+}
+
+.trust-strip{
+  margin:0 14px !important;
+  padding:14px !important;
+  border-radius:18px !important;
+}
+.trust-strip b{color:#eee !important}
+.trust-strip span{color:#747780 !important}
+.trust-strip button{
+  color:var(--accent) !important;
+}
+
+/* Ecosystem / Frens / Leaderboard spacing */
+#tab-dakicks,
+#tab-community,
+#tab-frens,
+#tab-leaderboard,
+#tab-vault{
+  gap:10px;
+}
+.feature-card{
+  padding:18px !important;
+  margin:0 0 2px !important;
+}
+.card-title,
+.lb-title,
+.vault-title{
+  letter-spacing:-.55px !important;
+  font-weight:900 !important;
+}
+.card-tag,
+.alloc-status,
+.status-pending,
+.status-live{
+  border-radius:999px !important;
+  letter-spacing:1px !important;
+}
+.card-desc,
+.verify-note,
+.lb-subtitle,
+.vault-subtitle{
+  color:#858890 !important;
+  line-height:1.55 !important;
+}
+
+/* Proof Center feels like a real control panel */
+.vault-wrapper{
+  padding-bottom:18px;
+}
+.vault-glyph{
+  background:linear-gradient(145deg,#202329,#101114) !important;
+  border:1px solid rgba(255,255,255,.1) !important;
+  box-shadow:0 16px 42px rgba(0,0,0,.4) !important;
+}
+.vault-glyph svg{
+  fill:var(--accent) !important;
+}
+.verification-card{
+  padding:17px !important;
+  border-radius:20px !important;
+}
+.verify-head{
+  font-size:8px !important;
+  letter-spacing:1.6px !important;
+}
+.status-live{
+  color:var(--accent) !important;
+  background:rgba(217,255,74,.07) !important;
+  border-color:rgba(217,255,74,.16) !important;
+}
+.status-pending{
+  color:#a0a2a8 !important;
+}
+.verify-main{
+  color:#e6e7e4 !important;
+  font-size:12px !important;
+  line-height:1.5 !important;
+  margin-top:10px !important;
+}
+.risk-note{
+  color:#646770 !important;
+  border-color:rgba(255,255,255,.06) !important;
+  line-height:1.55 !important;
+}
+
+/* Bottom nav = floating hardware dock, not generic AI navigation */
+.bottom-nav{
+  position:fixed !important;
+  left:10px !important;
+  right:10px !important;
+  bottom:10px !important;
+  width:auto !important;
+  height:64px !important;
+  border:1px solid rgba(255,255,255,.10) !important;
+  border-radius:21px !important;
+  background:rgba(14,15,17,.9) !important;
+  box-shadow:0 20px 50px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.05) !important;
+  backdrop-filter:blur(28px) saturate(150%) !important;
+  -webkit-backdrop-filter:blur(28px) saturate(150%) !important;
+  padding:4px !important;
+}
+.nav-item{
+  border-radius:16px !important;
+  gap:3px !important;
+  transition:all .2s ease !important;
+}
+.nav-item svg{
+  width:17px !important;
+  height:17px !important;
+}
+.nav-item.active{
+  color:var(--accent) !important;
+  background:rgba(217,255,74,.065) !important;
+  box-shadow:inset 0 1px 0 rgba(217,255,74,.08) !important;
+}
+.nav-label{
+  font-size:7.5px !important;
+  letter-spacing:.7px !important;
+  font-weight:800 !important;
+  text-transform:uppercase;
+}
+
+/* Wallet/profile modals */
+.wallet-modal,
+.profile-drawer,
+.gate-card{
+  background:linear-gradient(145deg,#17191d,#0c0d0f) !important;
+  border:1px solid rgba(255,255,255,.1) !important;
+  box-shadow:0 30px 90px rgba(0,0,0,.7) !important;
+}
+.wallet-option-item{
+  background:#121317 !important;
+  border:1px solid rgba(255,255,255,.065) !important;
+  border-radius:17px !important;
+}
+.btn-wallet-connect{
+  background:var(--accent) !important;
+  color:#0a0c08 !important;
+}
+
+/* Smooth micro-interactions */
+button,a,.nav-item,.comm-row,.frens-row{
+  transition:transform .18s ease, opacity .18s ease, border-color .18s ease, background .18s ease;
+}
+button:active,.btn-node:active,.comm-row:active{
+  transform:scale(.975);
+}
+
+@media (max-width:420px){
+  .hero-title{font-size:30px !important}
+  .hero-card{padding:22px 18px 19px !important}
+  .chart-box{min-height:290px !important;height:44vh !important}
+}
+
+/* Telegram Android / Chrome viewport safety */
+@supports (height: 100svh){
+  body{height:100svh !important;min-height:100svh !important}
+  .main-viewport{height:calc(100svh - 58px) !important}
+}
+@supports (height: 100dvh){
+  body{height:100dvh !important;min-height:100dvh !important}
+  .main-viewport{height:calc(100dvh - 58px) !important}
+}
+
+
+/* ================= DKX PRO V4 — LUXURY TERMINAL ================= */
+:root{
+  --dkx-acid:#d9ff4a;
+  --dkx-mint:#92ffd2;
+  --dkx-bg:#050607;
+  --dkx-panel:#101214;
+  --dkx-panel2:#15181b;
+  --dkx-line:rgba(255,255,255,.085);
+  --dkx-soft:rgba(255,255,255,.055);
+}
+html,body{height:100%;overflow:hidden!important;background:var(--dkx-bg)!important}
+body{overscroll-behavior:none!important}
+button,input{font:inherit}
+.main-viewport{
+  position:relative!important;
+  flex:1 1 auto!important;
+  height:calc(100dvh - 58px)!important;
+  min-height:0!important;
+  overflow:hidden!important;
+}
+.tab-content{
+  position:absolute!important;
+  inset:0!important;
+  height:100%!important;
+  min-height:0!important;
+  display:none;
+  flex-direction:column;
+  overflow-y:scroll!important;
+  overflow-x:hidden!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-y:contain!important;
+  touch-action:pan-y!important;
+  box-sizing:border-box!important;
+  padding:18px 14px 132px!important;
+  scrollbar-width:none!important;
+}
+.tab-content::-webkit-scrollbar{width:0;height:0}
+.tab-content.active{display:flex!important}
+#tab-terminal{padding:0 0 132px!important}
+.home-wrap{padding-bottom:20px;position:relative;z-index:3}
+.video-bg-container{
+  position:fixed!important;
+  inset:58px 0 0!important;
+  width:auto!important;
+  height:auto!important;
+  z-index:0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+  opacity:1!important;
+}
+.video-bg-container video{
+  width:100%!important;height:100%!important;object-fit:cover!important;
+  opacity:.16!important;
+  filter:brightness(.55) contrast(1.16) saturate(.82)!important;
+  transform:scale(1.04)!important;
+}
+.video-overlay-gradient{
+  position:absolute!important;inset:0!important;
+  background:
+    radial-gradient(circle at 50% 28%,rgba(217,255,74,.055),transparent 35%),
+    linear-gradient(180deg,rgba(5,6,7,.28),rgba(5,6,7,.88) 72%,#050607 100%)!important;
+  backdrop-filter:blur(.2px);
+}
+.hero-card{
+  margin:14px 14px 12px!important;
+  border-radius:28px!important;
+  background:
+    radial-gradient(500px 180px at 90% -10%,rgba(217,255,74,.11),transparent 62%),
+    linear-gradient(145deg,rgba(25,28,30,.97),rgba(10,11,12,.96))!important;
+  border:1px solid rgba(255,255,255,.095)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 30px 70px rgba(0,0,0,.48)!important;
+}
+.chart-card{
+  position:relative;z-index:5;
+  margin:0 14px 12px!important;
+  padding:13px!important;
+  border-radius:24px!important;
+  background:linear-gradient(150deg,rgba(18,20,22,.97),rgba(8,9,10,.97))!important;
+  border:1px solid rgba(255,255,255,.095)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 25px 60px rgba(0,0,0,.44)!important;
+}
+.chart-toolbar{display:flex;gap:10px;align-items:flex-end;justify-content:space-between}
+.market-symbol-wrap{min-width:0;position:relative;flex:1}
+.market-mini-label{font-size:8px;color:#696d74;letter-spacing:1.5px;font-weight:900}
+.market-symbol-line{display:flex;gap:7px;margin-top:5px}
+.market-symbol-input{
+  min-width:0;width:100%;height:40px;padding:0 12px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.08);outline:none;
+  background:#0a0b0d;color:#f4f5f2;font-weight:900;letter-spacing:.4px;text-transform:uppercase;
+}
+.market-symbol-input:focus{border-color:rgba(217,255,74,.35);box-shadow:0 0 0 3px rgba(217,255,74,.05)}
+.market-search-btn{
+  height:40px;padding:0 13px;border:0;border-radius:12px;background:var(--dkx-acid);
+  color:#0a0d06;font-size:9px;font-weight:950;letter-spacing:.8px
+}
+.market-controls{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.tf-btn{
+  height:31px;padding:0 8px;border:1px solid rgba(255,255,255,.07);border-radius:9px;
+  background:#121417;color:#747880;font-size:9px;font-weight:850
+}
+.tf-btn.active{background:rgba(217,255,74,.1);color:var(--dkx-acid);border-color:rgba(217,255,74,.2)}
+.market-suggestions{
+  display:none;position:absolute;left:0;right:0;top:69px;z-index:30;
+  max-height:190px;overflow:auto;border:1px solid rgba(255,255,255,.09);border-radius:14px;
+  background:rgba(14,16,18,.98);box-shadow:0 25px 60px rgba(0,0,0,.65);backdrop-filter:blur(20px)
+}
+.market-suggestion{
+  display:flex;justify-content:space-between;align-items:center;padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.045);
+  color:#ddd;font-size:11px;font-weight:800
+}
+.market-suggestion small{color:#666b72;font-weight:700}
+.market-live-row{display:flex;justify-content:space-between;align-items:flex-end;padding:13px 2px 9px}
+.market-price{font-size:22px;font-weight:950;letter-spacing:-1px;margin-top:4px}
+.market-live-status{display:flex;align-items:center;gap:6px;font-size:8px;letter-spacing:1px;color:#777b82;font-weight:900}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--dkx-acid);box-shadow:0 0 13px rgba(217,255,74,.65)}
+.live-dot.off{background:#555;box-shadow:none}
+.live-chart-box{
+  height:330px!important;min-height:330px!important;position:relative!important;
+  border-radius:17px!important;overflow:hidden!important;background:#080a0b!important;
+  border:1px solid rgba(255,255,255,.045)!important;
+}
+#dkxLiveChart{display:block;width:100%;height:100%}
+.chart-loading{
+  position:absolute;inset:0;display:grid;place-items:center;color:#70747b;font-size:10px;
+  letter-spacing:1px;pointer-events:none;background:linear-gradient(180deg,rgba(5,6,7,.25),rgba(5,6,7,.65))
+}
+.chart-loading.hidden{display:none}
+.chart-crosshair{display:none}
+.chart-footer-row{display:flex;justify-content:space-between;gap:8px;padding:9px 2px 1px;color:#5e6269;font-size:8px;font-weight:800;letter-spacing:.2px}
+.arcade-card{
+  position:relative;min-height:132px;overflow:hidden;margin:0 0 2px;border-radius:23px;
+  border:1px solid rgba(255,255,255,.09);box-shadow:0 22px 55px rgba(0,0,0,.4);isolation:isolate
+}
+.arcade-card video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;filter:saturate(.8) contrast(1.12) brightness(.55)}
+.arcade-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,6,7,.95),rgba(5,6,7,.46),rgba(5,6,7,.72))}
+.arcade-copy{position:relative;z-index:2;display:flex;flex-direction:column;gap:5px;padding:20px;max-width:75%}
+.arcade-copy strong{font-size:20px;letter-spacing:-.7px}
+.arcade-copy span:last-child{font-size:9px;line-height:1.45;color:#8c9098}
+.bottom-nav{
+  left:9px!important;right:9px!important;bottom:9px!important;width:auto!important;height:64px!important;
+  border-radius:21px!important;background:rgba(12,14,15,.9)!important;border:1px solid rgba(255,255,255,.11)!important;
+  box-shadow:0 24px 65px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.055)!important;
+  backdrop-filter:blur(26px) saturate(145%)!important;-webkit-backdrop-filter:blur(26px) saturate(145%)!important
+}
+.nav-item.active{color:var(--dkx-acid)!important;background:rgba(217,255,74,.06)!important}
+@media(max-width:430px){
+  .chart-toolbar{align-items:stretch;flex-direction:column}
+  .market-controls{justify-content:flex-start}
+  .live-chart-box{height:310px!important;min-height:310px!important}
+}
+@supports(height:100svh){.main-viewport{height:calc(100svh - 58px)!important}}
+@supports(height:100dvh){.main-viewport{height:calc(100dvh - 58px)!important}}
+
+</style>
 </head>
   <body>
 
@@ -1329,6 +1979,12 @@
   <div class="main-viewport">
     
     <div id="tab-terminal" class="tab-content active scroll-tab">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="metadata">
+          <source src="./mainbg(1).mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
       <div class="home-wrap">
         <div class="hero-card">
           <div class="eyebrow">DKX ECOSYSTEM</div>
@@ -1347,10 +2003,42 @@
           <div class="stat-card"><div class="stat-label">LIQUIDITY</div><div class="stat-value">PENDING</div><div class="stat-note">Will be shown after provisioning</div></div>
         </div>
 
-        <div class="section-title home-section-title">MARKET WATCH</div>
-        <div class="chart-card">
-          <div class="chart-card-head"><div><div class="chart-card-title">BNB / USDT</div><div class="chart-card-note">Reference market • not DKX price</div></div><span class="live-badge">LIVE</span></div>
-          <div class="chart-box"><div id="tv_chart_main" style="height:100%;width:100%"></div></div>
+        <div class="section-title home-section-title">MARKET TERMINAL</div>
+        <div class="chart-card live-market-card">
+          <div class="chart-toolbar">
+            <div class="market-symbol-wrap">
+              <span class="market-mini-label">PAIR</span>
+              <div class="market-symbol-line">
+                <input id="marketSymbolInput" class="market-symbol-input" value="BNBUSDT" autocomplete="off" spellcheck="false" aria-label="Crypto pair" />
+                <button id="marketSearchBtn" class="market-search-btn" type="button">LOAD</button>
+              </div>
+              <div id="marketSuggestions" class="market-suggestions"></div>
+            </div>
+            <div class="market-controls">
+              <button class="tf-btn active" data-interval="1m">1m</button>
+              <button class="tf-btn" data-interval="5m">5m</button>
+              <button class="tf-btn" data-interval="15m">15m</button>
+              <button class="tf-btn" data-interval="1h">1H</button>
+              <button class="tf-btn" data-interval="4h">4H</button>
+            </div>
+          </div>
+          <div class="market-live-row">
+            <div>
+              <div id="marketPairTitle" class="chart-card-title">BNB / USDT</div>
+              <div id="marketPrice" class="market-price">—</div>
+            </div>
+            <div class="market-live-status"><span class="live-dot"></span><span id="marketStatus">CONNECTING LIVE</span></div>
+          </div>
+          <div class="chart-box live-chart-box">
+            <canvas id="dkxLiveChart"></canvas>
+            <div id="chartCrosshair" class="chart-crosshair"></div>
+            <div id="chartLoading" class="chart-loading">Loading live market…</div>
+          </div>
+          <div class="chart-footer-row">
+            <span id="market24h">24H —</span>
+            <span id="marketUpdated">Waiting for feed</span>
+            <span>Binance Spot</span>
+          </div>
         </div>
 
         <div class="trust-strip">
@@ -1362,7 +2050,7 @@
 
     <div id="tab-dakicks" class="tab-content scroll-tab">
       <div class="video-bg-container">
-        <video autoplay loop muted playsinline preload="none"><source src="./dakicks-bg.mp4" type="video/mp4" /></video>
+        <video autoplay loop muted playsinline preload="none"><source src="./community-bg.mp4" type="video/mp4" /></video>
         <div class="video-overlay-gradient"></div>
       </div>
       <div class="section-title">DKX Ecosystem</div>
@@ -1381,6 +2069,19 @@
         <div class="card-desc">Maximum supply: <strong>10,000,000,000 $DKX</strong>. Allocation, vesting and wallet addresses should be finalized and verifiable before launch.</div>
         <div class="proof-line"><span>MAX SUPPLY</span><b>10B DKX</b></div>
       </div>
+
+      <div class="arcade-card">
+        <video autoplay loop muted playsinline preload="metadata">
+          <source src="./gameclickablebannerbg.mp4" type="video/mp4" />
+        </video>
+        <div class="arcade-shade"></div>
+        <div class="arcade-copy">
+          <span class="eyebrow">DKX ARCADE</span>
+          <strong>Play. Earn. Climb.</strong>
+          <span>Interactive quests can be connected here after the live reward system is deployed.</span>
+        </div>
+      </div>
+
       <div class="glass-card feature-card">
         <div class="card-head"><div class="card-title">Launch Checklist</div><div class="card-tag">TRANSPARENCY</div></div>
         <div class="check-list">
@@ -1391,10 +2092,10 @@
     </div>
 
     <!-- COMMUNITY TAB -->
-    <div id="tab-community" class="tab-content">
+    <div id="tab-community" class="tab-content scroll-tab">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
-          <source src="./community-bg.mp4" type="video/mp4" />
+          <source src="./bg.mp4" type="video/mp4" />
         </video>
         <div class="video-overlay-gradient"></div>
       </div>
@@ -1429,10 +2130,10 @@
     </div>
 
     <!-- BLUM-STYLE LUXURY REFERRAL TAB (Frens) -->
-    <div id="tab-frens" class="tab-content">
+    <div id="tab-frens" class="tab-content scroll-tab">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
-          <source src="./community-bg.mp4" type="video/mp4" />
+          <source src="./outlaybg(1).mp4" type="video/mp4" />
         </video>
         <div class="video-overlay-gradient"></div>
       </div>
@@ -1491,10 +2192,10 @@
     </div>
 
     <!-- LEADERBOARD TAB -->
-    <div id="tab-leaderboard" class="tab-content">
+    <div id="tab-leaderboard" class="tab-content scroll-tab">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
-          <source src="./community-bg.mp4" type="video/mp4" />
+          <source src="./gameclickablebannerbg.mp4" type="video/mp4" />
         </video>
         <div class="video-overlay-gradient"></div>
       </div>
@@ -1517,7 +2218,7 @@
 
     <!-- PROOF CENTER / WALLET TAB -->
     <div id="tab-vault" class="tab-content scroll-tab">
-      <div class="video-bg-container"><video autoplay loop muted playsinline preload="none"><source src="./bg.mp4" type="video/mp4" /></video><div class="video-overlay-gradient"></div></div>
+      <div class="video-bg-container"><video autoplay loop muted playsinline preload="none"><source src="./outline video transparent bg(1).mp4" type="video/mp4" /></video><div class="video-overlay-gradient"></div></div>
       <div class="vault-wrapper">
         <div class="vault-glyph"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg></div>
         <div class="vault-title">Proof Center</div>
@@ -1712,32 +2413,207 @@
   </div>
 
   <script>
-    function loadTradingView() {
-      const tvScript = document.createElement('script');
-      tvScript.src = "https://s3.tradingview.com/tv.js";
-      tvScript.onload = () => {
-        try {
-          new TradingView.widget({
-            "autosize": true,
-            "symbol": "BINANCE:BNBUSDT",
-            "interval": "15",
-            "timezone": "Etc/UTC",
-            "theme": "dark",
-            "style": "1",
-            "locale": "en",
-            "enable_publishing": false,
-            "hide_top_toolbar": false,
-            "hide_side_toolbar": false,
-            "allow_symbol_change": true,
-            "save_image": false,
-              "backgroundColor": "#000000",
-            "gridColor": "rgba(255, 255, 255, 0.03)",
-            "container_id": "tv_chart_main"
-          });
-        } catch (e) {}
-      };
-      document.body.appendChild(tvScript);
+  /* DKX LIVE MARKET TERMINAL
+     Public Binance market data only: REST klines + public kline WebSocket.
+     No API key or wallet credentials are used. */
+  (() => {
+    const API_BASES = [
+      "https://data-api.binance.vision",
+      "https://api.binance.com",
+      "https://api-gcp.binance.com"
+    ];
+    const WS_BASES = [
+      "wss://stream.binance.com:9443/ws/",
+      "wss://stream.binance.com/ws/"
+    ];
+    const state = {
+      symbol: "BNBUSDT", interval: "1m", candles: [], ws: null, wsBase: 0,
+      symbols: [], resizeObserver: null, retryTimer: null
+    };
+    const $ = id => document.getElementById(id);
+    const chart = $("dkxLiveChart"), box = chart?.parentElement;
+    const ctx = chart?.getContext("2d");
+
+    function esc(s){ return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+    function formatPrice(v){
+      if (!Number.isFinite(v)) return "—";
+      if (v >= 1000) return v.toLocaleString("en-US",{maximumFractionDigits:2});
+      if (v >= 1) return v.toLocaleString("en-US",{maximumFractionDigits:4});
+      return v.toLocaleString("en-US",{maximumFractionDigits:8});
     }
+    function pairLabel(s){ return s.slice(0,-4) + " / " + s.slice(-4); }
+    function setStatus(text, live=true){
+      if ($("marketStatus")) $("marketStatus").textContent=text;
+      document.querySelector(".live-dot")?.classList.toggle("off",!live);
+    }
+    function setLoading(on, text="Loading live market…"){
+      const el=$("chartLoading"); if(!el) return;
+      el.textContent=text; el.classList.toggle("hidden",!on);
+    }
+    function resizeCanvas(){
+      if(!chart || !box) return;
+      const r=box.getBoundingClientRect(), dpr=Math.min(window.devicePixelRatio||1,2);
+      chart.width=Math.max(1,Math.floor(r.width*dpr));
+      chart.height=Math.max(1,Math.floor(r.height*dpr));
+      chart.style.width=r.width+"px"; chart.style.height=r.height+"px";
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      drawChart();
+    }
+    function drawChart(){
+      if(!ctx || !box) return;
+      const r=box.getBoundingClientRect(), W=r.width,H=r.height;
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle="#080a0b";ctx.fillRect(0,0,W,H);
+      const data=state.candles.slice(-90);
+      if(data.length<2)return;
+      const pad={l:8,r:58,t:12,b:28}, cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+      let lo=Math.min(...data.map(x=>x.l)), hi=Math.max(...data.map(x=>x.h));
+      const span=(hi-lo)||hi*.01||1; lo-=span*.08;hi+=span*.08;
+      const x=i=>pad.l+(i/(data.length-1))*cw;
+      const y=v=>pad.t+(1-(v-lo)/(hi-lo))*ch;
+
+      // Grid + price labels
+      ctx.font="9px system-ui, sans-serif";
+      for(let j=0;j<5;j++){
+        const yy=pad.t+(j/4)*ch;
+        ctx.strokeStyle="rgba(255,255,255,.055)";ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();
+        const val=hi-(j/4)*(hi-lo);
+        ctx.fillStyle="#666b72";ctx.fillText(formatPrice(val),W-pad.r+7,yy+3);
+      }
+      // Candles
+      const step=cw/Math.max(data.length-1,1), body=Math.max(2,Math.min(9,step*.62));
+      data.forEach((c,i)=>{
+        const xx=x(i), yo=y(c.o), yc=y(c.c), yh=y(c.h), yl=y(c.l), up=c.c>=c.o;
+        ctx.strokeStyle=up?"#bfff4b":"#ff5368";ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(xx,yh);ctx.lineTo(xx,yl);ctx.stroke();
+        ctx.fillStyle=up?"#bfff4b":"#ff5368";
+        const top=Math.min(yo,yc), bh=Math.max(1,yc===yo?1:Math.abs(yc-yo));
+        ctx.fillRect(xx-body/2,top,body,bh);
+      });
+      // Last price
+      const last=data[data.length-1].c, yy=y(last);
+      ctx.strokeStyle="rgba(217,255,74,.45)";ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle="#d9ff4a";ctx.fillRect(W-pad.r,yy-10,pad.r,20);
+      ctx.fillStyle="#0a0c07";ctx.font="800 9px system-ui,sans-serif";ctx.fillText(formatPrice(last),W-pad.r+5,yy+3);
+      // Time labels
+      ctx.fillStyle="#555a61";ctx.font="8px system-ui,sans-serif";
+      [0,.33,.66,1].forEach(t=>{
+        const i=Math.min(data.length-1,Math.round(t*(data.length-1)));
+        const d=new Date(data[i].t);
+        ctx.fillText(d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}),Math.max(3,x(i)-20),H-8);
+      });
+    }
+
+    async function fetchJSON(path){
+      for(const base of API_BASES){
+        try{
+          const res=await fetch(base+path,{cache:"no-store"});
+          if(res.ok)return await res.json();
+        }catch(e){}
+      }
+      throw new Error("Market API unavailable");
+    }
+    async function loadSymbols(){
+      if(state.symbols.length)return;
+      try{
+        const info=await fetchJSON("/api/v3/exchangeInfo");
+        state.symbols=(info.symbols||[])
+          .filter(x=>x.status==="TRADING" && x.quoteAsset==="USDT")
+          .map(x=>x.symbol)
+          .sort();
+      }catch(e){
+        state.symbols=["BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT","DOGEUSDT","ADAUSDT","TRXUSDT","AVAXUSDT","LINKUSDT","SUIUSDT","PEPEUSDT"];
+      }
+    }
+    async function loadCandles(){
+      setLoading(true,"Loading market data…");setStatus("LOADING",false);
+      const rows=await fetchJSON(`/api/v3/klines?symbol=${encodeURIComponent(state.symbol)}&interval=${state.interval}&limit=120`);
+      state.candles=rows.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[5]}));
+      updateHeader();
+      resizeCanvas();
+      setLoading(false);setStatus("LIVE",true);
+      connectWS();
+    }
+    function connectWS(){
+      if(state.ws){try{state.ws.close()}catch(e){}}
+      const stream=`${state.symbol.toLowerCase()}@kline_${state.interval}`;
+      let opened=false;
+      const tryNext=()=>{
+        if(opened)return;
+        state.wsBase=(state.wsBase+1)%WS_BASES.length;
+        openWS(WS_BASES[state.wsBase],stream);
+      };
+      openWS(WS_BASES[state.wsBase],stream,tryNext);
+    }
+    function openWS(base,stream,fallback){
+      try{
+        const ws=new WebSocket(base+stream);state.ws=ws;
+        ws.onopen=()=>{setStatus("LIVE",true);};
+        ws.onmessage=e=>{
+          try{
+            const d=JSON.parse(e.data), k=d.k;
+            if(!k)return;
+            const c={t:+k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c,v:+k.v};
+            const last=state.candles[state.candles.length-1];
+            if(last && last.t===c.t) state.candles[state.candles.length-1]=c;
+            else state.candles.push(c);
+            if(state.candles.length>150)state.candles.shift();
+            updateHeader();drawChart();
+          }catch(_){}
+        };
+        ws.onerror=()=>{setStatus("RECONNECTING",false);try{ws.close()}catch(e){}};
+        ws.onclose=()=>{clearTimeout(state.retryTimer);state.retryTimer=setTimeout(()=>loadCandles().catch(()=>{setStatus("OFFLINE",false);setLoading(false,"Live feed unavailable");}),3500);};
+      }catch(e){fallback?.();}
+    }
+    function updateHeader(){
+      const last=state.candles[state.candles.length-1], first=state.candles[0];
+      if(!last)return;
+      $("marketPairTitle").textContent=pairLabel(state.symbol);
+      $("marketPrice").textContent=formatPrice(last.c);
+      if(first){
+        const pct=((last.c-first.o)/first.o)*100;
+        $("market24h").textContent="Window "+(pct>=0?"+":"")+pct.toFixed(2)+"%";
+        $("market24h").style.color=pct>=0?"#bfff4b":"#ff7182";
+      }
+      $("marketUpdated").textContent="Updated "+new Date(last.t).toLocaleTimeString();
+    }
+    async function switchMarket(symbol,interval=state.interval){
+      symbol=(symbol||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+      if(!state.symbols.includes(symbol)){
+        showHUD?.("Pair not available on Binance Spot");
+        return;
+      }
+      state.symbol=symbol;state.interval=interval;
+      await loadCandles();
+    }
+    function showSuggestions(){
+      const q=($("marketSymbolInput")?.value||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+      const box=$("marketSuggestions"); if(!box)return;
+      const list=state.symbols.filter(s=>s.includes(q)).slice(0,12);
+      if(!q || !list.length){box.style.display="none";return;}
+      box.innerHTML=list.map(s=>`<div class="market-suggestion" data-symbol="${esc(s)}"><span>${esc(pairLabel(s))}</span><small>BINANCE</small></div>`).join("");
+      box.style.display="block";
+      box.querySelectorAll("[data-symbol]").forEach(el=>el.onclick=async()=>{ $("marketSymbolInput").value=el.dataset.symbol;box.style.display="none";try{await switchMarket(el.dataset.symbol)}catch(_){setStatus("OFFLINE",false)}});
+    }
+
+    document.addEventListener("DOMContentLoaded",async()=>{
+      if(!chart)return;
+      window.addEventListener("resize",resizeCanvas,{passive:true});
+      if(window.ResizeObserver){state.resizeObserver=new ResizeObserver(resizeCanvas);state.resizeObserver.observe(box)}
+      $("marketSearchBtn")?.addEventListener("click",()=>switchMarket($("marketSymbolInput").value));
+      $("marketSymbolInput")?.addEventListener("input",showSuggestions);
+      $("marketSymbolInput")?.addEventListener("keydown",e=>{if(e.key==="Enter")switchMarket(e.target.value)});
+      document.addEventListener("click",e=>{if(!e.target.closest(".market-symbol-wrap")&&$("marketSuggestions"))$("marketSuggestions").style.display="none"});
+      document.querySelectorAll(".tf-btn").forEach(btn=>btn.addEventListener("click",async()=>{
+        document.querySelectorAll(".tf-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");
+        state.interval=btn.dataset.interval;
+        try{await loadCandles()}catch(_){setStatus("OFFLINE",false);setLoading(false,"Live feed unavailable")}
+      }));
+      await loadSymbols();
+      try{await loadCandles()}catch(e){setStatus("OFFLINE",false);setLoading(false,"Live market feed unavailable");}
+    });
+  })();
   </script>
 
   <script>
@@ -1846,7 +2722,6 @@
     })();
 
     window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(loadTradingView, 200);
       initReferralSystem();
     });
 
@@ -1854,9 +2729,11 @@
       triggerHaptic('light');
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
-      document.getElementById(`tab-${name}`).classList.add('active');
-      elem.classList.add('active');
+      const target = document.getElementById(`tab-${name}`);
+      if (!target) return;
+      target.classList.add('active');
+      if (elem) elem.classList.add('active');
+      requestAnimationFrame(() => { target.scrollTop = 0; });
     }
 
     function initReferralSystem() {
@@ -2180,6 +3057,9 @@
 
     // No local token balances are fabricated. Live balances should be read from the connected wallet/contract.
   </script>
+
+
+
 </body>
 </html>
 
