@@ -898,4 +898,664 @@
     .hud-toast-indicator {
       width: 6px;
       height: 6px;
-      
+              }
+
+    .hud-toast-indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-ton);
+    }
+
+    .gate-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.96);
+      backdrop-filter: blur(28px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .gate-card {
+      width: 100%;
+      max-width: 380px;
+      background: #111115;
+      border: 1px solid rgba(0, 152, 234, 0.3);
+      border-radius: 24px;
+      padding: 28px 22px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    }
+
+    .gate-icon-box {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: #0098EA;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+      box-shadow: 0 0 20px rgba(0, 152, 234, 0.5);
+    }
+
+    .gate-icon-box svg {
+      width: 32px;
+      height: 32px;
+      fill: #ffffff;
+    }
+
+    .gate-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+
+    .gate-subtitle {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .gate-input-wrap {
+      text-align: left;
+      margin-bottom: 14px;
+    }
+
+    .gate-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .gate-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      padding: 13px 15px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .gate-input:focus {
+      border-color: var(--accent-ton);
+      background: rgba(0, 152, 234, 0.08);
+    }
+
+    .btn-gate-submit {
+      width: 100%;
+      background: var(--accent-ton);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 16px rgba(0, 152, 234, 0.4);
+    }
+
+    .profile-drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(16px);
+      z-index: 99990;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .profile-drawer-backdrop.show {
+      display: block;
+      opacity: 1;
+    }
+
+    .profile-drawer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: -100%;
+      background: #111115;
+      border-top: 1px solid rgba(0, 152, 234, 0.3);
+      border-radius: 28px 28px 0 0;
+      padding: 24px 20px 42px 20px;
+      z-index: 99995;
+      transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .profile-drawer.show {
+      bottom: 0;
+    }
+
+    .drawer-handle-bar {
+      width: 38px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      margin-bottom: 20px;
+    }
+
+    .drawer-avatar-wrapper {
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .drawer-avatar {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: #0098EA;
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(0, 152, 234, 0.5);
+      box-shadow: 0 0 25px rgba(0, 152, 234, 0.4);
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    .btn-avatar-edit {
+      position: absolute;
+      bottom: 0;
+      right: -2px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #111115;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .btn-avatar-edit svg {
+      width: 14px;
+      height: 14px;
+      fill: #111115;
+    }
+
+    .drawer-name {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      color: #ffffff;
+    }
+
+    .drawer-dob-tag {
+      font-size: 11px;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      margin-bottom: 18px;
+    }
+
+    .drawer-info-text {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 20px;
+      max-width: 310px;
+    }
+
+    .drawer-email-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drawer-email-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .drawer-email-input:focus {
+      border-color: var(--accent-ton);
+    }
+
+    .btn-link-action {
+      width: 100%;
+      background: var(--accent-ton);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .otp-verification-container {
+      width: 100%;
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .otp-code-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 8px;
+      text-align: center;
+      font-family: -apple-system, monospace;
+    }
+
+    .otp-code-input:focus {
+      border-color: var(--accent-ton);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-verify-otp {
+      width: 100%;
+      background: var(--accent-ton);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .otp-sub-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 6px;
+    }
+
+    .resend-timer-text {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .btn-text-action {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .btn-text-action:disabled {
+      color: #4b5550;
+      text-decoration: none;
+      cursor: not-allowed;
+    }
+
+    .oauth-linked-card {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-align: left;
+    }
+
+    .btn-change-email {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+      width: 100%;
+    }
+
+    .drawer-close-btn {
+      position: absolute;
+      top: 18px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      color: #ffffff;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div class="top-left-profile" id="topLeftProfileBtn">
+      <div class="user-avatar-badge" id="topAvatarBadge">DK</div>
+      <div class="user-handle-txt" id="topHandleText">Satoshi</div>
+    </div>
+    <div class="network-pill">
+      <div class="pulse-dot"></div>
+      <span>TON Mainnet #84,201,90</span>
+    </div>
+  </div>
+
+  <div class="main-viewport">
+    
+    <!-- SCROLLABLE TERMINAL TAB -->
+    <div id="tab-terminal" class="tab-content active">
+      <div class="terminal-scroll-wrap">
+        <div class="section-title">Live TON Market Terminal</div>
+        <div class="chart-box">
+          <div class="chart-header-row">
+            <div>
+              <div style="font-size: 10px; color: var(--text-secondary); text-transform: uppercase;">$DKX / TON</div>
+              <div class="chart-price-tag">0.00485 TON</div>
+            </div>
+            <div class="chart-change-tag">+14.8%</div>
+          </div>
+          <!-- Native Custom SVG Line Chart (100% Reliable & Fast) -->
+          <svg style="width:100%; flex:1; overflow:visible;" viewBox="0 0 300 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0098EA" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#0098EA" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,80 Q50,60 100,65 T200,30 T300,15 L300,100 L0,100 Z" fill="url(#chartGrad)" />
+            <path d="M0,80 Q50,60 100,65 T200,30 T300,15" fill="none" stroke="#0098EA" stroke-width="2.5" stroke-linecap="round" />
+          </svg>
+        </div>
+
+        <div class="terminal-stats-grid">
+          <div class="t-stat-card">
+            <div class="t-stat-label">24H Volume</div>
+            <div class="t-stat-val">$2.48M TON</div>
+          </div>
+          <div class="t-stat-card">
+            <div class="t-stat-label">Holders</div>
+            <div class="t-stat-val">34,120+</div>
+          </div>
+        </div>
+
+        <div class="glass-card" style="margin-bottom: 20px;">
+          <div class="card-head">
+            <div class="card-title">TON Ecosystem Power</div>
+            <div class="card-tag">THE NEXT CHAPTER</div>
+          </div>
+          <div class="card-desc">
+            DAKICKS ($DKX) is built natively on TON Blockchain, empowering lightning-fast Telegram Mini App transactions and decentralized RWA apparel utility.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAKICKS EARN TAB -->
+    <div id="tab-dakicks" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="auto">
+          <source src="./dailyvideobg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="section-title">Institutional RWA Architecture</div>
+
+      <div class="glass-card">
+        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
+          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
+        </video>
+        <div class="card-head">
+          <div class="card-title">DAKICKS® Physical Drops</div>
+          <div class="card-tag">RWA APPAREL</div>
+        </div>
+        <div class="card-desc">
+          Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on TON Blockchain.
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
+          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
+        </video>
+        <div class="card-head">
+          <div class="card-title">Revenue-Share Protocol</div>
+          <div class="card-tag">TREASURY</div>
+        </div>
+        <div class="card-desc">
+          50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
+          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
+        </video>
+        <div class="card-head">
+          <div class="card-title">DKX Supply Standard</div>
+          <div class="card-tag">DEFLATIONARY</div>
+        </div>
+        <div class="card-desc">
+          Fixed hard-cap supply of 10,000,000,000 $DKX with 30% Ecosystem & Team Vesting Reserve. Non-inflationary allocation verified by smart contract integrity checks.
+        </div>
+      </div>
+    </div>
+
+    <!-- TASKS & EARN TAB -->
+    <div id="tab-tasks" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="auto">
+          <source src="./dailyvideobg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="section-title">Community & Ecosystem Missions</div>
+      <div class="tasks-wrapper" id="tasksListContainer">
+        
+        <div class="task-card">
+          <div class="task-left">
+            <div class="task-icon">📢</div>
+            <div>
+              <div class="task-title">Join Official Telegram Channel</div>
+              <div class="task-reward">+50 $DKX</div>
+            </div>
+          </div>
+          <button class="btn-task-action" onclick="completeTask(this, 50, 'tg_channel')">Start</button>
+        </div>
+
+        <div class="task-card">
+          <div class="task-left">
+            <div class="task-icon">📸</div>
+            <div>
+              <div class="task-title">Follow Instagram Hub</div>
+              <div class="task-reward">+40 $DKX</div>
+            </div>
+          </div>
+          <button class="btn-task-action" onclick="completeTask(this, 40, 'ig_follow')">Start</button>
+        </div>
+
+        <div class="task-card">
+          <div class="task-left">
+            <div class="task-icon">⚡</div>
+            <div>
+              <div class="task-title">Retweet Launch Announcement</div>
+              <div class="task-reward">+60 $DKX</div>
+            </div>
+          </div>
+          <button class="btn-task-action" onclick="completeTask(this, 60, 'twitter_rt')">Start</button>
+        </div>
+
+        <div class="task-card">
+          <div class="task-left">
+            <div class="task-icon">👟</div>
+            <div>
+              <div class="task-title">Explore RWA Preview Drop</div>
+              <div class="task-reward">+30 $DKX</div>
+            </div>
+          </div>
+          <button class="btn-task-action" onclick="completeTask(this, 30, 'rwa_preview')">Start</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FRENS TAB (REFERRAL) -->
+    <div id="tab-frens" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="auto">
+          <source src="./dailyvideobg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="referral-container">
+        
+        <div class="ref-balance-card">
+          <div class="ref-bal-title">Your Balance</div>
+          <div class="ref-bal-amount" id="refBalDkx">1,250 $DKX</div>
+          <div class="ref-bal-usd" id="refBalUsd">~$125.00 USD</div>
+          <button class="btn-goto-wallet" id="goToWalletBtn">
+            Go to Wallet ↗
+          </button>
+        </div>
+
+        <div class="ref-banner-card">
+          <div class="ref-banner-top">
+            <div style="font-size: 15px; font-weight: 800; color: #ffffff;">Turn your frens into traders to earn $DKX!</div>
+            <div class="ref-tier-badges">
+              <div class="tier-badge-icon">👟</div>
+              <div class="tier-badge-icon">💎</div>
+            </div>
+          </div>
+
+          <div class="ref-comm-grid">
+            <div class="ref-comm-box">
+              <div class="ref-comm-pct">20%</div>
+              <div class="ref-comm-desc">of frens' trade commission</div>
+            </div>
+            <div class="ref-comm-box">
+              <div class="ref-comm-pct">2.5%</div>
+              <div class="ref-comm-desc">of their refs' trade commissions</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frens-row" onclick="openFrensList()">
+          <div class="frens-left">
+            <div class="frens-icon-wrap">👥</div>
+            <div>
+              <div class="frens-title">Frens invited</div>
+              <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">Active referral squad</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="frens-count" id="frensCountNum">0</span>
+            <span style="color: var(--text-secondary); font-size: 14px;">›</span>
+          </div>
+        </div>
+
+        <button class="btn-invite-frens-main" id="btnInviteFrens">
+          <span>👥 Invite frens</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- VAULT & TON WALLET TAB -->
+    <div id="tab-vault" class="tab-content">
+      <div class="video-bg-container">
+        <video autoplay loop muted playsinline preload="auto">
+          <source src="./dailyvideobg.mp4" type="video/mp4" />
+        </video>
+        <div class="video-overlay-gradient"></div>
+      </div>
+
+      <div class="vault-wrapper">
+        <div class="vault-glyph">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        </div>
+        <div class="vault-title">TON Mainnet Smart Contract Socket</div>
+
+        <div class="ca-strip">
+          <span class="ca-text">TON JETTON: DEPLOYING AT LAUNCH</span>
+          <button class="btn-copy-ca" id="copyCaBtn">COPY CA</button>
+        </div>
+
+        <div class="vault-desc">
+          Official $DKX Jetton smart contract will be verified and mapped here directly upon DEX liquidity provisioning on TON Blockchain.
+        </div>
+
+        <button class="btn-wallet-connect" id="connectWalletBtn">CONNECT TON WALLET</button>
+
+        <div class="allocation-box">
+          <div class="alloc-head">
+            <div class="alloc-title">Genesis Liquidity Allocation</div>
+            <div class="alloc-status">ONLINE</div>
+          </div>
+          <div class="alloc-value" id="vaultDkxBal">1,250 <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span></div>
+          <button class="btn-claim-ad" id="claimRewardBtn">
+            Claim Allocation (+2 $DKX)
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="navigateTab('terminal', this)">
+      <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+      <div class="nav-label">Terminal</div>
+    </div>
+    <div class="nav-item" onclick="navigateTab('dakicks', this)">
+      <svg viewBox="0 0 24 24"><path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4.86 8.86l-3 3.87L9 13.14 6 17h12l-3.86-5.14z"/></svg>
+      <div class="nav-label">Dakicks</div>
+    </div>
+    <div class="nav-item" onclick="navigateTab('tasks', this)">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+      <div class="nav-label">Tasks</div>
+    </div>
+    <div class="nav-item" onclick="navigateTab('frens', this)">
+      <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 
