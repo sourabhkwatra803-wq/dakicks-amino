@@ -12,6 +12,8 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
   <!-- Supabase JS Client SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- TON Connect UI SDK -->
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 
   <style>
     :root {
@@ -190,19 +192,6 @@
       overflow: hidden;
     }
 
-    .card-3d-sticker {
-      position: absolute;
-      right: -6px;
-      bottom: -8px;
-      width: 95px;
-      height: 95px;
-      pointer-events: none;
-      z-index: 6;
-      mix-blend-mode: screen;
-      opacity: 0.85;
-      transform: rotate(-4deg);
-    }
-
     .card-head {
       display: flex;
       justify-content: space-between;
@@ -234,7 +223,6 @@
       color: var(--text-secondary);
       position: relative;
       z-index: 7;
-      max-width: 78%;
     }
 
     .comm-row {
@@ -303,7 +291,7 @@
       z-index: 7;
     }
 
-    /* BLUM-STYLE LUXURY REFERRAL UI */
+    /* REFERRAL UI */
     .referral-container {
       position: relative;
       z-index: 5;
@@ -369,24 +357,6 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-    }
-
-    .ref-tier-badges {
-      display: flex;
-      align-items: center;
-      gap: -8px;
-    }
-
-    .tier-badge-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: #1c1c1e;
-      border: 2px solid #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
     }
 
     .ref-comm-grid {
@@ -550,7 +520,7 @@
       color: #ffffff;
     }
 
-    /* VAULT & WALLET MODAL */
+    /* VAULT & WALLET */
     .vault-wrapper {
       position: relative;
       z-index: 5;
@@ -625,20 +595,6 @@
       margin-bottom: 20px;
     }
 
-    .btn-wallet-connect {
-      width: 100%;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 12.5px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      margin-bottom: 18px;
-    }
-
     .allocation-box {
       width: 100%;
       background: var(--glass-surface);
@@ -697,116 +653,9 @@
       cursor: pointer;
       text-transform: uppercase;
     }
-
-    /* WALLET SELECTION MODAL */
-    .wallet-modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(16px);
-      z-index: 99990;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .wallet-modal-backdrop.show {
-      display: block;
-      opacity: 1;
-    }
-
-    .wallet-modal {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: -100%;
-      background: #111113;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 28px 28px 0 0;
-      padding: 24px 20px 42px 20px;
-      z-index: 99995;
-      transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .wallet-modal.show {
-      bottom: 0;
-    }
-
-    .wallet-modal-handle {
-      width: 38px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
-      margin: 0 auto 18px auto;
-    }
-
-    .wallet-modal-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #ffffff;
-      margin-bottom: 6px;
-      text-align: center;
-    }
-
-    .wallet-modal-subtitle {
-      font-size: 12px;
-      color: var(--text-secondary);
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .wallet-options-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .wallet-option-item {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border);
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .wallet-option-item:hover {
-      background: rgba(255, 255, 255, 0.09);
-    }
-
-    .wallet-opt-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .wallet-opt-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: #ffffff;
-      color: #000000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 14px;
-    }
-
-    .wallet-opt-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: #ffffff;
-    }
-
-    .wallet-opt-desc {
-      font-size: 11px;
-      color: var(--text-secondary);
+    .btn-claim-ad:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .bottom-nav {
@@ -892,103 +741,6 @@
       background: #ffffff;
     }
 
-    .gate-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.96);
-      backdrop-filter: blur(28px);
-      z-index: 99999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .gate-card {
-      width: 100%;
-      max-width: 380px;
-      background: #111113;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 24px;
-      padding: 28px 22px;
-      text-align: center;
-    }
-
-    .gate-icon-box {
-      width: 64px;
-      height: 64px;
-      border-radius: 20px;
-      background: #ffffff;
-      color: #000000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .gate-icon-box svg {
-      width: 32px;
-      height: 32px;
-      fill: #000000;
-    }
-
-    .gate-title {
-      font-size: 20px;
-      font-weight: 800;
-      margin-bottom: 6px;
-      color: #ffffff;
-    }
-
-    .gate-subtitle {
-      font-size: 12.5px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
-
-    .gate-input-wrap {
-      text-align: left;
-      margin-bottom: 14px;
-    }
-
-    .gate-label {
-      font-size: 10.5px;
-      font-weight: 700;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    .gate-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border);
-      color: #ffffff;
-      padding: 13px 15px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .gate-input:focus {
-      border-color: #ffffff;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .btn-gate-submit {
-      width: 100%;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
     /* Apple-Style Profile Drawer */
     .profile-drawer-backdrop {
       position: fixed;
@@ -1057,27 +809,6 @@
       overflow: hidden;
     }
 
-    .btn-avatar-edit {
-      position: absolute;
-      bottom: 0;
-      right: -2px;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: #ffffff;
-      border: 2px solid #111113;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .btn-avatar-edit svg {
-      width: 14px;
-      height: 14px;
-      fill: #111113;
-    }
-
     .drawer-name {
       font-size: 20px;
       font-weight: 800;
@@ -1103,108 +834,6 @@
       max-width: 310px;
     }
 
-    .drawer-email-form {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .drawer-email-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--glass-border);
-      color: #ffffff;
-      padding: 14px 16px;
-      border-radius: 12px;
-      font-size: 13.5px;
-      font-weight: 600;
-    }
-
-    .drawer-email-input:focus {
-      border-color: #ffffff;
-    }
-
-    .btn-link-action {
-      width: 100%;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .otp-verification-container {
-      width: 100%;
-      display: none;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .otp-code-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: 8px;
-      text-align: center;
-      font-family: -apple-system, monospace;
-    }
-
-    .otp-code-input:focus {
-      border-color: #ffffff;
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .btn-verify-otp {
-      width: 100%;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .otp-sub-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px 6px;
-    }
-
-    .resend-timer-text {
-      font-size: 11.5px;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-
-    .btn-text-action {
-      background: transparent;
-      border: none;
-      color: #ffffff;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: underline;
-      padding: 0;
-    }
-
-    .btn-text-action:disabled {
-      color: #4b5550;
-      text-decoration: none;
-      cursor: not-allowed;
-    }
-
     .oauth-linked-card {
       width: 100%;
       background: rgba(255, 255, 255, 0.04);
@@ -1215,19 +844,6 @@
       align-items: center;
       justify-content: space-between;
       text-align: left;
-    }
-
-    .btn-change-email {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--glass-border);
-      color: #ffffff;
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-size: 11.5px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 12px;
-      width: 100%;
     }
 
     .drawer-close-btn {
@@ -1253,7 +869,7 @@
   <div class="top-bar">
     <div class="top-left-profile" id="topLeftProfileBtn">
       <div class="user-avatar-badge" id="topAvatarBadge">DK</div>
-      <div class="user-handle-txt" id="topHandleText">Anubhav</div>
+      <div class="user-handle-txt" id="topHandleText">Loading...</div>
     </div>
     <div class="network-pill">
       <div class="pulse-dot"></div>
@@ -1263,12 +879,14 @@
 
   <div class="main-viewport">
     
+    <!-- TERMINAL TAB -->
     <div id="tab-terminal" class="tab-content active">
       <div class="chart-box">
         <div id="tv_chart_main" style="height:100%;width:100%"></div>
       </div>
     </div>
 
+    <!-- EARN TAB -->
     <div id="tab-dakicks" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
@@ -1280,41 +898,22 @@
       <div class="section-title">Institutional RWA Architecture</div>
 
       <div class="glass-card">
-        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
-          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
-        </video>
         <div class="card-head">
           <div class="card-title">DAKICKS® Physical Drops</div>
           <div class="card-tag">RWA APPAREL</div>
         </div>
         <div class="card-desc">
-          Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on TON Blockchain.[span_1](start_span)[span_1](end_span)
+          Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on TON Blockchain.
         </div>
       </div>
 
       <div class="glass-card">
-        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
-          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
-        </video>
         <div class="card-head">
           <div class="card-title">Revenue-Share Protocol</div>
           <div class="card-tag">TREASURY</div>
         </div>
         <div class="card-desc">
-          50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.[span_2](start_span)[span_2](end_span)
-        </div>
-      </div>
-
-      <div class="glass-card">
-        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
-          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
-        </video>
-        <div class="card-head">
-          <div class="card-title">DKX Supply Standard</div>
-          <div class="card-tag">DEFLATIONARY</div>
-        </div>
-        <div class="card-desc">
-          Fixed hard-cap supply of 10,000,000,000 $DKX with 30% Ecosystem & Team Vesting Reserve. Non-inflationary allocation verified by smart contract integrity checks.[span_3](start_span)[span_3](end_span)
+          50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.
         </div>
       </div>
     </div>
@@ -1342,22 +941,9 @@
         </div>
         <a href="https://t.me/DKXOfficial" target="_blank" class="btn-node">Open Node ↗</a>
       </div>
-
-      <div class="comm-row">
-        <div class="comm-left">
-          <div class="comm-logo-box">
-            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </div>
-          <div>
-            <div class="comm-name">Instagram Hub</div>
-            <div class="comm-sub">@dakicks_dkx</div>
-          </div>
-        </div>
-        <a href="https://instagram.com/dakicks_dkx" target="_blank" class="btn-node">Open Node ↗</a>
-      </div>
     </div>
 
-    <!-- BLUM-STYLE LUXURY REFERRAL TAB (Frens) - USD REMOVED -->
+    <!-- FRENS TAB (SECURE REFERRAL) -->
     <div id="tab-frens" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
@@ -1367,21 +953,17 @@
       </div>
 
       <div class="referral-container">
-        
         <div class="ref-balance-card">
           <div class="ref-bal-title">Your Balance</div>
           <div class="ref-bal-amount" id="refBalDkx">1,250 $DKX</div>
-          <button class="btn-goto-wallet" id="goToWalletBtn">
-            Go to Wallet ↗
-          </button>
         </div>
 
         <div class="ref-banner-card">
           <div class="ref-banner-top">
-            <div style="font-size: 15px; font-weight: 800; color: #ffffff;">Turn your frens into traders to earn $DKX!</div>[span_4](start_span)[span_4](end_span)
-            <div class="ref-tier-badges">
-              <div class="tier-badge-icon">👟</div>
-              <div class="tier-badge-icon">💎</div>
+            <div style="font-size: 15px; font-weight: 800; color: #ffffff;">Turn your frens into traders to earn $DKX!</div>
+            <div style="display:flex; gap:6px;">
+              <span style="font-size:16px;">👟</span>
+              <span style="font-size:16px;">💎</span>
             </div>
           </div>
 
@@ -1397,24 +979,22 @@
           </div>
         </div>
 
-        <div class="frens-row" onclick="openFrensList()">
+        <div class="frens-row">
           <div class="frens-left">
             <div class="frens-icon-wrap">👥</div>
             <div>
               <div class="frens-title">Frens invited</div>
-              <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">Active referral squad</div>
+              <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 2px;">Secured referral squad</div>
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 8px;">
             <span class="frens-count" id="frensCountNum">0</span>
-            <span style="color: var(--text-secondary); font-size: 14px;">›</span>
           </div>
         </div>
 
         <button class="btn-invite-frens-main" id="btnInviteFrens">
           <span>👥 Invite frens</span>
         </button>
-
       </div>
     </div>
 
@@ -1429,8 +1009,8 @@
 
       <div class="leaderboard-wrapper">
         <div class="lb-header-card">
-          <div class="lb-title">Global Leaderboard</div>[span_5](start_span)[span_5](end_span)
-          <div class="lb-subtitle">Top traders & squad leaders ranked by Season 1 volume</div>[span_6](start_span)[span_6](end_span)
+          <div class="lb-title">Global Leaderboard</div>
+          <div class="lb-subtitle">Top traders & squad leaders ranked by Season 1 volume</div>
         </div>
 
         <div class="lb-list">
@@ -1444,33 +1024,11 @@
             </div>
             <div class="lb-score">48,250 $DKX</div>
           </div>
-
-          <div class="lb-row">
-            <div class="lb-user-info">
-              <div class="lb-rank top-2">2</div>
-              <div>
-                <div class="lb-name">Anubhav_DKX</div>
-                <div style="font-size: 11px; color: var(--text-secondary);">Founder • Genesis</div>
-              </div>
-            </div>
-            <div class="lb-score">39,100 $DKX</div>
-          </div>
-
-          <div class="lb-row">
-            <div class="lb-user-info">
-              <div class="lb-rank top-3">3</div>
-              <div>
-                <div class="lb-name">CryptoAlpha_JP</div>
-                <div style="font-size: 11px; color: var(--text-secondary);">Squad Lead • Tier 2</div>
-              </div>
-            </div>
-            <div class="lb-score">31,450 $DKX</div>
-          </div>
         </div>
       </div>
     </div>
 
-    <!-- VAULT TAB -->
+    <!-- WALLET / VAULT TAB -->
     <div id="tab-vault" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
@@ -1483,23 +1041,24 @@
         <div class="vault-glyph">
           <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
         </div>
-        <div class="vault-title">TON Mainnet Smart Contract Socket</div>[span_7](start_span)[span_7](end_span)
+        <div class="vault-title">TON Mainnet Smart Contract Socket</div>
 
         <div class="ca-strip">
-          <span class="ca-text">TON JETTON: DEPLOYING AT LAUNCH</span>[span_8](start_span)[span_8](end_span)
+          <span class="ca-text">TON JETTON: DEPLOYING AT LAUNCH</span>
           <button class="btn-copy-ca" id="copyCaBtn">COPY CA</button>
         </div>
 
         <div class="vault-desc">
-          Official $DKX Jetton smart contract will be verified and mapped here directly upon DEX liquidity provisioning on TON Blockchain.[span_9](start_span)[span_9](end_span)
+          Official $DKX Jetton smart contract will be verified and mapped here directly upon DEX liquidity provisioning on TON Blockchain.
         </div>
 
-        <button class="btn-wallet-connect" id="connectWalletBtn">CONNECT TON WALLET</button>
+        <!-- Real TON Connect Button container -->
+        <div id="ton-connect-button" style="width: 100%; margin-bottom: 18px; display: flex; justify-content: center;"></div>
 
         <div class="allocation-box">
           <div class="alloc-head">
-            <div class="alloc-title">Genesis Liquidity Allocation</div>[span_10](start_span)[span_10](end_span)
-            <div class="alloc-status">ONLINE</div>
+            <div class="alloc-title">Genesis Liquidity Allocation</div>
+            <div class="alloc-status" id="allocStatusTag">ONLINE</div>
           </div>
           <div class="alloc-value" id="vaultDkxBal">1,250 <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span></div>
           <button class="btn-claim-ad" id="claimRewardBtn">
@@ -1530,7 +1089,7 @@
       <div class="nav-label">Leaderboard</div>
     </div>
     <div class="nav-item" onclick="navigateTab('vault', this)">
-      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 11-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"></path></svg>
+      <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
       <div class="nav-label">Wallet</div>
     </div>
   </div>
@@ -1540,71 +1099,7 @@
     <span id="hudMsg">Notice</span>
   </div>
 
-  <!-- WALLET SELECTION MODAL -->
-  <div class="wallet-modal-backdrop" id="walletModalBackdrop"></div>
-  <div class="wallet-modal" id="walletModal">
-    <div class="wallet-modal-handle"></div>
-    <div class="wallet-modal-title">Connect TON Wallet</div>
-    <div class="wallet-modal-subtitle">Select your preferred TON ecosystem provider for liquidity & Jetton allocation.</div>
-
-    <div class="wallet-options-list">
-      <div class="wallet-option-item" onclick="connectSpecificWallet('Tonkeeper')">
-        <div class="wallet-opt-left">
-          <div class="wallet-opt-icon" style="background: #0098EA; color: #fff;">💎</div>
-          <div>
-            <div class="wallet-opt-name">Tonkeeper</div>
-            <div class="wallet-opt-desc">The most popular wallet for TON</div>
-          </div>
-        </div>
-        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
-      </div>
-
-      <div class="wallet-option-item" onclick="connectSpecificWallet('Telegram Wallet')">
-        <div class="wallet-opt-left">
-          <div class="wallet-opt-icon" style="background: #2481cc; color: #fff;">✈️</div>
-          <div>
-            <div class="wallet-opt-name">Telegram Wallet (TON Space)</div>
-            <div class="wallet-opt-desc">Built-in custodian wallet in Telegram</div>
-          </div>
-        </div>
-        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
-      </div>
-
-      <div class="wallet-option-item" onclick="connectSpecificWallet('OpenMask')">
-        <div class="wallet-opt-left">
-          <div class="wallet-opt-icon" style="background: #14355c; color: #fff;">🛡️</div>
-          <div>
-            <div class="wallet-opt-name">OpenMask</div>
-            <div class="wallet-opt-desc">Secure browser extension for TON</div>
-          </div>
-        </div>
-        <span style="color: var(--text-secondary); font-size: 14px;">›</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="gate-overlay" id="firstTimeGate" style="display: none;">
-    <div class="gate-card">
-      <div class="gate-icon-box">
-        <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 12c-4.42 0-8 2.24-8 5v3h16v-3c0-2.76-3.58-5-8-5z"/></svg>
-      </div>
-      <h2 class="gate-title">Genesis Identification</h2>
-      <p class="gate-subtitle">Create your identity to unlock DAKICKS Terminal and decentralized liquidity vaults.</p>
-
-      <div class="gate-input-wrap">
-        <label class="gate-label">Choose Handle / Username</label>
-        <input type="text" id="inputUsername" class="gate-input" placeholder="e.g. Satoshi_DKX" maxlength="20" />
-      </div>
-
-      <div class="gate-input-wrap">
-        <label class="gate-label">Date of Birth</label>
-        <input type="date" id="inputDob" class="gate-input" />
-      </div>
-
-      <button class="btn-gate-submit" id="submitGateBtn">INITIALIZE TERMINAL</button>
-    </div>
-  </div>
-
+  <!-- PROFILE DRAWER -->
   <div class="profile-drawer-backdrop" id="profileBackdrop"></div>
   <div class="profile-drawer" id="profileDrawer">
     <div class="drawer-handle-bar"></div>
@@ -1612,49 +1107,24 @@
 
     <div class="drawer-avatar-wrapper">
       <div class="drawer-avatar" id="drawerAvatarBadge">DK</div>
-      <div class="btn-avatar-edit" id="btnPencilTrigger" title="Change Profile Photo">
-        <svg viewBox="0 0 24 24">
-          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-        </svg>
-      </div>
-      <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" />
     </div>
 
-    <div class="drawer-name" id="drawerUsername">Anubhav</div>
-    <div class="drawer-dob-tag" id="drawerDobTag">DOB: Verified</div>
+    <div class="drawer-name" id="drawerUsername">User</div>
+    <div class="drawer-dob-tag" id="drawerDobTag">Telegram Verified ID</div>
 
-    <p class="drawer-info-text" id="drawerInstructionText">
-      Link your personal email address. A 6-digit code valid for 10 minutes will be sent to authenticate your identity.
+    <p class="drawer-info-text">
+      Your DAKICKS decentralized identity is securely linked via Telegram WebApp protocol.
     </p>
 
     <div style="width: 100%;">
-      <div class="drawer-email-form" id="emailInputWrap">
-        <input type="email" id="drawerEmailInput" class="drawer-email-input" placeholder="Enter personal email" />
-        <button class="btn-link-action" id="btnSendVerification">Send Verification</button>
-      </div>
-
-      <div class="otp-verification-container" id="otpInputBox" style="display: none;">
-        <input type="text" id="otpCodeInput" class="otp-code-input" placeholder="••••••" maxlength="6" inputmode="numeric" />
-        <button class="btn-verify-otp" id="btnVerifyOtp">Verify Code</button>
-        
-        <div class="otp-sub-actions">
-          <span class="resend-timer-text" id="resendTimerLabel">Resend in 00:60</span>
-          <button class="btn-text-action" id="btnResendOtp" disabled>Resend Code</button>
-          <button class="btn-text-action" id="btnBackToEmail">Change Email</button>
+      <div class="oauth-linked-card">
+        <div>
+          <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;" id="verifiedEmailText">Securely Linked</div>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Encrypted Session Active</div>
         </div>
-      </div>
-
-      <div id="emailVerifiedCard" style="display: block; width: 100%;">
-        <div class="oauth-linked-card">
-          <div>
-            <div style="font-size: 13.5px; font-weight: 800; color: #ffffff;" id="verifiedEmailText">user@dakicks.io</div>
-            <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Identity Verified & Encrypted</div>
-          </div>
-          <div style="font-size: 10px; font-weight: 800; color: #ffffff; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
-            LINKED ✓
-          </div>
+        <div style="font-size: 10px; font-weight: 800; color: #ffffff; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2);">
+          SECURE ✓
         </div>
-        <button class="btn-change-email" id="btnChangeEmail">Change Email</button>
       </div>
     </div>
   </div>
@@ -1667,7 +1137,7 @@
         try {
           new TradingView.widget({
             "autosize": true,
-            "symbol": "MEXC:TONUSDT",
+            "symbol": "BINANCE:TONUSDT",
             "interval": "15",
             "timezone": "Etc/UTC",
             "theme": "dark",
@@ -1689,12 +1159,15 @@
   </script>
 
   <script>
-    // Supabase Configuration
     const SUPABASE_URL = "https://bjfibvojdojveprrsbxo.supabase.co";
     const SUPABASE_KEY = "sb_publishable_8HICxyKnXYEq-hRw-sFj3w_EgkQOV4q";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     const tg = window.Telegram?.WebApp;
+    let userId = "guest_user_123";
+    let realUsername = "Trader";
+    let realEmail = "user@dakicks.io";
+
     if (tg) {
       tg.ready();
       tg.expand();
@@ -1702,30 +1175,18 @@
         tg.setHeaderColor('#000000');
         tg.setBackgroundColor('#000000');
       } catch (e) {}
+      if (tg.initDataUnsafe?.user) {
+        userId = String(tg.initDataUnsafe.user.id);
+        realUsername = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "Trader";
+        realEmail = `${realUsername.toLowerCase()}@telegram.user`;
+      }
     }
 
-    let userId = "guest_user_123";
-    let telegramUsername = "Anubhav";
-
-    if (tg && tg.initDataUnsafe?.user) {
-      userId = String(tg.initDataUnsafe.user.id);
-      telegramUsername = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "Anubhav";
-    }
-
-    const EMAILJS_CONFIG = {
-      serviceId: "service_91i0edt",
-      templateId: "template_6a78v2d", 
-      publicKey: "UZVvtLHuf8uZWHdkg"
-    };
-
-    (function() {
-      try {
-        emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
-      } catch (e) {}
-    })();
-
-    const TEN_MINUTES_MS = 10 * 60 * 1000;
-    let countdownInterval = null;
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: 'https://raw.githubusercontent.com/ton-connect/docs/main/demo-dapp/manifest.json',
+      uiPreferences: { theme: 'DARK' },
+      targetButtonId: 'ton-connect-button'
+    });
 
     function triggerHaptic(type = 'light') {
       try {
@@ -1752,8 +1213,10 @@
 
     async function initCloudUser() {
       try {
-        document.getElementById('topHandleText').innerText = telegramUsername;
-        document.getElementById('drawerUsername').innerText = telegramUsername;
+        document.getElementById('topHandleText').innerText = realUsername;
+        document.getElementById('drawerUsername').innerText = realUsername;
+        document.getElementById('verifiedEmailText').innerText = realEmail;
+
         const { data } = await supabaseClient
           .from('profiles')
           .select('balance, username')
@@ -1766,40 +1229,38 @@
           document.getElementById('refBalDkx').innerText = `${currentAlloc.toLocaleString()} $DKX`;
         } else {
           await supabaseClient.from('profiles').insert([
-            { id: userId, username: telegramUsername, balance: 1250 }
+            { id: userId, username: realUsername, balance: 1250 }
           ]);
         }
       } catch (err) {
-        document.getElementById('topHandleText').innerText = telegramUsername;
+        document.getElementById('topHandleText').innerText = realUsername;
       }
     }
 
     initCloudUser();
 
-    function completeVerification(email) {
-      localStorage.setItem('dkx_email_verified', 'true');
-      localStorage.setItem('dkx_user_email', email);
-      localStorage.removeItem('dkx_pending_otp');
-      localStorage.removeItem('dkx_pending_timestamp');
+    (function initSecureReferral() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const startParam = tg?.initDataUnsafe?.start_param || urlParams.get('tgWebAppStartParam') || urlParams.get('startapp');
 
-      if (window.confetti) {
-        confetti({
-          particleCount: 140,
-          spread: 120,
-          origin: { y: 0.55 },
-          colors: ['#ffffff', '#8e8e93', '#38bdf8']
-        });
+      let refCount = parseInt(localStorage.getItem(`dkx_ref_count_${userId}`) || '0', 10);
+      document.getElementById('frensCountNum').innerText = refCount;
+
+      if (startParam && startParam.startsWith('ref_')) {
+        const referrer = startParam.replace('ref_', '');
+        const hasBeenReferredKey = `dkx_referred_${userId}`;
+        if (referrer !== realUsername && !localStorage.getItem(hasBeenReferredKey)) {
+          localStorage.setItem(hasBeenReferredKey, 'true');
+          refCount += 1;
+          localStorage.setItem(`dkx_ref_count_${userId}`, refCount.toString());
+          document.getElementById('frensCountNum').innerText = refCount;
+          showHUD(`Squad link verified from @${referrer}! ✓`);
+        }
       }
-      triggerHaptic('success');
-      showHUD("Email Linked & Secured! ✓");
-      updateProfileUI(localStorage.getItem('dkx_user_name'), localStorage.getItem('dkx_user_dob'));
-    }
+    })();
 
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(loadTradingView, 200);
-      initReferralSystem();
-      document.getElementById('firstTimeGate').style.display = 'none';
-      updateProfileUI(telegramUsername, '2009-07-13');
     });
 
     function navigateTab(name, elem) {
@@ -1811,114 +1272,15 @@
       elem.classList.add('active');
     }
 
-    function initReferralSystem() {
-      let refCount = parseInt(localStorage.getItem('dkx_ref_count') || '0', 10);
-      document.getElementById('frensCountNum').innerText = refCount;
-    }
-
-    function handleInviteAction() {
+    document.getElementById('btnInviteFrens').addEventListener('click', () => {
       triggerHaptic('success');
       const botUsername = "DakicksAmino_bot";
-      const myHandle = localStorage.getItem('dkx_user_name') || telegramUsername;
-      const refLink = `https://t.me/${botUsername}/app?startapp=ref_${encodeURIComponent(myHandle)}`;
-      
+      const refLink = `https://t.me/${botUsername}/app?startapp=ref_${encodeURIComponent(realUsername)}`;
       navigator.clipboard.writeText(refLink).then(() => {
-        showHUD("Invite Link Copied! 🚀");
+        showHUD("Secure Referral Link Copied! 🚀");
       }).catch(() => {
         showHUD("Link ready to share!");
       });
-    }
-
-    document.getElementById('btnInviteFrens').addEventListener('click', handleInviteAction);
-
-    function openFrensList() {
-      triggerHaptic('light');
-      showHUD("Squad members loaded successfully");
-    }
-
-    const walletModal = document.getElementById('walletModal');
-    const walletModalBackdrop = document.getElementById('walletModalBackdrop');
-
-    function openWalletModal() {
-      triggerHaptic('medium');
-      walletModalBackdrop.classList.add('show');
-      walletModal.classList.add('show');
-    }
-
-    function closeWalletModal() {
-      walletModal.classList.remove('show');
-      walletModalBackdrop.classList.remove('show');
-    }
-
-    document.getElementById('goToWalletBtn').addEventListener('click', openWalletModal);
-    document.getElementById('connectWalletBtn').addEventListener('click', openWalletModal);
-    walletModalBackdrop.addEventListener('click', closeWalletModal);
-
-    function connectSpecificWallet(walletName) {
-      triggerHaptic('success');
-      closeWalletModal();
-      showHUD(`Connected to ${walletName} ✓`);
-      document.getElementById('connectWalletBtn').innerText = `${walletName} Connected`;
-    }
-
-    document.getElementById('copyCaBtn').addEventListener('click', () => {
-      triggerHaptic('success');
-      navigator.clipboard.writeText("TON JETTON: DEPLOYING AT LAUNCH");
-      showHUD("TON Contract: Deploying at Launch");
-    });
-
-    function getInitials(name) {
-      if (!name) return 'DK';
-      const clean = name.replace(/[^a-zA-Z0-9]/g, '');
-      return clean.slice(0, 2).toUpperCase() || 'DK';
-    }
-
-    function applyAvatar(avatarData, initials) {
-      const topBadge = document.getElementById('topAvatarBadge');
-      const drawerBadge = document.getElementById('drawerAvatarBadge');
-
-      if (avatarData) {
-        topBadge.style.backgroundImage = `url(${avatarData})`;
-        topBadge.innerText = '';
-        drawerBadge.style.backgroundImage = `url(${avatarData})`;
-        drawerBadge.innerText = '';
-      } else {
-        topBadge.style.backgroundImage = 'none';
-        topBadge.innerText = initials;
-        drawerBadge.style.backgroundImage = 'none';
-        drawerBadge.innerText = initials;
-      }
-    }
-
-    function updateProfileUI(name, dob) {
-      localStorage.setItem('dkx_email_verified', 'true');
-      localStorage.setItem('dkx_user_email', 'user@dakicks.io');
-
-      const displayName = name || telegramUsername;
-      const initials = getInitials(displayName);
-      document.getElementById('topHandleText').innerText = displayName;
-      document.getElementById('drawerUsername').innerText = displayName;
-      document.getElementById('drawerDobTag').innerText = dob ? `DOB: ${dob}` : 'DOB: Verified';
-      applyAvatar(localStorage.getItem('dkx_user_avatar'), initials);
-
-      document.getElementById('emailInputWrap').style.display = 'none';
-      document.getElementById('otpInputBox').style.display = 'none';
-      document.getElementById('emailVerifiedCard').style.display = 'block';
-      document.getElementById('verifiedEmailText').innerText = 'user@dakicks.io';
-      document.getElementById('drawerInstructionText').innerText = "Your DAKICKS profile is linked and cryptographically secured.";
-    }
-
-    document.getElementById('submitGateBtn').addEventListener('click', () => {
-      const uVal = document.getElementById('inputUsername').value.trim() || telegramUsername;
-      const dVal = document.getElementById('inputDob').value || '2009-07-13';
-
-      localStorage.setItem('dkx_user_name', uVal);
-      localStorage.setItem('dkx_user_dob', dVal);
-      updateProfileUI(uVal, dVal);
-
-      triggerHaptic('success');
-      document.getElementById('firstTimeGate').style.display = 'none';
-      showHUD(`Welcome to DAKICKS, ${uVal}`);
     });
 
     const profileBackdrop = document.getElementById('profileBackdrop');
@@ -1928,6 +1290,8 @@
       triggerHaptic('medium');
       profileBackdrop.classList.add('show');
       profileDrawer.classList.add('show');
+      document.getElementById('topAvatarBadge').innerText = realUsername.slice(0, 2).toUpperCase();
+      document.getElementById('drawerUsername').innerText = realUsername;
     }
 
     function closeProfileDrawer() {
@@ -1939,79 +1303,49 @@
     document.getElementById('drawerCloseBtn').addEventListener('click', closeProfileDrawer);
     profileBackdrop.addEventListener('click', closeProfileDrawer);
 
-    const pencilBtn = document.getElementById('btnPencilTrigger');
-    const avatarFileInput = document.getElementById('avatarFileInput');
-
-    pencilBtn.addEventListener('click', () => {
-      triggerHaptic('light');
-      avatarFileInput.click();
+    document.getElementById('copyCaBtn').addEventListener('click', () => {
+      triggerHaptic('success');
+      navigator.clipboard.writeText("TON JETTON: DEPLOYING AT LAUNCH");
+      showHUD("TON Contract Copied!");
     });
 
-    avatarFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+    let lastClaimTime = parseInt(localStorage.getItem(`dkx_last_claim_${userId}`) || '0', 10);
+    const CLAIM_COOLDOWN = 60 * 1000;
 
-      if (file.size > 2 * 1024 * 1024) {
-        showHUD("Image must be under 2MB");
+    document.getElementById('claimRewardBtn').addEventListener('click', async () => {
+      const now = Date.now();
+      if (now - lastClaimTime < CLAIM_COOLDOWN) {
+        triggerHaptic('error');
+        showHUD("Please wait before claiming again!");
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const base64Data = event.target.result;
-        localStorage.setItem('dkx_user_avatar', base64Data);
-        applyAvatar(base64Data, getInitials(localStorage.getItem('dkx_user_name') || telegramUsername));
-        triggerHaptic('success');
-        showHUD("Profile Photo Updated!");
-      };
-      reader.readAsDataURL(file);
-    });
-
-    setInterval(() => {
-      document.querySelectorAll('div, dialog').forEach(el => {
-        if (el.innerText && el.innerText.includes('AdsgramError')) {
-          el.remove();
-        }
-      });
-    }, 50);
-
-    let adHandler = null;
-    try {
-      if (window.Adsgram) {
-        adHandler = window.Adsgram.init({ blockId: "46202", debug: false });
-      }
-    } catch (e) {}
-
-    document.getElementById('claimRewardBtn').addEventListener('click', async () => {
       triggerHaptic('medium');
-      if (adHandler) {
-        adHandler.show().then(async () => {
-          currentAlloc += 2;
-          allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span>`;
-          document.getElementById('refBalDkx').innerText = `${currentAlloc.toLocaleString()} $DKX`;
-          
-          await supabaseClient.from('profiles').update({ balance: currentAlloc }).eq('id', userId);
+      const claimBtn = document.getElementById('claimRewardBtn');
+      claimBtn.disabled = true;
 
-          triggerHaptic('success');
-          showHUD("Transmission Verified: +2 $DKX Granted");
-        }).catch((err) => {
-          document.querySelectorAll('div, dialog').forEach(el => {
-            if (el.innerText && el.innerText.includes('AdsgramError')) {
-              el.remove();
-            }
-          });
-          showHUD("Transmissions Unavailable: High Network Load");
-        });
-      } else {
-        currentAlloc += 2;
-        allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span>`;
-        document.getElementById('refBalDkx').innerText = `${currentAlloc.toLocaleString()} $DKX`;
-        
-        await supabaseClient.from('profiles').update({ balance: currentAlloc }).eq('id', userId);
-
-        triggerHaptic('success');
-        showHUD("+2 $DKX Granted");
+      if (window.Adsgram) {
+        try {
+          const adHandler = window.Adsgram.init({ blockId: "46202", debug: false });
+          await adHandler.show();
+        } catch(e) {}
       }
+
+      currentAlloc += 2;
+      lastClaimTime = Date.now();
+      localStorage.setItem(`dkx_last_claim_${userId}`, lastClaimTime.toString());
+
+      allocDisplay.innerHTML = `${currentAlloc.toLocaleString()} <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span>`;
+      document.getElementById('refBalDkx').innerText = `${currentAlloc.toLocaleString()} $DKX`;
+      
+      await supabaseClient.from('profiles').update({ balance: currentAlloc }).eq('id', userId);
+
+      triggerHaptic('success');
+      showHUD("Allocation Verified: +2 $DKX Granted ✓");
+
+      setTimeout(() => {
+        claimBtn.disabled = false;
+      }, CLAIM_COOLDOWN);
     });
   </script>
 </body>
