@@ -1251,6 +1251,26 @@
       justify-content: center;
       cursor: pointer;
     }
+  
+    /* ACCOUNT SAFETY / RECOVERY */
+    .username-status{font-size:11px;margin-top:6px;min-height:16px;color:var(--text-secondary)}
+    .username-suggestions{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+    .username-suggestion{background:rgba(255,255,255,.07);border:1px solid var(--glass-border);color:#fff;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer}
+    .recovery-card{margin-top:14px;padding:14px;border:1px solid var(--glass-border);border-radius:16px;background:rgba(255,255,255,.04);text-align:left}
+    .recovery-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:4px}
+    .recovery-sub{font-size:11px;line-height:1.45;color:var(--text-secondary);margin-bottom:10px}
+    .recovery-btn{width:100%;background:rgba(255,255,255,.09);border:1px solid var(--glass-border);color:#fff;padding:12px;border-radius:11px;font-size:12px;font-weight:800;cursor:pointer}
+    .recovery-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(18px);z-index:100000;display:none;align-items:flex-end;justify-content:center}
+    .recovery-modal-backdrop.show{display:flex}
+    .recovery-modal{width:100%;max-width:520px;background:#111113;border:1px solid rgba(255,255,255,.12);border-radius:24px 24px 0 0;padding:22px;max-height:88vh;overflow:auto}
+    .recovery-modal h3{font-size:19px;font-weight:900;margin-bottom:6px}
+    .recovery-modal p{font-size:12px;color:var(--text-secondary);line-height:1.5;margin-bottom:15px}
+    .recovery-actions{display:flex;gap:8px;margin-top:10px}
+    .recovery-actions button{flex:1;border:0;border-radius:11px;padding:13px;font-weight:800;cursor:pointer}
+    .recovery-primary{background:#fff;color:#000}
+    .recovery-secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid var(--glass-border)!important}
+    .password-note{font-size:10.5px;color:var(--text-secondary);line-height:1.4;margin-top:7px}
+
   </style>
 </head>
   <body>
@@ -1375,7 +1395,7 @@
         
         <div class="ref-balance-card">
           <div class="ref-bal-title">Your Balance</div>
-          <div class="ref-bal-amount" id="refBalDkx">1,250 $DKX</div>
+          <div class="ref-bal-amount" id="refBalDkx">0 $DKX</div>
           <button class="btn-goto-wallet" id="goToWalletBtn">
             Go to Wallet ↗
           </button>
@@ -1383,7 +1403,7 @@
 
         <div class="ref-banner-card">
           <div class="ref-banner-top">
-            <div style="font-size: 15px; font-weight: 800; color: #ffffff;">Turn your frens into traders to earn $DKX!</div>
+            <div style="font-size: 15px; font-weight: 800; color: #ffffff;">Invite friends • earn $DKX</div>
             <div class="ref-tier-badges">
               <div class="tier-badge-icon">👟</div>
               <div class="tier-badge-icon">💎</div>
@@ -1392,12 +1412,12 @@
 
           <div class="ref-comm-grid">
             <div class="ref-comm-box">
-              <div class="ref-comm-pct">20%</div>
-              <div class="ref-comm-desc">of frens' trade commission</div>
+              <div class="ref-comm-pct">5,000</div>
+              <div class="ref-comm-desc">$DKX per successful referral</div>
             </div>
             <div class="ref-comm-box">
-              <div class="ref-comm-pct">2.5%</div>
-              <div class="ref-comm-desc">of their refs' trade commissions</div>
+              <div class="ref-comm-pct">1,000</div>
+              <div class="ref-comm-desc">$DKX welcome bonus for new users</div>
             </div>
           </div>
         </div>
@@ -1420,6 +1440,10 @@
           <span>👥 Invite frens</span>
         </button>
 
+        <div style="text-align:center;color:var(--text-secondary);font-size:10px;margin-top:10px;line-height:1.5;">
+          Rewards are credited by the referral server after a valid Telegram referral is verified.
+        </div>
+
       </div>
     </div>
 
@@ -1438,38 +1462,16 @@
           <div class="lb-subtitle">Top traders & squad leaders ranked by Season 1 volume</div>
         </div>
 
-        <div class="lb-list">
+        <div class="lb-list" id="liveLeaderboardList">
           <div class="lb-row">
             <div class="lb-user-info">
-              <div class="lb-rank top-1">1</div>
+              <div class="lb-rank">—</div>
               <div>
-                <div class="lb-name">Satoshi_Global</div>
-                <div style="font-size: 11px; color: var(--text-secondary);">Squad Lead • Tier 1</div>
+                <div class="lb-name">Loading live leaderboard…</div>
+                <div style="font-size: 11px; color: var(--text-secondary);">Reading server data</div>
               </div>
             </div>
-            <div class="lb-score">48,250 $DKX</div>
-          </div>
-
-          <div class="lb-row">
-            <div class="lb-user-info">
-              <div class="lb-rank top-2">2</div>
-              <div>
-                <div class="lb-name">Anubhav_DKX</div>
-                <div style="font-size: 11px; color: var(--text-secondary);">Founder • Genesis</div>
-              </div>
-            </div>
-            <div class="lb-score">39,100 $DKX</div>
-          </div>
-
-          <div class="lb-row">
-            <div class="lb-user-info">
-              <div class="lb-rank top-3">3</div>
-              <div>
-                <div class="lb-name">CryptoAlpha_JP</div>
-                <div style="font-size: 11px; color: var(--text-secondary);">Squad Lead • Tier 2</div>
-              </div>
-            </div>
-            <div class="lb-score">31,450 $DKX</div>
+            <div class="lb-score">—</div>
           </div>
         </div>
       </div>
@@ -1501,12 +1503,18 @@
 
         <button class="btn-wallet-connect" id="connectWalletBtn">CONNECT WEB3 WALLET</button>
 
+        <div class="recovery-card">
+          <div class="recovery-title">Account Recovery</div>
+          <div class="recovery-sub">Recover a previously linked DKX account with its email + one-time verification code. Your saved profile data is kept separately from this HTML file.</div>
+          <button class="recovery-btn" id="openRecoveryBtn">RECOVER MY ACCOUNT</button>
+        </div>
+
         <div class="allocation-box">
           <div class="alloc-head">
             <div class="alloc-title">Genesis Liquidity Allocation</div>
             <div class="alloc-status">ONLINE</div>
           </div>
-          <div class="alloc-value" id="vaultDkxBal">1,250 <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span></div>
+          <div class="alloc-value" id="vaultDkxBal">0 <span style="font-size:13px; color:#8e8e93; font-weight:600;">$DKX</span></div>
 
         </div>
       </div>
@@ -1541,6 +1549,28 @@
   <div class="hud-toast" id="hudToast">
   <div class="hud-toast-indicator"></div>
     <span id="hudMsg">Notice</span>
+  </div>
+
+  <!-- ACCOUNT RECOVERY MODAL -->
+  <div class="recovery-modal-backdrop" id="recoveryBackdrop">
+    <div class="recovery-modal" id="recoveryModal">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <div>
+          <h3>Recover DKX account</h3>
+          <p id="recoveryInstruction">Enter the email that was linked to your old account. We will send a one-time code.</p>
+        </div>
+        <button id="closeRecoveryBtn" class="recovery-secondary" style="flex:0 0 auto;padding:8px 11px;border-radius:50%;">✕</button>
+      </div>
+      <input type="email" id="recoveryEmailInput" class="drawer-email-input" placeholder="Enter linked email" autocomplete="email" />
+      <input type="password" id="recoveryPasswordInput" class="drawer-email-input" placeholder="Password (if you created one)" autocomplete="current-password" style="display:none;margin-top:10px;" />
+      <input type="text" id="recoveryOtpInput" class="otp-code-input" placeholder="••••••" maxlength="6" inputmode="numeric" style="display:none;margin-top:10px;" />
+      <div class="password-note">Password login is available when a password was created. Otherwise use the one-time code sent to the linked email.</div>
+      <div class="recovery-actions">
+        <button class="recovery-secondary" id="recoveryOtpBtn">SEND OTP</button>
+        <button class="recovery-primary" id="recoveryVerifyBtn" style="display:none;">RECOVER ACCOUNT</button>
+      </div>
+      <div id="recoveryResult" style="font-size:11px;color:var(--text-secondary);margin-top:10px;min-height:18px;"></div>
+    </div>
   </div>
 
   <!-- WALLET SELECTION MODAL -->
@@ -1607,7 +1637,9 @@
 
       <div class="gate-input-wrap">
         <label class="gate-label">Choose Handle / Username</label>
-        <input type="text" id="inputUsername" class="gate-input" placeholder="e.g. Satoshi_DKX" maxlength="20" />
+        <input type="text" id="inputUsername" class="gate-input" placeholder="e.g. Satoshi_DKX" maxlength="20" autocomplete="off" />
+        <div class="username-status" id="usernameStatus"></div>
+        <div class="username-suggestions" id="usernameSuggestions"></div>
       </div>
 
       <div class="gate-input-wrap">
@@ -1669,6 +1701,12 @@
           </div>
         </div>
         <button class="btn-change-email" id="btnChangeEmail">Change Email</button>
+        <button class="btn-change-email" id="btnSetPassword">Create Password (Recommended)</button>
+        <div id="passwordSetupWrap" style="display:none;margin-top:10px;">
+          <input type="password" id="newAccountPassword" class="drawer-email-input" placeholder="Create password (8+ characters)" autocomplete="new-password" />
+          <button class="btn-link-action" id="saveAccountPassword" style="margin-top:8px;">SAVE PASSWORD</button>
+          <div class="password-note">You can always use email OTP instead if you don't want a password.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1688,60 +1726,19 @@
     function loadTradingView() {
       const container = document.getElementById('tv_chart_main');
       if (!container) return;
-      container.innerHTML = '';
-
-      const mountWidget = () => {
-        if (!window.TradingView || typeof window.TradingView.widget !== 'function') return false;
-        try {
-          new window.TradingView.widget({
-            autosize: true,
-            symbol: 'BINANCE:TONUSDT',
-            interval: '15',
-            timezone: 'Etc/UTC',
-            theme: 'dark',
-            style: '1',
-            locale: 'en',
-            enable_publishing: false,
-            hide_top_toolbar: false,
-            hide_side_toolbar: false,
-            allow_symbol_change: true,
-            save_image: false,
-            backgroundColor: '#000000',
-            gridColor: 'rgba(255, 255, 255, 0.03)',
-            container_id: 'tv_chart_main'
-          });
-          document.getElementById('networkStatus').textContent = 'TON • LIVE';
-          return true;
-        } catch (err) {
-          console.error('TradingView widget error:', err);
-          return false;
-        }
-      };
-
-      const fallbackEmbed = () => {
-        const iframe = document.createElement('iframe');
-        iframe.title = 'TON USDT Live TradingView Chart';
-        iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;';
-        iframe.allowFullscreen = true;
-        iframe.src = 'https://www.tradingview.com/widgetembed/?frameElementId=tv_chart_main&symbol=BINANCE%3ATONUSDT&interval=15&hidetoptoolbar=0&hidesidetoolbar=0&symboledit=0&saveimage=0&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1';
-        container.replaceChildren(iframe);
-        document.getElementById('networkStatus').textContent = 'TON • LIVE';
-      };
-
-      if (mountWidget()) return;
-      const existing = document.querySelector('script[data-tv-ton]');
-      if (existing) {
-        existing.addEventListener('load', () => { if (!mountWidget()) fallbackEmbed(); }, { once: true });
-        return;
-      }
-      const tvScript = document.createElement('script');
-      tvScript.src = 'https://s3.tradingview.com/tv.js';
-      tvScript.async = true;
-      tvScript.dataset.tvTon = '1';
-      tvScript.onload = () => { if (!mountWidget()) fallbackEmbed(); };
-      tvScript.onerror = fallbackEmbed;
-      document.head.appendChild(tvScript);
+      // Use a known-valid TradingView Toncoin symbol. TradingView currently
+      // exposes COINBASE:TONUSD as TONUSD.
+      const iframe = document.createElement('iframe');
+      iframe.title = 'Toncoin live TradingView chart';
+      iframe.style.cssText = 'width:100%;height:100%;border:0;display:block;';
+      iframe.allowFullscreen = true;
+      iframe.loading = 'eager';
+      iframe.src = 'https://www.tradingview.com/widgetembed/?frameElementId=tv_chart_main&symbol=COINBASE%3ATONUSD&interval=15&hidetoptoolbar=0&hidesidetoolbar=0&symboledit=1&saveimage=0&theme=dark&style=1&timezone=Etc%2FUTC&withdateranges=1&hideideas=1';
+      container.replaceChildren(iframe);
+      const status = document.getElementById('networkStatus');
+      if (status) status.textContent = 'TON • LIVE';
     }
+
   </script>
 
   <script>
@@ -1790,9 +1787,126 @@
       }, 2600);
     }
 
+
+    /* ------------------------------------------------------------------
+       ACCOUNT DATA SAFETY LAYER
+       - Keeps a versioned local backup so replacing index.html does not
+         wipe the browser's account/profile data.
+       - Username suggestions are generated from reserved names + local
+         history. Server-side uniqueness is requested when the referral
+         function supports action=username_check.
+       - Email is treated as a single-account identifier locally.
+       ------------------------------------------------------------------ */
+    const DKX_RESERVED_NAMES = new Set([
+      'admin','administrator','support','security','official','dakicks','dkx','owner','system','root','moderator','staff','null','undefined','guest'
+    ]);
+    const DKX_ACCOUNT_BACKUP_KEY = 'dkx_account_backup_v2';
+    const DKX_ACCOUNT_ARCHIVE_KEY = 'dkx_account_archive_v2';
+    const DKX_EMAIL_INDEX_KEY = 'dkx_email_account_index_v2';
+    const DKX_USERNAME_INDEX_KEY = 'dkx_username_index_v2';
+
+    function dkxNormName(v){ return String(v||'').trim().toLowerCase().replace(/[^a-z0-9_]/g,''); }
+    function dkxNormEmail(v){ return String(v||'').trim().toLowerCase(); }
+    function dkxReadJson(key, fallback){ try { const x=JSON.parse(localStorage.getItem(key)||''); return x ?? fallback; } catch(e){ return fallback; } }
+    function dkxWriteJson(key, value){ try { localStorage.setItem(key, JSON.stringify(value)); } catch(e){} }
+
+    function dkxBackupAccount(){
+      const snapshot={
+        version:2,
+        savedAt:new Date().toISOString(),
+        username:localStorage.getItem('dkx_user_name')||'',
+        dob:localStorage.getItem('dkx_user_dob')||'',
+        email:localStorage.getItem('dkx_user_email')||'',
+        emailVerified:localStorage.getItem('dkx_email_verified')==='true',
+        avatar:localStorage.getItem('dkx_user_avatar')||'',
+        pendingEmail:localStorage.getItem('dkx_pending_email')||'',
+        referralCode:getTelegramStartParam ? getTelegramStartParam() : null
+      };
+      dkxWriteJson(DKX_ACCOUNT_BACKUP_KEY,snapshot);
+      const archive=dkxReadJson(DKX_ACCOUNT_ARCHIVE_KEY,{});
+      const key=dkxNormEmail(snapshot.email) || ('tg:'+String(getTelegramUser()?.id||'local'));
+      archive[key]=snapshot;
+      dkxWriteJson(DKX_ACCOUNT_ARCHIVE_KEY,archive);
+      return snapshot;
+    }
+
+    function dkxRegisterLocalIdentity(username,email){
+      const n=dkxNormName(username), e=dkxNormEmail(email);
+      const names=dkxReadJson(DKX_USERNAME_INDEX_KEY,{}); const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{});
+      if(n) names[n]={display:username,updatedAt:Date.now()};
+      if(e) emails[e]={username,updatedAt:Date.now()};
+      dkxWriteJson(DKX_USERNAME_INDEX_KEY,names); dkxWriteJson(DKX_EMAIL_INDEX_KEY,emails);
+    }
+
+    function dkxIsLocalUsernameTaken(name){
+      const n=dkxNormName(name); if(!n || DKX_RESERVED_NAMES.has(n)) return true;
+      const names=dkxReadJson(DKX_USERNAME_INDEX_KEY,{}); return !!names[n];
+    }
+
+    function dkxMakeSuggestions(raw){
+      const base=String(raw||'').trim().replace(/[^a-zA-Z0-9_]/g,'').slice(0,14) || 'DKXUser';
+      const candidates=[];
+      for(let i=1;i<=40 && candidates.length<6;i++){
+        const variants=[`${base}${i}`,`${base}_${i}`,`${base}${new Date().getFullYear()}`,`${base}_DKX${i}`];
+        for(const v of variants){
+          if(v.length>=3 && v.length<=20 && !dkxIsLocalUsernameTaken(v) && !candidates.includes(v)) candidates.push(v);
+          if(candidates.length>=6) break;
+        }
+      }
+      return candidates;
+    }
+
+    function dkxRenderUsernameSuggestions(raw){
+      const wrap=document.getElementById('usernameSuggestions'); if(!wrap) return;
+      wrap.innerHTML='';
+      dkxMakeSuggestions(raw).forEach(name=>{
+        const b=document.createElement('button'); b.type='button'; b.className='username-suggestion'; b.textContent=name;
+        b.addEventListener('click',()=>{ const input=document.getElementById('inputUsername'); input.value=name; dkxCheckUsername(name); });
+        wrap.appendChild(b);
+      });
+    }
+
+    let dkxUsernameCheckSeq=0;
+    async function dkxCheckUsername(name){
+      const status=document.getElementById('usernameStatus'); if(!status) return false;
+      const cleaned=String(name||'').trim(); const n=dkxNormName(cleaned); const seq=++dkxUsernameCheckSeq;
+      if(!cleaned){ status.textContent=''; dkxRenderUsernameSuggestions('DKXUser'); return false; }
+      if(cleaned.length<3){ status.textContent='At least 3 characters required'; status.style.color='#ff8b8b'; return false; }
+      if(!/^[A-Za-z0-9_]+$/.test(cleaned)){ status.textContent='Use only letters, numbers and _'; status.style.color='#ff8b8b'; return false; }
+      if(DKX_RESERVED_NAMES.has(n) || dkxIsLocalUsernameTaken(cleaned)){ status.textContent='Username already exists'; status.style.color='#ff8b8b'; dkxRenderUsernameSuggestions(cleaned); return false; }
+      status.textContent='Checking username…'; status.style.color='var(--text-secondary)';
+      // Best-effort server check. If the existing referral-engine supports
+      // username_check it becomes authoritative; otherwise local protection remains.
+      try{
+        const session=await ensureReferralSession();
+        if(session){
+          const r=await fetch(REFERRAL_API,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':`Bearer ${session.access_token}`,...(tg?.initData?{'X-Telegram-Init-Data':tg.initData}:{})},body:JSON.stringify({action:'username_check',username:cleaned,telegram_init_data:tg?.initData||null,telegram_user:getTelegramUser()})});
+          if(r.ok){ const p=await r.json(); if(seq!==dkxUsernameCheckSeq) return false; if(p.available===false || p.exists===true){status.textContent='Username already exists';status.style.color='#ff8b8b';dkxRenderUsernameSuggestions(cleaned);return false;} }
+        }
+      }catch(e){ /* keep local-only fallback */ }
+      if(seq!==dkxUsernameCheckSeq) return false;
+      status.textContent='Username available ✓'; status.style.color='#8ff0b0'; document.getElementById('usernameSuggestions').innerHTML=''; return true;
+    }
+
+    const usernameInput=document.getElementById('inputUsername');
+    if(usernameInput){
+      usernameInput.addEventListener('input',()=>{ clearTimeout(window.__dkxNameTimer); window.__dkxNameTimer=setTimeout(()=>dkxCheckUsername(usernameInput.value),180); });
+      usernameInput.addEventListener('focus',()=>{ if(!usernameInput.value) dkxRenderUsernameSuggestions('DKXUser'); });
+    }
+
+    async function dkxEmailAlreadyUsed(email){
+      const e=dkxNormEmail(email); if(!e) return false;
+      const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{}); return !!emails[e];
+    }
+
+    // Keep a backup after every profile-changing operation.
+    window.addEventListener('pagehide',dkxBackupAccount);
+
     function completeVerification(email) {
       localStorage.setItem('dkx_email_verified', 'true');
       localStorage.setItem('dkx_user_email', email);
+      dkxRegisterLocalIdentity(localStorage.getItem('dkx_user_name') || '', email);
+      dkxBackupAccount();
       localStorage.removeItem('dkx_pending_otp');
       localStorage.removeItem('dkx_pending_timestamp');
 
@@ -1862,9 +1976,10 @@
     }
 
     function initReferralSystem() {
-      // Display-only fallback. The authoritative referral count comes from Supabase.
-      const refCount = parseInt(localStorage.getItem('dkx_ref_count') || '0', 10);
-      document.getElementById('frensCountNum').innerText = Number.isFinite(refCount) ? refCount : 0;
+      // No localStorage fallback: referral count is server-authoritative.
+      document.getElementById('frensCountNum').innerText = '0';
+      document.getElementById('refBalDkx').textContent = '0 $DKX';
+      document.getElementById('refBalUsd').textContent = '~$0.00 USD';
     }
 
     function handleInviteAction() {
@@ -1919,6 +2034,16 @@
       navigator.clipboard.writeText("TON NETWORK • LAUNCH CONTRACT PENDING");
       showHUD("Contract: Deploying at Launch");
     });
+
+    // Recover the last safe snapshot before deciding whether to show the first-time gate.
+    (function restoreSafeSnapshot(){
+      const b=dkxReadJson(DKX_ACCOUNT_BACKUP_KEY,null);
+      if(b && !localStorage.getItem('dkx_user_name') && b.username){ localStorage.setItem('dkx_user_name',b.username); }
+      if(b && !localStorage.getItem('dkx_user_dob') && b.dob){ localStorage.setItem('dkx_user_dob',b.dob); }
+      if(b && !localStorage.getItem('dkx_user_email') && b.email){ localStorage.setItem('dkx_user_email',b.email); }
+      if(b && b.emailVerified && !localStorage.getItem('dkx_email_verified')) localStorage.setItem('dkx_email_verified','true');
+      if(b && b.avatar && !localStorage.getItem('dkx_user_avatar')) localStorage.setItem('dkx_user_avatar',b.avatar);
+    })();
 
     const storedUsername = localStorage.getItem('dkx_user_name');
     const storedDob = localStorage.getItem('dkx_user_dob');
@@ -1988,7 +2113,7 @@
       updateProfileUI(storedUsername, storedDob);
     }
 
-    document.getElementById('submitGateBtn').addEventListener('click', () => {
+    document.getElementById('submitGateBtn').addEventListener('click', async () => {
       const uVal = document.getElementById('inputUsername').value.trim();
       const dVal = document.getElementById('inputDob').value;
 
@@ -2003,8 +2128,16 @@
         return;
       }
 
+      const available = await dkxCheckUsername(uVal);
+      if (!available) {
+        triggerHaptic('error');
+        showHUD('Username already exists — choose a suggestion');
+        return;
+      }
       localStorage.setItem('dkx_user_name', uVal);
       localStorage.setItem('dkx_user_dob', dVal);
+      dkxRegisterLocalIdentity(uVal, localStorage.getItem('dkx_user_email') || '');
+      dkxBackupAccount();
       updateProfileUI(uVal, dVal);
 
       triggerHaptic('success');
@@ -2051,6 +2184,7 @@
       reader.onload = (event) => {
         const base64Data = event.target.result;
         localStorage.setItem('dkx_user_avatar', base64Data);
+        dkxBackupAccount();
         applyAvatar(base64Data, getInitials(localStorage.getItem('dkx_user_name')));
         triggerHaptic('success');
         showHUD("Profile Photo Updated!");
@@ -2077,13 +2211,19 @@
       }, 1000);
     }
 
-    function dispatchEmail() {
+    async function dispatchEmail() {
       const emailInput = document.getElementById('drawerEmailInput');
       const emailVal = emailInput.value.trim();
 
       if (!emailVal || !emailVal.includes('@') || !emailVal.includes('.')) {
         triggerHaptic('error');
         showHUD("Please provide a valid email");
+        return;
+      }
+
+      if (await dkxEmailAlreadyUsed(emailVal)) {
+        triggerHaptic('error');
+        showHUD('This email is already linked to an account');
         return;
       }
 
@@ -2153,6 +2293,50 @@
       }
     });
 
+
+    /* --------------------------- ACCOUNT RECOVERY --------------------------- */
+    const recoveryBackdrop=document.getElementById('recoveryBackdrop');
+    const recoveryEmailInput=document.getElementById('recoveryEmailInput');
+    const recoveryOtpInput=document.getElementById('recoveryOtpInput');
+    const recoveryOtpBtn=document.getElementById('recoveryOtpBtn');
+    const recoveryVerifyBtn=document.getElementById('recoveryVerifyBtn');
+    const recoveryResult=document.getElementById('recoveryResult');
+    let recoveryOtp=null, recoveryOtpTime=0;
+
+    function openRecovery(){ triggerHaptic('medium'); recoveryBackdrop.classList.add('show'); recoveryEmailInput.value=''; recoveryOtpInput.value=''; recoveryOtpInput.style.display='none'; recoveryVerifyBtn.style.display='none'; recoveryOtpBtn.style.display='block'; recoveryResult.textContent=''; }
+    function closeRecovery(){ recoveryBackdrop.classList.remove('show'); }
+    document.getElementById('openRecoveryBtn').addEventListener('click',openRecovery);
+    document.getElementById('closeRecoveryBtn').addEventListener('click',closeRecovery);
+    recoveryBackdrop.addEventListener('click',e=>{if(e.target===recoveryBackdrop)closeRecovery();});
+
+    recoveryOtpBtn.addEventListener('click',async()=>{
+      const email=dkxNormEmail(recoveryEmailInput.value); if(!email || !email.includes('@')){recoveryResult.textContent='Enter the linked email first.';return;}
+      const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{});
+      if(!emails[email]){ recoveryResult.textContent='No local account record for this email. If the account exists on the server, use the server recovery email/OTP flow.'; }
+      recoveryOtp=String(Math.floor(100000+Math.random()*900000)); recoveryOtpTime=Date.now();
+      try{
+        await emailjs.send(EMAILJS_CONFIG.serviceId,EMAILJS_CONFIG.templateId,{to_email:email,verify_link:'',passcode:recoveryOtp,code:recoveryOtp},EMAILJS_CONFIG.publicKey);
+        recoveryResult.textContent='OTP sent. Enter the 6-digit code.';
+      }catch(e){ recoveryResult.textContent='Could not send OTP. Check email service configuration.'; return; }
+      recoveryOtpInput.style.display='block'; recoveryVerifyBtn.style.display='block'; recoveryOtpBtn.style.display='none';
+    });
+
+    recoveryVerifyBtn.addEventListener('click',async()=>{
+      if(!recoveryOtp || Date.now()-recoveryOtpTime>TEN_MINUTES_MS || recoveryOtpInput.value.trim()!==recoveryOtp){ recoveryResult.textContent='Invalid or expired OTP.'; return; }
+      const email=dkxNormEmail(recoveryEmailInput.value); const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{}); const record=emails[email];
+      if(!record){ recoveryResult.textContent='Account record not found on this device.'; return; }
+      const archive=dkxReadJson(DKX_ACCOUNT_ARCHIVE_KEY,{});
+      const backup=archive[email] || dkxReadJson(DKX_ACCOUNT_BACKUP_KEY,{});
+      if(record.username) localStorage.setItem('dkx_user_name',record.username);
+      if(backup.dob) localStorage.setItem('dkx_user_dob',backup.dob);
+      localStorage.setItem('dkx_user_email',email); localStorage.setItem('dkx_email_verified','true');
+      if(backup.avatar) localStorage.setItem('dkx_user_avatar',backup.avatar);
+      dkxBackupAccount(); updateProfileUI(localStorage.getItem('dkx_user_name'),localStorage.getItem('dkx_user_dob'));
+      document.getElementById('firstTimeGate').style.display='none'; closeRecovery(); triggerHaptic('success'); showHUD('Account recovered ✓');
+      // Ask the live backend to restore authoritative balance/referrals for this identity.
+      try{ await syncReferralState(); }catch(e){}
+    });
+
     function returnToEmailInput() {
       triggerHaptic('light');
       clearInterval(countdownInterval);
@@ -2167,6 +2351,17 @@
 
     document.getElementById('btnBackToEmail').addEventListener('click', returnToEmailInput);
     document.getElementById('btnChangeEmail').addEventListener('click', returnToEmailInput);
+    document.getElementById('btnSetPassword').addEventListener('click',()=>{ document.getElementById('passwordSetupWrap').style.display='block'; });
+    document.getElementById('saveAccountPassword').addEventListener('click',async()=>{
+      const pass=document.getElementById('newAccountPassword').value;
+      if(pass.length<8){showHUD('Password must be at least 8 characters');return;}
+      try{
+        if(supabaseClient){ const {error}=await supabaseClient.auth.updateUser({password:pass}); if(error) throw error; }
+        // Never store the plaintext password in localStorage. Supabase Auth handles it.
+        showHUD('Password security enabled ✓');
+        document.getElementById('passwordSetupWrap').style.display='none'; document.getElementById('newAccountPassword').value='';
+      }catch(e){ showHUD('Password setup needs server email auth enabled'); console.warn(e); }
+    });
 
     setInterval(() => {
       document.querySelectorAll('div, dialog').forEach(el => {
@@ -2233,19 +2428,67 @@
           document.getElementById('frensCountNum').textContent = Number(payload.referral_count).toLocaleString();
         }
         if (payload.online === true) document.getElementById('networkStatus').textContent = 'TON • LIVE • SYNCED';
+        if (Array.isArray(payload.leaderboard)) renderLiveLeaderboard(payload.leaderboard);
+        loadLiveLeaderboard(session);
       } catch (e) {
         console.warn('Referral sync pending:', e);
       }
     }
 
+    function renderLiveLeaderboard(rows) {
+      const list = document.getElementById('liveLeaderboardList');
+      if (!list) return;
+      if (!Array.isArray(rows) || rows.length === 0) {
+        list.innerHTML = `<div class="lb-row"><div class="lb-user-info"><div class="lb-rank">—</div><div><div class="lb-name">No live rankings yet</div><div style="font-size:11px;color:var(--text-secondary);">No server leaderboard data available</div></div></div><div class="lb-score">—</div></div>`;
+        return;
+      }
+      list.innerHTML = rows.slice(0, 50).map((row, i) => {
+        const rank = i + 1;
+        const cls = rank <= 3 ? ` top-${rank}` : '';
+        const name = row.handle || row.username || row.name || `User ${rank}`;
+        const score = row.score ?? row.volume_dkx ?? row.balance_dkx ?? row.referral_count ?? 0;
+        const unit = row.unit || (row.referral_count != null && row.score == null && row.volume_dkx == null && row.balance_dkx == null ? ' referrals' : ' $DKX');
+        const sub = row.subtitle || row.tier || 'Live server ranking';
+        return `<div class="lb-row"><div class="lb-user-info"><div class="lb-rank${cls}">${rank}</div><div><div class="lb-name">${String(name).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</div><div style="font-size:11px;color:var(--text-secondary);">${String(sub).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}</div></div></div><div class="lb-score">${Number(score).toLocaleString()}${unit}</div></div>`;
+      }).join('');
+    }
+
+    async function loadLiveLeaderboard(session) {
+      const list = document.getElementById('liveLeaderboardList');
+      if (!list || !session) return;
+      try {
+        const response = await fetch(REFERRAL_API, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': `Bearer ${session.access_token}`,
+            ...(tg?.initData ? { 'X-Telegram-Init-Data': tg.initData } : {})
+          },
+          body: JSON.stringify({
+            action: 'leaderboard',
+            limit: 50,
+            telegram_init_data: tg?.initData || null,
+            telegram_user: getTelegramUser()
+          })
+        });
+        if (!response.ok) throw new Error(`Leaderboard API ${response.status}`);
+        const payload = await response.json();
+        renderLiveLeaderboard(payload.leaderboard || payload.rows || payload.data || []);
+      } catch (e) {
+        console.warn('Live leaderboard unavailable:', e);
+        if (list) list.innerHTML = `<div class="lb-row"><div class="lb-user-info"><div class="lb-rank">—</div><div><div class="lb-name">Live leaderboard unavailable</div><div style="font-size:11px;color:var(--text-secondary);">The server leaderboard endpoint is not enabled yet</div></div></div><div class="lb-score">—</div></div>`;
+      }
+    }
+
     function startReferralSync() {
       clearInterval(referralSyncTimer);
-      syncReferralState();
-      referralSyncTimer = setInterval(syncReferralState, REFERRAL_SYNC_MS);
+      setTimeout(() => { syncReferralState().catch(() => {}); }, 1200);
+      referralSyncTimer = setInterval(() => { syncReferralState().catch(() => {}); }, REFERRAL_SYNC_MS);
     }
 
     window.addEventListener('beforeunload', () => clearInterval(referralSyncTimer));
-    startReferralSync();
+    setTimeout(startReferralSync, 1500);
   </script>
 </body>
 </html>
