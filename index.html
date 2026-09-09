@@ -1832,10 +1832,14 @@
 
     function dkxRegisterLocalIdentity(username,email){
       const n=dkxNormName(username), e=dkxNormEmail(email);
-      const names=dkxReadJson(DKX_USERNAME_INDEX_KEY,{}); const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{});
-      if(n) names[n]={display:username,updatedAt:Date.now()};
-      if(e) emails[e]={username,updatedAt:Date.now()};
-      dkxWriteJson(DKX_USERNAME_INDEX_KEY,names); dkxWriteJson(DKX_EMAIL_INDEX_KEY,emails);
+      const tgId=String(getTelegramUser()?.id || '');
+      const accountKey=tgId ? ('tg:'+tgId) : ('local:'+n);
+      const names=dkxReadJson(DKX_USERNAME_INDEX_KEY,{});
+      const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{});
+      if(n) names[n]={display:username,accountKey,updatedAt:Date.now()};
+      if(e) emails[accountKey]={email:e,username,accountKey,updatedAt:Date.now()};
+      dkxWriteJson(DKX_USERNAME_INDEX_KEY,names);
+      dkxWriteJson(DKX_EMAIL_INDEX_KEY,emails);
     }
 
     function dkxIsLocalUsernameTaken(name){
@@ -2323,10 +2327,14 @@
 
     recoveryVerifyBtn.addEventListener('click',async()=>{
       if(!recoveryOtp || Date.now()-recoveryOtpTime>TEN_MINUTES_MS || recoveryOtpInput.value.trim()!==recoveryOtp){ recoveryResult.textContent='Invalid or expired OTP.'; return; }
-      const email=dkxNormEmail(recoveryEmailInput.value); const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{}); const record=emails[email];
-      if(!record){ recoveryResult.textContent='Account record not found on this device.'; return; }
+      const email=dkxNormEmail(recoveryEmailInput.value);
+      const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{});
+      const tgId=String(getTelegramUser()?.id || '');
+      const accountKey=tgId ? ('tg:'+tgId) : '';
+      const record=emails[accountKey];
+      if(!record || dkxNormEmail(record.email)!==email){ recoveryResult.textContent='This email is not linked to this Telegram account.'; return; }
       const archive=dkxReadJson(DKX_ACCOUNT_ARCHIVE_KEY,{});
-      const backup=archive[email] || dkxReadJson(DKX_ACCOUNT_BACKUP_KEY,{});
+      const backup=archive[accountKey] || archive[email] || dkxReadJson(DKX_ACCOUNT_BACKUP_KEY,{});
       if(record.username) localStorage.setItem('dkx_user_name',record.username);
       if(backup.dob) localStorage.setItem('dkx_user_dob',backup.dob);
       localStorage.setItem('dkx_user_email',email); localStorage.setItem('dkx_email_verified','true');
@@ -2407,7 +2415,7 @@
           headers: {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_PUBLISHABLE_KEY,
-            ...(session?.access_token ? {'Authorization': `Bearer ${session.access_token}`} : {}),
+            'Authorization': `Bearer ${session.access_token}`,
             ...(tg?.initData ? { 'X-Telegram-Init-Data': tg.initData } : {})
           },
           body: JSON.stringify({
@@ -2457,14 +2465,16 @@
       const list = document.getElementById('liveLeaderboardList');
       if (!list) return;
       try {
+        const headers = {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_PUBLISHABLE_KEY
+        };
+        if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
+        if (tg?.initData) headers['X-Telegram-Init-Data'] = tg.initData;
+
         const response = await fetch(REFERRAL_API, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_PUBLISHABLE_KEY,
-            ...(session?.access_token ? {'Authorization': `Bearer ${session.access_token}`} : {}),
-            ...(tg?.initData ? { 'X-Telegram-Init-Data': tg.initData } : {})
-          },
+          headers,
           body: JSON.stringify({
             action: 'leaderboard',
             limit: 500,
@@ -2477,7 +2487,7 @@
         renderLiveLeaderboard(payload.leaderboard || payload.rows || payload.data || []);
       } catch (e) {
         console.warn('Live leaderboard unavailable:', e);
-        if (list) list.innerHTML = `<div class="lb-row"><div class="lb-user-info"><div class="lb-rank">—</div><div><div class="lb-name">Live leaderboard unavailable</div><div style="font-size:11px;color:var(--text-secondary);">The server leaderboard endpoint is not enabled yet</div></div></div><div class="lb-score">—</div></div>`;
+        if (list) list.innerHTML = `<div class="lb-row"><div class="lb-user-info"><div class="lb-rank">—</div><div><div class="lb-name">Leaderboard unavailable</div><div style="font-size:11px;color:var(--text-secondary);">Server leaderboard could not be reached</div></div></div><div class="lb-score">—</div></div>`;
       }
     }
 
@@ -2489,7 +2499,6 @@
 
     window.addEventListener('beforeunload', () => clearInterval(referralSyncTimer));
     setTimeout(startReferralSync, 1500);
-    setTimeout(() => { loadLiveLeaderboard(null).catch(() => {}); }, 1800);
   </script>
 </body>
 </html>
