@@ -1967,18 +1967,7 @@
 
     function getTelegramStartParam() {
       try {
-        const unsafe = tg?.initDataUnsafe?.start_param;
-        if (unsafe) return String(unsafe);
-        const url = new URLSearchParams(window.location.search);
-        const fromUrl = url.get('tgWebAppStartParam') || url.get('startapp');
-        if (fromUrl) return String(fromUrl);
-        const raw = tg?.initData || '';
-        if (raw) {
-          const params = new URLSearchParams(raw);
-          const fromInitData = params.get('start_param');
-          if (fromInitData) return String(fromInitData);
-        }
-        return null;
+        return tg?.initDataUnsafe?.start_param || new URLSearchParams(window.location.search).get('tgWebAppStartParam') || new URLSearchParams(window.location.search).get('startapp') || null;
       } catch (e) { return null; }
     }
 
@@ -2418,7 +2407,7 @@
           headers: {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_PUBLISHABLE_KEY,
-            'Authorization': `Bearer ${session.access_token}`,
+            ...(session?.access_token ? {'Authorization': `Bearer ${session.access_token}`} : {}),
             ...(tg?.initData ? { 'X-Telegram-Init-Data': tg.initData } : {})
           },
           body: JSON.stringify({
@@ -2427,7 +2416,6 @@
             referral_code: getTelegramStartParam(),
             telegram_init_data: tg?.initData || null,
             telegram_user: getTelegramUser(),
-            supabase_auth_user_id: session.user?.id || null,
             client_ts: Date.now()
           })
         });
@@ -2454,7 +2442,7 @@
         list.innerHTML = `<div class="lb-row"><div class="lb-user-info"><div class="lb-rank">—</div><div><div class="lb-name">No live rankings yet</div><div style="font-size:11px;color:var(--text-secondary);">No server leaderboard data available</div></div></div><div class="lb-score">—</div></div>`;
         return;
       }
-      list.innerHTML = rows.slice(0, 50).map((row, i) => {
+      list.innerHTML = rows.slice(0, 500).map((row, i) => {
         const rank = i + 1;
         const cls = rank <= 3 ? ` top-${rank}` : '';
         const name = row.handle || row.username || row.name || `User ${rank}`;
@@ -2467,19 +2455,19 @@
 
     async function loadLiveLeaderboard(session) {
       const list = document.getElementById('liveLeaderboardList');
-      if (!list || !session) return;
+      if (!list) return;
       try {
         const response = await fetch(REFERRAL_API, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_PUBLISHABLE_KEY,
-            'Authorization': `Bearer ${session.access_token}`,
+            ...(session?.access_token ? {'Authorization': `Bearer ${session.access_token}`} : {}),
             ...(tg?.initData ? { 'X-Telegram-Init-Data': tg.initData } : {})
           },
           body: JSON.stringify({
             action: 'leaderboard',
-            limit: 50,
+            limit: 500,
             telegram_init_data: tg?.initData || null,
             telegram_user: getTelegramUser()
           })
@@ -2501,6 +2489,7 @@
 
     window.addEventListener('beforeunload', () => clearInterval(referralSyncTimer));
     setTimeout(startReferralSync, 1500);
+    setTimeout(() => { loadLiveLeaderboard(null).catch(() => {}); }, 1800);
   </script>
 </body>
 </html>
