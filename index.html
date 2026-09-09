@@ -1967,18 +1967,20 @@
 
     function getTelegramStartParam() {
       try {
-        // Telegram Mini Apps may expose the start parameter in different places.
-        const fromUnsafe = tg?.initDataUnsafe?.start_param;
-        if (fromUnsafe) return fromUnsafe;
-        const fromInitData = tg?.initData ? new URLSearchParams(tg.initData).get('start_param') : null;
-        if (fromInitData) return fromInitData;
-        const params = new URLSearchParams(window.location.search);
-        return params.get('tgWebAppStartParam') || params.get('startapp') || params.get('start') || null;
+        const unsafe = tg?.initDataUnsafe?.start_param;
+        if (unsafe) return String(unsafe);
+        const url = new URLSearchParams(window.location.search);
+        const fromUrl = url.get('tgWebAppStartParam') || url.get('startapp');
+        if (fromUrl) return String(fromUrl);
+        const raw = tg?.initData || '';
+        if (raw) {
+          const params = new URLSearchParams(raw);
+          const fromInitData = params.get('start_param');
+          if (fromInitData) return String(fromInitData);
+        }
+        return null;
       } catch (e) { return null; }
     }
-
-    // Temporary referral diagnostic: expose the parameter without changing balances.
-    window.__DKX_REFERRAL_DEBUG = () => ({ referral: getTelegramStartParam(), telegramInitData: !!tg?.initData });
 
     function getTelegramUser() {
       try { return tg?.initDataUnsafe?.user || null; } catch (e) { return null; }
@@ -2425,6 +2427,7 @@
             referral_code: getTelegramStartParam(),
             telegram_init_data: tg?.initData || null,
             telegram_user: getTelegramUser(),
+            supabase_auth_user_id: session.user?.id || null,
             client_ts: Date.now()
           })
         });
