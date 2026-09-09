@@ -1272,6 +1272,26 @@
     .password-note{font-size:10.5px;color:var(--text-secondary);line-height:1.4;margin-top:7px}
 
   </style>
+
+<style id="dkx-earn-scroll-style">
+#earnPage{overflow:hidden!important}
+#earnPage #earnScrollFeed{height:calc(100vh - 150px);overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding:10px 14px 110px;scrollbar-width:none}
+#earnPage #earnScrollFeed::-webkit-scrollbar{display:none}
+#earnPage .dkx-task-card{min-height:min(66vh,560px);margin:10px 0 18px;scroll-snap-align:start;scroll-snap-stop:always;border-radius:24px;padding:20px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:radial-gradient(circle at 90% 5%,rgba(255,255,255,.10),transparent 34%),linear-gradient(145deg,rgba(28,31,39,.98),rgba(12,14,19,.98));box-shadow:0 18px 55px rgba(0,0,0,.24);display:flex;flex-direction:column;justify-content:space-between}
+#earnPage .dkx-task-card:after{content:"";position:absolute;inset:-35%;background:conic-gradient(from 120deg,transparent 0 62%,rgba(255,255,255,.045),transparent 75%);animation:dkxTaskSweep 7s linear infinite;pointer-events:none}
+#earnPage .dkx-task-card>*{position:relative;z-index:1}
+@keyframes dkxTaskSweep{to{transform:rotate(360deg)}}
+#earnPage .dkx-task-icon{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:28px;background:rgba(255,255,255,.08);margin-bottom:14px}
+#earnPage .dkx-task-reward{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 11px;background:rgba(255,255,255,.08);font-weight:800}
+#earnPage .dkx-task-btn{width:100%;border:0;border-radius:16px;padding:15px 16px;font-weight:800;cursor:pointer;background:#fff;color:#090b10;transition:transform .16s,opacity .16s}
+#earnPage .dkx-task-btn:active{transform:scale(.98)}
+#earnPage .dkx-task-btn[disabled]{opacity:.48;cursor:not-allowed}
+#earnPage .dkx-task-status{font-size:12px;line-height:1.45;color:rgba(255,255,255,.62);margin-top:10px}
+#earnPage .dkx-task-progress{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin:12px 0}
+#earnPage .dkx-task-progress>i{display:block;height:100%;width:0%;background:#fff;border-radius:inherit;transition:width .35s}
+#earnPage .dkx-rule-box{border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;background:rgba(255,255,255,.035);font-size:12px;line-height:1.5;color:rgba(255,255,255,.68)}
+#earnPage .dkx-verified-pill{font-size:11px;font-weight:800;letter-spacing:.04em;opacity:.72}
+</style>
 </head>
   <body>
 
@@ -2542,6 +2562,26 @@
     window.addEventListener('beforeunload', () => clearInterval(referralSyncTimer));
     setTimeout(startReferralSync, 1500);
   </script>
+
+<script id="dkx-earn-task-engine">
+(function(){
+const K='DKX_EARN_TASKS_V2',S=JSON.parse(localStorage.getItem(K)||'{}'),DAY=86400000,NOW=()=>Date.now();
+function save(){localStorage.setItem(K,JSON.stringify(S))}
+function done(k){return S[k]&&NOW()-S[k]<DAY}
+function btn(id,t,d){const e=document.getElementById(id);if(e){e.textContent=t;e.disabled=!!d}}
+function render(){
+ if(done('daily')){btn('dailyClaimBtn','Claimed • come back tomorrow',true);document.getElementById('dailyStatus').textContent='Completed for this 24-hour period.'}
+ const st=Number(S.streak||0);document.getElementById('weekStatus').textContent=Math.min(st,7)+' / 7 days completed.';document.getElementById('monthStatus').textContent=Math.min(st,30)+' / 30 days completed.';
+ document.getElementById('weekProgress').style.width=Math.min(st/7*100,100)+'%';document.getElementById('monthProgress').style.width=Math.min(st/30*100,100)+'%';
+ if(st>=7)btn('weekClaimBtn','7-day milestone reached',true);if(st>=30)btn('monthClaimBtn','30-day milestone reached',true);
+}
+document.getElementById('dailyClaimBtn')?.addEventListener('click',()=>{if(done('daily'))return;S.daily=NOW();S.streak=Number(S.streak||0)+1;save();render();alert('Daily task completed. The reward must be credited by the server reward engine.')});
+document.getElementById('weekClaimBtn')?.addEventListener('click',()=>{if(Number(S.streak||0)<7)alert('Keep checking in daily until you reach 7 days.')});
+document.getElementById('monthClaimBtn')?.addEventListener('click',()=>{if(Number(S.streak||0)<30)alert('Keep checking in daily until you reach 30 days.')});
+function social(id,url,status){document.getElementById(id)?.addEventListener('click',()=>{window.open(url,'_blank','noopener,noreferrer');document.getElementById(status).textContent='Return after genuinely completing the task. Opening the link alone does not grant the reward.'})}
+social('igBtn','https://instagram.com/dakicks_dkx','igStatus');social('tgBtn','https://t.me/DKXOfficial','tgStatus');social('xBtn','https://x.com/dakicks_dkx','xStatus');render();
+})();
+</script>
 </body>
 </html>
 
