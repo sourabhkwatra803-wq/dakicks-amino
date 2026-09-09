@@ -2003,9 +2003,34 @@
 
     document.getElementById('btnInviteFrens').addEventListener('click', handleInviteAction);
 
-    function openFrensList() {
+    async function openFrensList() {
       triggerHaptic('light');
-      showHUD("Squad members loaded successfully");
+      try {
+        const session = await ensureReferralSession();
+        const headers = {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_PUBLISHABLE_KEY
+        };
+        if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
+        if (tg?.initData) headers['X-Telegram-Init-Data'] = tg.initData;
+
+        const response = await fetch(REFERRAL_API, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            action: 'referrals',
+            limit: 100,
+            telegram_init_data: tg?.initData || null,
+            telegram_user: getTelegramUser()
+          })
+        });
+        if (!response.ok) throw new Error('Referral list unavailable');
+        const payload = await response.json();
+        const names = (payload.referrals || []).map((r, i) => `${i + 1}. ${r.username || 'Anonymous'}`);
+        showHUD(names.length ? names.slice(0, 3).join(' • ') : 'No referrals yet');
+      } catch (e) {
+        showHUD('Referral squad is syncing…');
+      }
     }
 
     const walletModal = document.getElementById('walletModal');
@@ -2395,10 +2420,26 @@
     async function ensureReferralSession() {
       if (!supabaseClient) return null;
       try {
+        const tgUser = getTelegramUser();
+        const tgId = tgUser?.id ? String(tgUser.id) : '';
+        const boundKey = 'dkx_supabase_tg_uid';
+        const currentBound = localStorage.getItem(boundKey) || '';
+
         const { data: sessionData } = await supabaseClient.auth.getSession();
-        if (sessionData?.session) return sessionData.session;
+        if (sessionData?.session && (!tgId || currentBound === tgId)) {
+          if (tgId && !currentBound) localStorage.setItem(boundKey, tgId);
+          return sessionData.session;
+        }
+
+        // If this device has switched Telegram accounts, sign out the old
+        // anonymous session before creating a fresh one for this Telegram UID.
+        if (sessionData?.session && tgId && currentBound && currentBound !== tgId) {
+          await supabaseClient.auth.signOut();
+        }
+
         const { data, error } = await supabaseClient.auth.signInAnonymously();
         if (error) throw error;
+        if (tgId) localStorage.setItem(boundKey, tgId);
         return data?.session || null;
       } catch (e) {
         console.warn('Referral auth unavailable:', e);
@@ -2422,6 +2463,7 @@
             action: 'sync',
             handle: localStorage.getItem('dkx_user_name') || null,
             referral_code: getTelegramStartParam(),
+            start_param: getTelegramStartParam(),
             telegram_init_data: tg?.initData || null,
             telegram_user: getTelegramUser(),
             client_ts: Date.now()
@@ -2437,7 +2479,7 @@
         }
         if (payload.online === true) document.getElementById('networkStatus').textContent = 'TON • LIVE • SYNCED';
         if (Array.isArray(payload.leaderboard)) renderLiveLeaderboard(payload.leaderboard);
-        loadLiveLeaderboard(session);
+        await loadLiveLeaderboard(session);
       } catch (e) {
         console.warn('Referral sync pending:', e);
       }
