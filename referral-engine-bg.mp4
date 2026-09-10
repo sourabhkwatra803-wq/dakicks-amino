@@ -1,0 +1,194 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-telegram-init-data",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN")!;
+const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+  auth: { persistSession: false, autoRefreshToken: false },
+});
+
+const INVITER_REWARD = 5000;
+const NEW_USER_REWARD = 1000;
+
+function json(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+async function hmacSha256(key: Uint8Array, data: string) {
+  const k = await crypto.subtle.importKey("raw", key, { name:"HMAC", hash:"SHA-256" }, false, ["sign"]);
+  return new Uint8Array(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(data)));
+}
+function hex(bytes: Uint8Array){ return [...bytes].map(b=>b.toString(16).padStart(2,"0")).join(""); }
+function equalHex(a:string,b:string){ if(a.length!==b.length)return false; let d=0; for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i); return d===0; }
+
+async function verifyTelegramInitData(raw:string){
+  if(!raw || !BOT_TOKEN) return null;
+  const params=new URLSearchParams(raw);
+  const supplied=params.get("hash")||"";
+  if(!supplied)return null;
+  const pairs:string[]=[];
+  for(const [k,v] of params.entries()) if(k!=="hash") pairs.push(`${k}=${v}`);
+  pairs.sort();
+  const secret=await hmacSha256(new TextEncoder().encode("WebAppData"),BOT_TOKEN);
+  const calculated=hex(await hmacSha256(secret,pairs.join("\n")));
+  if(!equalHex(calculated,supplied))return null;
+  const authDate=Number(params.get("auth_date")||0);
+  if(!authDate || Date.now()/1000-authDate>86400)return null;
+  try{return JSON.parse(params.get("user")||"null")}catch{return null}
+}
+
+async function tgUser(req:Request,body:any){
+  const raw=req.headers.get("X-Telegram-Init-Data") || body.telegram_init_data || "";
+  return await verifyTelegramInitData(raw);
+}
+
+async function ensureAccount(tgId:string, username?:string){
+  const update:any={telegram_user_id:tgId,updated_at:new Date().toISOString()};
+  if(username)update.username=String(username).trim();
+  const {data,error}=await supabase.from("dkx_accounts")
+    .upsert(update,{onConflict:"telegram_user_id"})
+    .select("telegram_user_id,username,email,balance_dkx,referral_count")
+    .single();
+  if(error)throw error;
+  return data;
+}
+
+async function requireUser(req:Request,body:any){
+  const u=await tgUser(req,body);
+  if(!u?.id) throw new Error("Valid Telegram authentication required");
+  await ensureAccount(String(u.id),u.username);
+  return u;
+}
+
+Deno.serve(async req=>{
+  if(req.method==="OPTIONS")return new Response("ok",{headers:corsHeaders});
+  try{
+    const body=await req.json().catch(()=>({}));
+    const action=String(body.action||"sync");
+
+    // Public-read leaderboard: no client JWT or Telegram auth required.
+    if(action==="leaderboard"){
+      const limit=Math.min(Math.max(Number(body.limit||500),1),500);
+      const {data,error}=await supabase.from("dkx_accounts")
+        .select("username,balance_dkx,referral_count")
+        .order("balance_dkx",{ascending:false})
+        .order("referral_count",{ascending:false})
+        .limit(limit);
+      if(error)throw error;
+      return json({leaderboard:(data||[]).map((r:any)=>({
+        handle:r.username||"Anonymous",
+        score:Number(r.balance_dkx||0),
+        referral_count:Number(r.referral_count||0),
+        unit:" $DKX",
+        subtitle:`${Number(r.referral_count||0).toLocaleString()} referrals`
+      }))});
+    }
+
+    const u=await requireUser(req,body);
+    const id=String(u.id);
+    const account=await ensureAccount(id,u.username);
+
+    if(action==="sync"){
+      let referral=null;
+      const start=String(body.referral_code||"");
+      if(start.startsWith("ref_")){
+        const inviter=start.slice(4).split(/[^0-9]/)[0];
+        if(inviter && inviter!==id){
+          const {data,error}=await supabase.rpc("dkx_claim_referral",{p_inviter:inviter,p_invitee:id});
+          if(error)throw error;
+          referral=data;
+        }
+      }
+      const latest=await ensureAccount(id,u.username);
+      return json({
+        ok:true,online:true,balance_dkx:Number(latest.balance_dkx||0),
+        referral_count:Number(latest.referral_count||0),referral,
+        rewards:{inviter_dkx:INVITER_REWARD,new_user_dkx:NEW_USER_REWARD}
+      });
+    }
+
+    if(action==="referrals"){
+      const {data:profile}=await supabase.from("dkx_profiles").select("id").eq("telegram_user_id",Number(id)).maybeSingle();
+      if(!profile)return json({referrals:[]});
+      const {data,error}=await supabase.from("dkx_referrals")
+        .select("referred_id,status,created_at")
+        .eq("referrer_id",profile.id).order("created_at",{ascending:false}).limit(500);
+      if(error)throw error;
+      const ids=(data||[]).map((x:any)=>x.referred_id);
+      let names:any[]=[];
+      if(ids.length){
+        const {data:p}=await supabase.from("dkx_profiles").select("id,username,telegram_user_id").in("id",ids);
+        names=p||[];
+      }
+      const byId=new Map(names.map(x=>[x.id,x]));
+      return json({referrals:(data||[]).map((x:any)=>({username:byId.get(x.referred_id)?.username||"Anonymous",status:x.status,reward_dkx:INVITER_REWARD,created_at:x.created_at}))});
+    }
+
+    if(action==="username_check"){
+      const name=String(body.username||"").trim();
+      if(!/^[A-Za-z0-9_]{3,20}$/.test(name))return json({available:false,exists:true});
+      const {data,error}=await supabase.from("dkx_accounts").select("telegram_user_id").ilike("username",name).neq("telegram_user_id",id).maybeSingle();
+      if(error)throw error;
+      return json({available:!data,exists:!!data});
+    }
+
+    if(action==="link_email"){
+      const email=String(body.email||"").trim().toLowerCase();
+      if(!email.includes("@"))return json({error:"Invalid email"},400);
+      const {data:existing}=await supabase.from("dkx_accounts").select("telegram_user_id").eq("email",email).maybeSingle();
+      if(existing && existing.telegram_user_id!==id)return json({error:"Email already linked to another account"},409);
+      const {data,error}=await supabase.from("dkx_accounts").update({email,updated_at:new Date().toISOString()}).eq("telegram_user_id",id).select().single();
+      if(error)throw error;
+      return json({ok:true,account:data});
+    }
+
+    if(action==="earn_claim"){
+      const {data,error}=await supabase.rpc("dkx_claim_daily_reward",{p_telegram_user_id:id});
+      if(error)throw error;
+      if(!data.ok)return json(data,409);
+      return json(data);
+    }
+
+    if(action==="streak_claim"){
+      const days=Number(body.days);
+      const {data,error}=await supabase.rpc("dkx_claim_streak",{p_telegram_user_id:id,p_days:days});
+      if(error)throw error;
+      if(!data.ok)return json(data,409);
+      return json(data);
+    }
+
+    if(action==="showcase_vote"){
+      const {data,error}=await supabase.rpc("dkx_record_showcase_vote",{p_telegram_user_id:id,p_drop_id:String(body.drop_id||"genesis_01"),p_choice:String(body.choice||"genesis_01")});
+      if(error)throw error; return json(data);
+    }
+
+    if(action==="waitlist_join"){
+      const {data,error}=await supabase.rpc("dkx_join_waitlist",{p_telegram_user_id:id,p_drop_id:String(body.drop_id||"genesis_01")});
+      if(error)throw error; return json(data);
+    }
+
+    if(action==="social_verify"){
+      const task=String(body.task_id||"");
+      // Telegram can be server-verified if the bot is an admin/member-checker in the target chat.
+      // Instagram/X need OAuth/API credentials; never pretend that opening a link proves a follow.
+      if(task==="telegram_join"){
+        return json({verified:false,error:"Telegram membership verification requires the bot to be an administrator of the target channel/group."},409);
+      }
+      return json({verified:false,error:"This social task needs OAuth/API verification before a reward can be credited."},409);
+    }
+
+    return json({error:"Unknown action"},400);
+  }catch(e){
+    console.error(e);
+    return json({error:e instanceof Error?e.message:"Server error"},500);
+  }
+});
