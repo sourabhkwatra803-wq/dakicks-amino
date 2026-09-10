@@ -1,1 +1,55 @@
+DKX PRODUCTION ARCHITECTURE
 
+Telegram Mini App
+        |
+        v
+HTTPS API
+        |
+        v
+Node.js + Fastify Backend
+        |
+        +----------------------+
+        |                      |
+        v                      v
+PostgreSQL Database       TON RPC / TON Center
+        |                      |
+        v                      v
+Users / Referrals        Wallet / Transaction Verification
+Wallets / Sessions
+Audit / Idempotency
+
+SECURITY FLOW
+
+1. Telegram WebApp initData is sent to the backend.
+2. Backend validates Telegram initData using the Telegram bot token.
+3. Backend creates the authenticated application session.
+4. User actions are authenticated by the backend.
+5. Username uniqueness is enforced in PostgreSQL.
+6. TON wallet connection uses TON Connect.
+7. TON proof is generated and verified by the backend.
+8. Wallet ownership is never trusted from frontend data alone.
+9. Crypto transaction hashes are independently verified through TON RPC.
+10. Only verified transactions are saved to PostgreSQL.
+11. Transaction records use idempotency protection.
+12. Security-sensitive actions are written to the audit log.
+
+DATABASE
+
+app_users
+username_registry
+wallet_connections
+auth_nonces
+crypto_transactions
+audit_events
+idempotency_keys
+
+PRODUCTION RULES
+
+- Never expose Telegram bot tokens in frontend code.
+- Never expose PostgreSQL credentials in frontend code.
+- Never expose service-role credentials in frontend code.
+- Never trust Telegram initDataUnsafe for authentication.
+- Never trust a client-provided transaction as proof of payment.
+- Never credit crypto balances before backend transaction verification.
+- Never allow a previously registered username to be reused by another Telegram account.
+- Wallet connection and Telegram authentication are separate security layers.
