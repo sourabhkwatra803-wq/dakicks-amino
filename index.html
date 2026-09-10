@@ -38,6 +38,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      overscroll-behavior: none;
     }
 
     div[class*="adsgram"], div[id*="adsgram"] {
@@ -121,6 +122,8 @@
       display: none;
       flex-direction: column;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
       padding: 16px 16px 85px 16px;
       z-index: 10;
     }
@@ -156,7 +159,8 @@
 
     #tab-terminal {
       padding: 0;
-      overflow: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .chart-box {
@@ -1271,27 +1275,65 @@
     .recovery-secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid var(--glass-border)!important}
     .password-note{font-size:10.5px;color:var(--text-secondary);line-height:1.4;margin-top:7px}
 
-  </style>
+  
+    /* DKX production interaction layer */
+    .dkx-home-overlay{position:relative;z-index:7;display:flex;flex-direction:column;gap:12px;padding:14px 14px 8px}
+    .dkx-hero{margin:0!important;padding:20px!important;background:linear-gradient(145deg,rgba(20,20,24,.82),rgba(5,5,7,.72));}
+    .dkx-kicker,.earn-kicker{font-size:9px;letter-spacing:1.8px;font-weight:900;color:#8e8e93;text-transform:uppercase}
+    .dkx-hero-title{font-size:29px;line-height:1.02;font-weight:950;letter-spacing:-1.2px;margin:9px 0}
+    .dkx-hero-title span,.earn-slide h1 span,.earn-slide h2 span{color:#a8a8ad}
+    .dkx-hero-copy{font-size:12px;line-height:1.55;color:#99999f;max-width:330px}
+    .dkx-balance-line{display:flex;justify-content:space-between;align-items:end;margin:18px 0 13px}
+    .dkx-mini-label{display:block;font-size:8px;letter-spacing:1.2px;color:#77777d;margin-bottom:4px}
+    .dkx-balance-line strong{font-size:24px;letter-spacing:-.7px}
+    .dkx-live-pill{font-size:8px;border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:6px 8px;color:#9c9ca2}
+    .dkx-live-pill i{display:inline-block;width:5px;height:5px;border-radius:50%;background:#fff;margin-right:4px}
+    .dkx-primary-btn,.dkx-ghost-btn,.dkx-task-btn{border:0;cursor:pointer;font-weight:900;letter-spacing:.5px}
+    .dkx-primary-btn{width:100%;padding:13px;border-radius:12px;background:#fff;color:#050507;font-size:11px}
+    .dkx-primary-btn.small{padding:11px 12px;font-size:10px}
+    .dkx-ghost-btn{padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.05);color:#fff;border:1px solid rgba(255,255,255,.1);font-size:10px}
+    .dkx-showcase-card{border:1px solid rgba(255,255,255,.09);border-radius:20px;background:rgba(11,11,14,.7);backdrop-filter:blur(18px);overflow:hidden;padding:16px}
+    .dkx-showcase-head,.dkx-showcase-actions{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .dkx-showcase-title{font-size:15px;font-weight:900;margin-top:5px}
+    .dkx-drop-tag{font-size:8px;color:#8d8d94;border:1px solid rgba(255,255,255,.1);padding:6px 7px;border-radius:8px}
+    .dkx-shoe-stage{height:220px;position:relative;overflow:hidden;perspective:800px}
+    .dkx-grid-floor{position:absolute;left:8%;right:8%;bottom:24px;height:80px;background:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);background-size:20px 20px;transform:perspective(180px) rotateX(62deg);mask-image:linear-gradient(to top,black,transparent)}
+    .dkx-shoe{position:absolute;width:190px;height:92px;left:50%;top:56%;transform:translate(-50%,-50%) rotateX(12deg) rotateY(-18deg) rotateZ(-4deg);transform-style:preserve-3d;filter:drop-shadow(0 24px 18px rgba(0,0,0,.65));animation:shoeFloat 4.8s ease-in-out infinite}
+    .shoe-sole{position:absolute;left:3px;bottom:2px;width:178px;height:22px;background:linear-gradient(#ddd,#777);border-radius:48% 28% 32% 48%;transform:skewX(-18deg)}
+    .shoe-mid{position:absolute;left:10px;bottom:18px;width:164px;height:42px;background:linear-gradient(145deg,#25252a,#08080a);border-radius:72% 25% 35% 55%;border:1px solid #4a4a50}
+    .shoe-upper{position:absolute;left:30px;bottom:37px;width:115px;height:40px;background:linear-gradient(145deg,#56565c,#111116);border-radius:70% 20% 55% 25%;transform:skewX(-15deg);border:1px solid #77777e}
+    .shoe-panel{position:absolute;background:#0a0a0d;border:1px solid #85858b}
+    .shoe-panel.p1{left:46px;bottom:27px;width:52px;height:42px;border-radius:60% 10% 30% 30%;transform:rotate(18deg)}
+    .shoe-panel.p2{left:91px;bottom:29px;width:34px;height:34px;border-radius:10px 50% 10px 50%;transform:rotate(22deg)}
+    .shoe-lace{position:absolute;height:2px;width:48px;background:#eee;left:84px;bottom:56px;transform:rotate(8deg);box-shadow:0 6px #aaa,0 12px #ddd}
+    .shoe-lace.l2{left:91px;bottom:50px}.shoe-lace.l3{left:98px;bottom:44px}
+    .shoe-mark{position:absolute;right:16px;bottom:28px;font-size:10px;font-weight:950;letter-spacing:1px;color:#fff;transform:rotate(-8deg)}
+    .dkx-orbit{position:absolute;border:1px solid rgba(255,255,255,.13);border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%) rotateX(65deg)}
+    .dkx-orbit.o1{width:230px;height:100px}.dkx-orbit.o2{width:280px;height:130px;opacity:.45}
+    .dkx-showcase-status,.earn-status{font-size:9.5px;color:#77777d;line-height:1.45;margin-top:9px}
+    @keyframes shoeFloat{50%{transform:translate(-50%,-56%) rotateX(12deg) rotateY(-8deg) rotateZ(-2deg)}}
+    .earn-feed{position:relative;z-index:7;height:100%;scroll-snap-type:y mandatory;overflow-y:auto;overscroll-behavior-y:contain;padding:10px 0 80px}
+    .earn-slide{min-height:calc(100svh - 72px);scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:22px 4px}
+    .earn-slide h1{font-size:38px;line-height:.98;letter-spacing:-1.7px;margin:9px 0 12px;font-weight:950}
+    .earn-slide h2{font-size:29px;line-height:1;letter-spacing:-1px;margin:9px 0 18px;font-weight:950}
+    .earn-slide p,.earn-slide li{font-size:12px;line-height:1.6;color:#99999f}
+    .earn-balance{margin:18px 0;padding:16px;border:1px solid rgba(255,255,255,.08);border-radius:16px;background:rgba(0,0,0,.35)}
+    .earn-balance span{display:block;font-size:8px;color:#77777d;letter-spacing:1.2px}.earn-balance strong{display:block;font-size:28px;margin-top:5px}
+    .streak-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.streak-card{padding:15px;border:1px solid rgba(255,255,255,.08);border-radius:17px;background:rgba(0,0,0,.4)}
+    .streak-card b,.streak-card small{display:block;font-size:8px;color:#7e7e84;letter-spacing:1px}.streak-card strong{display:block;font-size:27px;margin:8px 0}.streak-card .dkx-ghost-btn{width:100%;font-size:8px}
+    .task-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:15px;background:rgba(0,0,0,.42);margin-bottom:9px}
+    .task-card b{display:block;font-size:13px}.task-card small{font-size:10px;color:#77777d}.dkx-task-btn{padding:10px;border-radius:10px;background:#fff;color:#000;font-size:8px;white-space:nowrap}
+    .brand-showcase{display:flex;align-items:center;gap:15px;padding:17px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:rgba(0,0,0,.4);margin-bottom:12px}
+    .mini-shoe{width:95px;height:46px;position:relative;flex:0 0 auto;background:linear-gradient(145deg,#44444b,#0a0a0d);border-radius:65% 20% 35% 55%;transform:skewX(-12deg);box-shadow:inset -8px -8px 0 rgba(255,255,255,.05)}
+    .brand-showcase b{font-size:13px}.brand-showcase p{font-size:10px!important;margin-top:4px}
+    .earn-rules{justify-content:flex-start;padding-top:45px}.earn-rules ul{padding-left:18px;margin-top:10px}.earn-rules li{margin-bottom:10px}
+    .sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(16px);z-index:100010;display:none;align-items:flex-end}.sheet-backdrop.show{display:flex}
+    .sheet{width:100%;max-height:78vh;overflow:auto;background:#111113;border:1px solid rgba(255,255,255,.1);border-radius:25px 25px 0 0;padding:22px}
+    .sheet-close{position:absolute;right:16px;top:14px;border:0;background:rgba(255,255,255,.08);color:#fff;border-radius:50%;width:30px;height:30px;font-size:20px}
+    .sheet-kicker{font-size:9px;letter-spacing:1.5px;color:#77777d;font-weight:900}.sheet h3{font-size:22px;margin:6px 0}.sheet p{font-size:11px;color:#8d8d94;line-height:1.5}.squad-list{margin-top:14px}.squad-row{display:flex;justify-content:space-between;align-items:center;padding:12px;border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-bottom:7px}.squad-row b{font-size:12px}.squad-row small{display:block;color:#77777d;font-size:9px}.empty-state{padding:20px;text-align:center;color:#77777d;font-size:11px}
+    @media(max-width:390px){.dkx-hero-title{font-size:26px}.dkx-shoe-stage{height:195px}.earn-slide h1{font-size:34px}}
 
-<style id="dkx-earn-scroll-style">
-#earnPage{overflow:hidden!important}
-#earnPage #earnScrollFeed{height:calc(100vh - 150px);overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding:10px 14px 110px;scrollbar-width:none}
-#earnPage #earnScrollFeed::-webkit-scrollbar{display:none}
-#earnPage .dkx-task-card{min-height:min(66vh,560px);margin:10px 0 18px;scroll-snap-align:start;scroll-snap-stop:always;border-radius:24px;padding:20px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.10);background:radial-gradient(circle at 90% 5%,rgba(255,255,255,.10),transparent 34%),linear-gradient(145deg,rgba(28,31,39,.98),rgba(12,14,19,.98));box-shadow:0 18px 55px rgba(0,0,0,.24);display:flex;flex-direction:column;justify-content:space-between}
-#earnPage .dkx-task-card:after{content:"";position:absolute;inset:-35%;background:conic-gradient(from 120deg,transparent 0 62%,rgba(255,255,255,.045),transparent 75%);animation:dkxTaskSweep 7s linear infinite;pointer-events:none}
-#earnPage .dkx-task-card>*{position:relative;z-index:1}
-@keyframes dkxTaskSweep{to{transform:rotate(360deg)}}
-#earnPage .dkx-task-icon{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:28px;background:rgba(255,255,255,.08);margin-bottom:14px}
-#earnPage .dkx-task-reward{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 11px;background:rgba(255,255,255,.08);font-weight:800}
-#earnPage .dkx-task-btn{width:100%;border:0;border-radius:16px;padding:15px 16px;font-weight:800;cursor:pointer;background:#fff;color:#090b10;transition:transform .16s,opacity .16s}
-#earnPage .dkx-task-btn:active{transform:scale(.98)}
-#earnPage .dkx-task-btn[disabled]{opacity:.48;cursor:not-allowed}
-#earnPage .dkx-task-status{font-size:12px;line-height:1.45;color:rgba(255,255,255,.62);margin-top:10px}
-#earnPage .dkx-task-progress{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin:12px 0}
-#earnPage .dkx-task-progress>i{display:block;height:100%;width:0%;background:#fff;border-radius:inherit;transition:width .35s}
-#earnPage .dkx-rule-box{border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;background:rgba(255,255,255,.035);font-size:12px;line-height:1.5;color:rgba(255,255,255,.68)}
-#earnPage .dkx-verified-pill{font-size:11px;font-weight:800;letter-spacing:.04em;opacity:.72}
-</style>
+  </style>
 </head>
   <body>
 
@@ -1309,58 +1351,117 @@
   <div class="main-viewport">
     
     <div id="tab-terminal" class="tab-content active">
+
+      <div class="dkx-home-overlay">
+        <div class="dkx-hero glass-card">
+          <div class="dkx-kicker">DAKICKS / TON TERMINAL</div>
+          <div class="dkx-hero-title">Digital ownership.<br><span>Real-world culture.</span></div>
+          <div class="dkx-hero-copy">Build your DKX balance, grow your squad and get early access to future DAKICKS drops.</div>
+          <div class="dkx-balance-line">
+            <div><span class="dkx-mini-label">YOUR DKX BALANCE</span><strong id="homeBalance">0</strong></div>
+            <div class="dkx-live-pill"><i></i> SERVER SYNC</div>
+          </div>
+          <button class="dkx-primary-btn" id="homeEarnBtn">OPEN EARN</button>
+        </div>
+
+        <div class="dkx-showcase-card">
+          <div class="dkx-showcase-head">
+            <div>
+              <div class="dkx-kicker">UPCOMING DROP</div>
+              <div class="dkx-showcase-title">DAKICKS GENESIS 01</div>
+            </div>
+            <div class="dkx-drop-tag">CONCEPT / 01</div>
+          </div>
+          <div class="dkx-shoe-stage" id="shoeStage">
+            <div class="dkx-grid-floor"></div>
+            <div class="dkx-shoe">
+              <div class="shoe-sole"></div><div class="shoe-mid"></div><div class="shoe-upper"></div>
+              <div class="shoe-panel p1"></div><div class="shoe-panel p2"></div><div class="shoe-lace l1"></div>
+              <div class="shoe-lace l2"></div><div class="shoe-lace l3"></div><div class="shoe-mark">DKX</div>
+            </div>
+            <div class="dkx-orbit o1"></div><div class="dkx-orbit o2"></div>
+          </div>
+          <div class="dkx-showcase-actions">
+            <button class="dkx-ghost-btn" id="voteDropBtn">VOTE CONCEPT</button>
+            <button class="dkx-primary-btn small" id="reserveDropBtn">JOIN EARLY ACCESS</button>
+          </div>
+          <div class="dkx-showcase-status" id="showcaseStatus">Your vote / early-access request is stored server-side when available.</div>
+        </div>
+      </div>
+
       <div class="chart-box">
         <div id="tv_chart_main" style="height:100%;width:100%"></div>
       </div>
     </div>
 
+
     <div id="tab-dakicks" class="tab-content">
       <div class="video-bg-container">
-        <video autoplay loop muted playsinline preload="none">
-          <source src="./dakicks-bg.mp4" type="video/mp4" />
+        <video autoplay loop muted playsinline preload="metadata">
+          <source src="./bg.mp4" type="video/mp4" />
         </video>
         <div class="video-overlay-gradient"></div>
       </div>
+      <div class="earn-feed" id="earnFeed">
+        <section class="earn-slide earn-intro">
+          <div class="earn-kicker">DAKICKS EARN ENGINE</div>
+          <h1>Turn activity<br><span>into DKX.</span></h1>
+          <p>Daily actions, streaks and community missions. Rewards are credited by the server, not by the browser.</p>
+          <div class="earn-balance"><span>AVAILABLE</span><strong id="earnBalance">0 DKX</strong></div>
+          <button class="dkx-primary-btn" id="dailyClaimBtn">CLAIM DAILY 2,000 DKX</button>
+          <div class="earn-status" id="dailyStatus">Available every 24 hours after a successful server claim.</div>
+        </section>
 
-      <div class="section-title">Institutional RWA Architecture</div>
+        <section class="earn-slide">
+          <div class="earn-kicker">STREAKS</div>
+          <h2>Stay active.<br><span>Unlock milestones.</span></h2>
+          <div class="streak-grid">
+            <div class="streak-card"><b>7 DAYS</b><strong>7,000</strong><small>DKX bonus</small><button class="dkx-ghost-btn streak-btn" data-streak="7">CHECK 7-DAY STREAK</button></div>
+            <div class="streak-card"><b>30 DAYS</b><strong>55,000</strong><small>DKX bonus</small><button class="dkx-ghost-btn streak-btn" data-streak="30">CHECK 30-DAY STREAK</button></div>
+          </div>
+          <div class="earn-status" id="streakStatus">Milestones are validated from server activity history.</div>
+        </section>
 
-      <div class="glass-card">
-        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
-          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
-        </video>
-        <div class="card-head">
-          <div class="card-title">DAKICKS® Physical Drops</div>
-          <div class="card-tag">RWA APPAREL</div>
-        </div>
-        <div class="card-desc">
-          Genesis luxury footwear embedded with cryptographic NFC authenticity chips. Physical ownership mapped on TON Network.
-        </div>
-      </div>
+        <section class="earn-slide">
+          <div class="earn-kicker">SOCIAL MISSIONS</div>
+          <h2>Follow the<br><span>official nodes.</span></h2>
+          <div class="task-card" data-task="telegram_join">
+            <div><b>Telegram</b><small>@DKXOfficial</small></div>
+            <button class="dkx-task-btn" data-url="https://t.me/DKXOfficial">OPEN + VERIFY</button>
+          </div>
+          <div class="task-card" data-task="instagram_follow">
+            <div><b>Instagram</b><small>@dakicks_dkx</small></div>
+            <button class="dkx-task-btn" data-url="https://instagram.com/dakicks_dkx">OPEN + VERIFY</button>
+          </div>
+          <div class="task-card" data-task="x_follow">
+            <div><b>X</b><small>@dakicks_dkx</small></div>
+            <button class="dkx-task-btn" data-url="https://x.com/dakicks_dkx">OPEN + VERIFY</button>
+          </div>
+          <div class="earn-status">Opening a link never grants a reward. Verification must succeed on the server.</div>
+        </section>
 
-      <div class="glass-card">
-        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
-          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
-        </video>
-        <div class="card-head">
-          <div class="card-title">Revenue-Share Protocol</div>
-          <div class="card-tag">TREASURY</div>
-        </div>
-        <div class="card-desc">
-          50% of real-world footwear sales and corporate brand sponsorships redirect into institutional buyback reserve vaults.
-        </div>
-      </div>
+        <section class="earn-slide">
+          <div class="earn-kicker">BRAND ACCESS</div>
+          <h2>Inspect the<br><span>physical vision.</span></h2>
+          <div class="brand-showcase">
+            <div class="mini-shoe"></div>
+            <div><b>GENESIS 01</b><p>Luxury streetwear concept with NFC-backed authenticity planned for future physical drops.</p></div>
+          </div>
+          <button class="dkx-primary-btn" id="earnVoteBtn">VOTE FOR GENESIS 01</button>
+          <div class="earn-status" id="earnVoteStatus">Voting is free; your selection is stored when server storage is enabled.</div>
+        </section>
 
-      <div class="glass-card">
-        <video class="card-3d-sticker" autoplay loop muted playsinline preload="auto">
-          <source src="./outline%20video%20transparent%20bg.mp4" type="video/mp4" />
-        </video>
-        <div class="card-head">
-          <div class="card-title">DKX Supply Standard</div>
-          <div class="card-tag">DEFLATIONARY</div>
-        </div>
-        <div class="card-desc">
-          Fixed hard-cap supply of 10,000,000,000 $DKX with 30% Ecosystem & Team Vesting Reserve. Non-inflationary allocation verified by smart contract integrity checks.
-        </div>
+        <section class="earn-slide earn-rules">
+          <div class="earn-kicker">RULES</div>
+          <h2>Fair play<br><span>by design.</span></h2>
+          <ul>
+            <li>One Telegram identity maps to one DKX account.</li>
+            <li>Daily rewards use a server-side 24-hour cooldown.</li>
+            <li>Referral rewards are awarded once per valid referred Telegram account.</li>
+            <li>Self-referrals, duplicate claims and suspicious activity are rejected.</li>
+            <li>Social rewards require server verification; opening a profile alone is never enough.</li>
+          </ul>
+        </section>
       </div>
     </div>
 
@@ -1479,7 +1580,7 @@
       <div class="leaderboard-wrapper">
         <div class="lb-header-card">
           <div class="lb-title">Global Leaderboard</div>
-          <div class="lb-subtitle">Top traders & squad leaders ranked by Season 1 volume</div>
+          <div class="lb-subtitle">Top 500 accounts ranked by total DKX balance</div>
         </div>
 
         <div class="lb-list" id="liveLeaderboardList">
@@ -1501,12 +1602,12 @@
     <div id="tab-vault" class="tab-content">
       <div class="video-bg-container">
         <video autoplay loop muted playsinline preload="none">
-          <source src="./bg.mp4" type="video/mp4" />
+          <source src="./outlaybg.mp4" type="video/mp4" />
         </video>
         <div class="video-overlay-gradient"></div>
       </div>
 
-      <div class="vault-wrapper">
+      <div class="vault-wrapper>
         <div class="vault-glyph">
           <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
         </div>
@@ -1569,6 +1670,17 @@
   <div class="hud-toast" id="hudToast">
   <div class="hud-toast-indicator"></div>
     <span id="hudMsg">Notice</span>
+  </div>
+
+
+  <div class="sheet-backdrop" id="squadBackdrop">
+    <div class="sheet" id="squadSheet">
+      <button class="sheet-close" id="closeSquadBtn">×</button>
+      <div class="sheet-kicker">YOUR SQUAD</div>
+      <h3>Referral network</h3>
+      <p>Valid referred users and their current status are loaded from the server.</p>
+      <div id="squadList" class="squad-list"><div class="empty-state">Loading squad…</div></div>
+    </div>
   </div>
 
   <!-- ACCOUNT RECOVERY MODAL -->
@@ -1852,14 +1964,10 @@
 
     function dkxRegisterLocalIdentity(username,email){
       const n=dkxNormName(username), e=dkxNormEmail(email);
-      const tgId=String(getTelegramUser()?.id || '');
-      const accountKey=tgId ? ('tg:'+tgId) : ('local:'+n);
-      const names=dkxReadJson(DKX_USERNAME_INDEX_KEY,{});
-      const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{});
-      if(n) names[n]={display:username,accountKey,updatedAt:Date.now()};
-      if(e) emails[accountKey]={email:e,username,accountKey,updatedAt:Date.now()};
-      dkxWriteJson(DKX_USERNAME_INDEX_KEY,names);
-      dkxWriteJson(DKX_EMAIL_INDEX_KEY,emails);
+      const names=dkxReadJson(DKX_USERNAME_INDEX_KEY,{}); const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{});
+      if(n) names[n]={display:username,updatedAt:Date.now()};
+      if(e) emails[e]={username,updatedAt:Date.now()};
+      dkxWriteJson(DKX_USERNAME_INDEX_KEY,names); dkxWriteJson(DKX_EMAIL_INDEX_KEY,emails);
     }
 
     function dkxIsLocalUsernameTaken(name){
@@ -2023,34 +2131,9 @@
 
     document.getElementById('btnInviteFrens').addEventListener('click', handleInviteAction);
 
-    async function openFrensList() {
+    function openFrensList() {
       triggerHaptic('light');
-      try {
-        const session = await ensureReferralSession();
-        const headers = {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_PUBLISHABLE_KEY
-        };
-        if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
-        if (tg?.initData) headers['X-Telegram-Init-Data'] = tg.initData;
-
-        const response = await fetch(REFERRAL_API, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({
-            action: 'referrals',
-            limit: 100,
-            telegram_init_data: tg?.initData || null,
-            telegram_user: getTelegramUser()
-          })
-        });
-        if (!response.ok) throw new Error('Referral list unavailable');
-        const payload = await response.json();
-        const names = (payload.referrals || []).map((r, i) => `${i + 1}. ${r.username || 'Anonymous'}`);
-        showHUD(names.length ? names.slice(0, 3).join(' • ') : 'No referrals yet');
-      } catch (e) {
-        showHUD('Referral squad is syncing…');
-      }
+      showHUD("Squad members loaded successfully");
     }
 
     const walletModal = document.getElementById('walletModal');
@@ -2372,14 +2455,10 @@
 
     recoveryVerifyBtn.addEventListener('click',async()=>{
       if(!recoveryOtp || Date.now()-recoveryOtpTime>TEN_MINUTES_MS || recoveryOtpInput.value.trim()!==recoveryOtp){ recoveryResult.textContent='Invalid or expired OTP.'; return; }
-      const email=dkxNormEmail(recoveryEmailInput.value);
-      const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{});
-      const tgId=String(getTelegramUser()?.id || '');
-      const accountKey=tgId ? ('tg:'+tgId) : '';
-      const record=emails[accountKey];
-      if(!record || dkxNormEmail(record.email)!==email){ recoveryResult.textContent='This email is not linked to this Telegram account.'; return; }
+      const email=dkxNormEmail(recoveryEmailInput.value); const emails=dkxReadJson(DKX_EMAIL_INDEX_KEY,{}); const record=emails[email];
+      if(!record){ recoveryResult.textContent='Account record not found on this device.'; return; }
       const archive=dkxReadJson(DKX_ACCOUNT_ARCHIVE_KEY,{});
-      const backup=archive[accountKey] || archive[email] || dkxReadJson(DKX_ACCOUNT_BACKUP_KEY,{});
+      const backup=archive[email] || dkxReadJson(DKX_ACCOUNT_BACKUP_KEY,{});
       if(record.username) localStorage.setItem('dkx_user_name',record.username);
       if(backup.dob) localStorage.setItem('dkx_user_dob',backup.dob);
       localStorage.setItem('dkx_user_email',email); localStorage.setItem('dkx_email_verified','true');
@@ -2440,26 +2519,10 @@
     async function ensureReferralSession() {
       if (!supabaseClient) return null;
       try {
-        const tgUser = getTelegramUser();
-        const tgId = tgUser?.id ? String(tgUser.id) : '';
-        const boundKey = 'dkx_supabase_tg_uid';
-        const currentBound = localStorage.getItem(boundKey) || '';
-
         const { data: sessionData } = await supabaseClient.auth.getSession();
-        if (sessionData?.session && (!tgId || currentBound === tgId)) {
-          if (tgId && !currentBound) localStorage.setItem(boundKey, tgId);
-          return sessionData.session;
-        }
-
-        // If this device has switched Telegram accounts, sign out the old
-        // anonymous session before creating a fresh one for this Telegram UID.
-        if (sessionData?.session && tgId && currentBound && currentBound !== tgId) {
-          await supabaseClient.auth.signOut();
-        }
-
+        if (sessionData?.session) return sessionData.session;
         const { data, error } = await supabaseClient.auth.signInAnonymously();
         if (error) throw error;
-        if (tgId) localStorage.setItem(boundKey, tgId);
         return data?.session || null;
       } catch (e) {
         console.warn('Referral auth unavailable:', e);
@@ -2483,7 +2546,6 @@
             action: 'sync',
             handle: localStorage.getItem('dkx_user_name') || null,
             referral_code: getTelegramStartParam(),
-            start_param: getTelegramStartParam(),
             telegram_init_data: tg?.initData || null,
             telegram_user: getTelegramUser(),
             client_ts: Date.now()
@@ -2499,7 +2561,7 @@
         }
         if (payload.online === true) document.getElementById('networkStatus').textContent = 'TON • LIVE • SYNCED';
         if (Array.isArray(payload.leaderboard)) renderLiveLeaderboard(payload.leaderboard);
-        await loadLiveLeaderboard(session);
+        loadLiveLeaderboard(session);
       } catch (e) {
         console.warn('Referral sync pending:', e);
       }
@@ -2525,18 +2587,16 @@
 
     async function loadLiveLeaderboard(session) {
       const list = document.getElementById('liveLeaderboardList');
-      if (!list) return;
+      if (!list || !session) return;
       try {
-        const headers = {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_PUBLISHABLE_KEY
-        };
-        if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
-        if (tg?.initData) headers['X-Telegram-Init-Data'] = tg.initData;
-
         const response = await fetch(REFERRAL_API, {
           method: 'POST',
-          headers,
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': `Bearer ${session.access_token}`,
+            ...(tg?.initData ? { 'X-Telegram-Init-Data': tg.initData } : {})
+          },
           body: JSON.stringify({
             action: 'leaderboard',
             limit: 500,
@@ -2549,7 +2609,7 @@
         renderLiveLeaderboard(payload.leaderboard || payload.rows || payload.data || []);
       } catch (e) {
         console.warn('Live leaderboard unavailable:', e);
-        if (list) list.innerHTML = `<div class="lb-row"><div class="lb-user-info"><div class="lb-rank">—</div><div><div class="lb-name">Leaderboard unavailable</div><div style="font-size:11px;color:var(--text-secondary);">Server leaderboard could not be reached</div></div></div><div class="lb-score">—</div></div>`;
+        if (list) list.innerHTML = `<div class="lb-row"><div class="lb-user-info"><div class="lb-rank">—</div><div><div class="lb-name">Live leaderboard unavailable</div><div style="font-size:11px;color:var(--text-secondary);">The server leaderboard endpoint is not enabled yet</div></div></div><div class="lb-score">—</div></div>`;
       }
     }
 
@@ -2563,25 +2623,159 @@
     setTimeout(startReferralSync, 1500);
   </script>
 
-<script id="dkx-earn-task-engine">
+<script>
 (function(){
-const K='DKX_EARN_TASKS_V2',S=JSON.parse(localStorage.getItem(K)||'{}'),DAY=86400000,NOW=()=>Date.now();
-function save(){localStorage.setItem(K,JSON.stringify(S))}
-function done(k){return S[k]&&NOW()-S[k]<DAY}
-function btn(id,t,d){const e=document.getElementById(id);if(e){e.textContent=t;e.disabled=!!d}}
-function render(){
- if(done('daily')){btn('dailyClaimBtn','Claimed • come back tomorrow',true);document.getElementById('dailyStatus').textContent='Completed for this 24-hour period.'}
- const st=Number(S.streak||0);document.getElementById('weekStatus').textContent=Math.min(st,7)+' / 7 days completed.';document.getElementById('monthStatus').textContent=Math.min(st,30)+' / 30 days completed.';
- document.getElementById('weekProgress').style.width=Math.min(st/7*100,100)+'%';document.getElementById('monthProgress').style.width=Math.min(st/30*100,100)+'%';
- if(st>=7)btn('weekClaimBtn','7-day milestone reached',true);if(st>=30)btn('monthClaimBtn','30-day milestone reached',true);
-}
-document.getElementById('dailyClaimBtn')?.addEventListener('click',()=>{if(done('daily'))return;S.daily=NOW();S.streak=Number(S.streak||0)+1;save();render();alert('Daily task completed. The reward must be credited by the server reward engine.')});
-document.getElementById('weekClaimBtn')?.addEventListener('click',()=>{if(Number(S.streak||0)<7)alert('Keep checking in daily until you reach 7 days.')});
-document.getElementById('monthClaimBtn')?.addEventListener('click',()=>{if(Number(S.streak||0)<30)alert('Keep checking in daily until you reach 30 days.')});
-function social(id,url,status){document.getElementById(id)?.addEventListener('click',()=>{window.open(url,'_blank','noopener,noreferrer');document.getElementById(status).textContent='Return after genuinely completing the task. Opening the link alone does not grant the reward.'})}
-social('igBtn','https://instagram.com/dakicks_dkx','igStatus');social('tgBtn','https://t.me/DKXOfficial','tgStatus');social('xBtn','https://x.com/dakicks_dkx','xStatus');render();
+  const API = `${SUPABASE_URL}/functions/v1/referral-engine`;
+  const TG = window.Telegram?.WebApp;
+
+  async function session(){
+    if(!supabaseClient) return null;
+    const {data} = await supabaseClient.auth.getSession();
+    return data?.session || null;
+  }
+  async function api(action, body={}){
+    const s = await session();
+    const headers = {'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY};
+    if(s?.access_token) headers.Authorization=`Bearer ${s.access_token}`;
+    if(TG?.initData) headers['X-Telegram-Init-Data']=TG.initData;
+    const r=await fetch(API,{method:'POST',headers,body:JSON.stringify({action,...body,telegram_init_data:TG?.initData||null,telegram_user:TG?.initDataUnsafe?.user||null})});
+    const p=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(p.error||`API ${r.status}`);
+    return p;
+  }
+  function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+  function currentTg(){return TG?.initDataUnsafe?.user||null}
+
+  async function refreshAccount(){
+    try{
+      const p=await api('sync',{handle:localStorage.getItem('dkx_user_name')||null,referral_code:getTelegramStartParam()});
+      setText('homeBalance',Number(p.balance_dkx||0).toLocaleString());
+      setText('earnBalance',`${Number(p.balance_dkx||0).toLocaleString()} DKX`);
+      setText('refBalDkx',`${Number(p.balance_dkx||0).toLocaleString()} $DKX`);
+      setText('frensCountNum',Number(p.referral_count||0).toLocaleString());
+      setText('vaultDkxBal',`${Number(p.balance_dkx||0).toLocaleString()} $DKX`);
+      setText('networkStatus','TON • LIVE • SYNCED');
+    }catch(e){console.warn('DKX account sync',e)}
+  }
+
+  async function loadLeaderboardV2(){
+    try{
+      const p=await api('leaderboard',{limit:500});
+      renderLiveLeaderboard(p.leaderboard||[]);
+    }catch(e){
+      const list=document.getElementById('liveLeaderboardList');
+      if(list) list.innerHTML='<div class="empty-state">Leaderboard is temporarily unavailable.</div>';
+    }
+  }
+
+  async function loadSquad(){
+    const list=document.getElementById('squadList'); if(!list)return;
+    list.innerHTML='<div class="empty-state">Loading squad…</div>';
+    try{
+      const p=await api('referrals',{limit:500});
+      const rows=p.referrals||[];
+      list.innerHTML=rows.length?rows.map(r=>`<div class="squad-row"><div><b>${escapeHtml(r.username||'Anonymous')}</b><small>${escapeHtml(r.status||'qualified')}</small></div><b>+${Number(r.reward_dkx||0).toLocaleString()} DKX</b></div>`).join(''):'<div class="empty-state">No verified referrals yet.</div>';
+    }catch(e){list.innerHTML='<div class="empty-state">Could not load the server squad.</div>'}
+  }
+  function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+  // Replace invite with Telegram-native share first, clipboard second.
+  const invite=document.getElementById('btnInviteFrens');
+  if(invite) invite.onclick=async()=>{
+    const u=currentTg(); const id=u?.id;
+    if(!id){showHUD('Open the mini app inside Telegram first');return}
+    const link=`https://t.me/DakicksAmino_bot/app?startapp=ref_${id}`;
+    try{
+      if(TG?.openTelegramLink){ TG.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent('Join DAKICKS and start earning DKX')}`); }
+      else await navigator.clipboard.writeText(link);
+      showHUD('Invite link ready');
+    }catch(e){showHUD('Invite link ready to copy')}
+  };
+
+  // Real referral list.
+  const fr=document.querySelector('.frens-row');
+  if(fr) fr.onclick=async()=>{document.getElementById('squadBackdrop')?.classList.add('show'); await loadSquad();};
+  document.getElementById('closeSquadBtn')?.addEventListener('click',()=>document.getElementById('squadBackdrop').classList.remove('show'));
+  document.getElementById('squadBackdrop')?.addEventListener('click',e=>{if(e.target.id==='squadBackdrop')e.currentTarget.classList.remove('show')});
+
+  // Daily/streak server claims.
+  document.getElementById('dailyClaimBtn')?.addEventListener('click',async()=>{
+    const b=document.getElementById('dailyClaimBtn');
+    b.disabled=true;b.textContent='VERIFYING…';
+    try{
+      const p=await api('earn_claim',{task_id:'daily_2000',reward_dkx:2000});
+      setText('dailyStatus',p.message||'Daily reward credited.');
+      await refreshAccount();
+      showHUD(`+${Number(p.reward_dkx||2000).toLocaleString()} DKX credited`);
+    }catch(e){setText('dailyStatus',e.message);showHUD(e.message)}
+    finally{b.disabled=false;b.textContent='CLAIM DAILY 2,000 DKX'}
+  });
+
+  document.querySelectorAll('.streak-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+    const days=Number(btn.dataset.streak);
+    try{
+      const p=await api('streak_claim',{days});
+      setText('streakStatus',p.message||`${days}-day milestone processed.`);
+      await refreshAccount(); showHUD(p.message||'Streak processed');
+    }catch(e){setText('streakStatus',e.message);showHUD(e.message)}
+  }));
+
+  // Social tasks: opening is allowed, reward is only server verified.
+  document.querySelectorAll('.dkx-task-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+    const task=btn.closest('.task-card')?.dataset.task, url=btn.dataset.url;
+    try{ if(TG?.openLink) TG.openLink(url); else window.open(url,'_blank'); }catch(e){window.open(url,'_blank')}
+    btn.textContent='VERIFYING…';
+    try{
+      const p=await api('social_verify',{task_id:task});
+      btn.textContent=p.verified?'VERIFIED':'VERIFY';
+      if(p.reward_dkx){await refreshAccount();showHUD(`+${Number(p.reward_dkx).toLocaleString()} DKX credited`)}
+    }catch(e){btn.textContent='VERIFY';showHUD(e.message||'Verification pending')}
+  }));
+
+  // Showcase vote + early access waitlist.
+  document.getElementById('voteDropBtn')?.addEventListener('click',async()=>{
+    try{const p=await api('showcase_vote',{drop_id:'genesis_01',choice:'genesis_01'});setText('showcaseStatus',p.message||'Vote recorded.');showHUD('Vote recorded')}
+    catch(e){setText('showcaseStatus',e.message)}
+  });
+  document.getElementById('earnVoteBtn')?.addEventListener('click',async()=>{
+    try{const p=await api('showcase_vote',{drop_id:'genesis_01',choice:'genesis_01'});setText('earnVoteStatus',p.message||'Vote recorded.');showHUD('Vote recorded')}
+    catch(e){setText('earnVoteStatus',e.message)}
+  });
+  document.getElementById('reserveDropBtn')?.addEventListener('click',async()=>{
+    try{const p=await api('waitlist_join',{drop_id:'genesis_01'});setText('showcaseStatus',p.message||'Early-access request saved.');showHUD('Early-access request saved')}
+    catch(e){setText('showcaseStatus',e.message)}
+  });
+
+  document.getElementById('homeEarnBtn')?.addEventListener('click',()=>{
+    const nav=[...document.querySelectorAll('.nav-item')].find(x=>x.innerText.trim().toLowerCase()==='earn');
+    navigateTab('dakicks',nav||document.querySelectorAll('.nav-item')[1]);
+  });
+
+  // Wallet: only show a connected state after a real provider is available.
+  window.connectSpecificWallet = async function(walletName){
+    closeWalletModal();
+    try{
+      if(walletName==='WalletConnect' || walletName==='MetaMask' || walletName==='Trust Wallet' || walletName==='Binance Web3 Wallet'){
+        showHUD(`${walletName} connection requires its provider bridge`);
+      }
+    }catch(e){}
+  };
+
+  // Load leaderboard even before a user session; endpoint is intentionally public-read.
+  const oldNav=window.navigateTab;
+  window.navigateTab=function(name,elem){
+    oldNav(name,elem);
+    if(name==='leaderboard') loadLeaderboardV2();
+    if(name==='frens') refreshAccount();
+  };
+
+  // Attempt immediate server sync and periodic refresh.
+  refreshAccount();
+  loadLeaderboardV2();
+  setInterval(refreshAccount,30000);
 })();
 </script>
+
 </body>
 </html>
 
